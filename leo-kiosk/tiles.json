@@ -1,0 +1,79 @@
+{
+  "title": "LÉO",
+  "columns": 3,
+  "tiles": [
+    {
+      "id": "read",
+      "label": "ABC",
+      "emoji": "🔤",
+      "color": "#ff6b6b",
+      "cmd": ["gcompris-qt"],
+      "minutes": 25
+    },
+    {
+      "id": "science",
+      "label": "Science",
+      "emoji": "🔬",
+      "color": "#4dabf7",
+      "cmd": ["firefox", "--kiosk", "file://~/Leo/science/index.html"],
+      "minutes": 20
+    },
+    {
+      "id": "carwash",
+      "label": "Car wash",
+      "emoji": "🚗",
+      "color": "#20c997",
+      "cmd": ["vlc", "--fullscreen", "--play-and-exit", "--random", "--no-video-title-show", "~/Leo/carwash"],
+      "minutes": 20
+    },
+    {
+      "id": "gabby",
+      "label": "Gabby",
+      "emoji": "🐱",
+      "color": "#f783ac",
+      "cmd": ["vlc", "--fullscreen", "--play-and-exit", "--random", "--no-video-title-show", "~/Leo/gabby"],
+      "minutes": 20
+    },
+    {
+      "id": "dressup",
+      "label": "Dress up",
+      "emoji": "👑",
+      "color": "#b197fc",
+      "cmd": ["cheese"],
+      "minutes": 15
+    },
+    {
+      "id": "build",
+      "label": "Build",
+      "emoji": "🧱",
+      "color": "#ffa94d",
+      "cmd": ["luanti"],
+      "alt": ["minetest"],
+      "minutes": 25
+    },
+    {
+      "id": "draw",
+      "label": "Draw",
+      "emoji": "🎨",
+      "color": "#ffd43b",
+      "cmd": ["tuxpaint", "--fullscreen=native", "--startblank", "--noprint"],
+      "minutes": 30
+    },
+    {
+      "id": "pets",
+      "label": "Cats & dogs",
+      "emoji": "🐶",
+      "color": "#82c91e",
+      "cmd": ["feh", "-r", "--fullscreen", "--auto-zoom", "--randomize", "--hide-pointer", "--slideshow-delay", "6", "~/Leo/pets"],
+      "minutes": 10
+    },
+    {
+      "id": "family",
+      "label": "Family",
+      "emoji": "👨‍👩‍👧‍👦",
+      "color": "#ff8787",
+      "cmd": ["feh", "-r", "--fullscreen", "--auto-zoom", "--randomize", "--hide-pointer", "--slideshow-delay", "6", "~/Leo/family"],
+      "minutes": 15
+    }
+  ]
+}

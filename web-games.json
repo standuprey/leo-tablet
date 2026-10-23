@@ -1,0 +1,956 @@
+[
+  {
+    "name": "PBS Kids",
+    "url": "https://pbskids.org",
+    "items": [
+      {
+        "name": "Daniel Tiger Miss Elaina Space Bots",
+        "url": "https://pbskids.org/games/play/daniel-tiger-miss-elaina-space-bots/2713595",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Dicey Escape",
+        "url": "https://pbskids.org/games/play/dicey-escape/1703203",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Elevator Antics",
+        "url": "https://pbskids.org/games/play/elevator-antics/1902621",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Lyla and Stu's Hairdos",
+        "url": "https://pbskids.org/games/play/lyla-and-stus-hairdos/1769066",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Race Car",
+        "url": "https://pbskids.org/games/play/race-car/105",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Rainbow Tree Treasures",
+        "url": "https://pbskids.org/games/play/rainbow-tree-treasures/2761169",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Reboot Rescue",
+        "url": "https://pbskids.org/games/play/reboot-rescue/2663516",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Riding with Rosie",
+        "url": "https://pbskids.org/games/play/riding-with-rosie/701859",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Rosie Travel",
+        "url": "https://pbskids.org/games/play/rosie-travel/2547490",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Speedy Delivery",
+        "url": "https://pbskids.org/games/play/speedy-delivery/246134",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Stu's Delivery Service",
+        "url": "https://pbskids.org/games/play/stus-delivery-service/1686643",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "SWCBA Super Letter Race",
+        "url": "https://pbskids.org/games/play/swcba-super-letter-race/2565419",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Starfall",
+    "url": "https://www.starfall.com",
+    "items": [
+      {
+        "name": "Letter a activity",
+        "url": "https://www.starfall.com/h/abcs/letter-a/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "name": "Letter b activity",
+        "url": "https://www.starfall.com/h/abcs/letter-b/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "name": "Letter c activity",
+        "url": "https://www.starfall.com/h/abcs/letter-c/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "name": "Letter d activity",
+        "url": "https://www.starfall.com/h/abcs/letter-d/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "name": "Letter e activity",
+        "url": "https://www.starfall.com/h/abcs/letter-e/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "name": "Letter f activity",
+        "url": "https://www.starfall.com/h/abcs/letter-f/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      },
+      {
+        "name": "Fun to Read section",
+        "url": "https://www.starfall.com/h/fun-to-read/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 1024,
+        "height": 768
+      }
+    ]
+  },
+  {
+    "name": "ABCya",
+    "url": "https://www.abcya.com",
+    "items": [
+      {
+        "name": "Alphabet",
+        "url": "https://www.abcya.com/games/alphabet",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Counting Fish",
+        "url": "https://www.abcya.com/games/counting_fish",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Take A Trip",
+        "url": "https://www.abcya.com/games/take_a_trip",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Tangrams",
+        "url": "https://www.abcya.com/games/tangrams",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Make A Robot",
+        "url": "https://www.abcya.com/games/make_a_robot",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Food Groups",
+        "url": "https://www.abcya.com/games/food_groups",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Shapes Geometry Game",
+        "url": "https://www.abcya.com/games/shapes_geometry_game",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "One Hundred Snowballs",
+        "url": "https://www.abcya.com/games/one_hundred_snowballs",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Connect The Dots Abc Order",
+        "url": "https://www.abcya.com/games/connect_the_dots_abc_order",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Numerical Order",
+        "url": "https://www.abcya.com/games/numerical_order",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Sesame Street",
+    "url": "https://www.sesamestreet.org",
+    "items": [
+      {
+        "name": "Critter Quest (direct game player)",
+        "url": "https://interactive.sesamestreet.org/games/prod/game-308-critter-quest/52b8883f81248894c0f6cf09bf085d0985fd7496/run/index.html",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Super Salad Diner (direct game player)",
+        "url": "https://interactive.sesamestreet.org/games/prod/242-super-salad-diner/5d4e5a685a2c494a0f39a39103c4838d27361ee5/run/index.html",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Cookie Gameshow (direct game player)",
+        "url": "https://interactive.sesamestreet.org/games/prod/271-cookie-gameshow/0d24d06556769ff33566a0b68580f00a6af98d62/run/index.html",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Dress Up (direct game player)",
+        "url": "https://interactive.sesamestreet.org/games/prod/214-dressup/c07d2f4ebb1d987239d3d181302d2432929269e1/run/indexSesame.html",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Supermarket Race (direct game player)",
+        "url": "https://interactive.sesamestreet.org/games/prod/game-414-supermarket-race/03513846a5abdc085737d80e08c067cb14eec050/run/index.html",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Games page entry",
+        "url": "https://www.sesamestreet.org/games?id=28033",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Nat Geo Kids",
+    "url": "https://kids.nationalgeographic.com",
+    "items": [
+      {
+        "name": "Dung Beetle Derby",
+        "url": "https://kids.nationalgeographic.com/games/action-adventure/article/dung-beetle-derby",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Letter Predator",
+        "url": "https://kids.nationalgeographic.com/games/action-adventure/article/letter-predator",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Matching Animals",
+        "url": "https://kids.nationalgeographic.com/games/puzzles/article/matching-animals",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Matching Gemstones",
+        "url": "https://kids.nationalgeographic.com/games/puzzles/article/matching-gemstones",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Crack The Code 1",
+        "url": "https://kids.nationalgeographic.com/games/action-adventure/article/crack-the-code-1",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Code.org",
+    "url": "https://code.org",
+    "items": [
+      {
+        "name": "Course 1 stage 3 puzzle 2 (block-coding game)",
+        "url": "https://studio.code.org/s/course1/stage/3/puzzle/2",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Course 1 stage 4 puzzle 1 (block-coding game)",
+        "url": "https://studio.code.org/s/course1/stage/4/puzzle/1",
+        "type": "game",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Mystery Science",
+    "url": "https://mysteryscience.com",
+    "items": [
+      {
+        "name": "Why Do Your Biceps and Triceps Muscles Need to Work in Pairs? (lesson video)",
+        "url": "https://mysteryscience.com/body/mystery-1/muscles-skeleton/59",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "What Makes a Roller Coaster Go Fast? (lesson video)",
+        "url": "https://mysteryscience.com/energy/mystery-4/energy-transfer-engineering/35",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Cosmic Kids Yoga",
+    "url": "https://www.cosmickids.com",
+    "items": [
+      {
+        "name": "Cosmic Kids Yoga video",
+        "url": "https://www.youtube.com/watch?v=Q4fyzEm0bOQ",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Cosmic Kids Yoga video",
+        "url": "https://www.youtube.com/watch?v=wUcqBo4Tbks",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Cosmic Kids Yoga video",
+        "url": "https://www.youtube.com/watch?v=nNv2CqXigBg",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Cosmic Kids Yoga video",
+        "url": "https://www.youtube.com/watch?v=2-dKLTcCdxg",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Cosmic Kids Yoga video",
+        "url": "https://www.youtube.com/watch?v=y7o0cc-LtPE",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Cosmic Kids Yoga video",
+        "url": "https://www.youtube.com/watch?v=T2Wltv2e4lA",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Lumni Enfance",
+    "url": "https://www.lumni.fr",
+    "items": [
+      {
+        "name": "Adjectif Nom Ou Verbe",
+        "url": "https://www.lumni.fr/jeu/adjectif-nom-ou-verbe",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "Chronos L Histoire En Jeu",
+        "url": "https://www.lumni.fr/jeu/chronos-l-histoire-en-jeu",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "Desert Fleuve Ou Montagne",
+        "url": "https://www.lumni.fr/jeu/desert-fleuve-ou-montagne",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "France Fleuve Montagne Ou Littoral",
+        "url": "https://www.lumni.fr/jeu/france-fleuve-montagne-ou-littoral",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "France Region Ou Departement",
+        "url": "https://www.lumni.fr/jeu/france-region-ou-departement",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "La Frise Chronologique",
+        "url": "https://www.lumni.fr/jeu/la-frise-chronologique",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "La Scolarite En Anglais",
+        "url": "https://www.lumni.fr/jeu/la-scolarite-en-anglais",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "La Transformation De La Matiere",
+        "url": "https://www.lumni.fr/jeu/la-transformation-de-la-matiere",
+        "type": "game",
+        "is_landscape": true,
+        "width": 708,
+        "height": 600
+      },
+      {
+        "name": "Pourquoi change-t-on d'heure? (video)",
+        "url": "https://www.lumni.fr/video/pourquoi-change-t-on-d-heure",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Okoo (France TV)",
+    "url": "https://www.okoo.fr",
+    "items": [
+      {
+        "name": "La Mutinerie Partie 1",
+        "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911128-la-mutinerie-partie-1.html",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "La Station Sans Retour",
+        "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911134-la-station-sans-retour.html",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Le Mentor",
+        "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911140-le-mentor.html",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Le Debrouillard",
+        "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911155-le-debrouillard.html",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "TFO",
+    "url": "https://www.tfo.org",
+    "items": [
+      {
+        "name": "Interstellaire Ella S2E1",
+        "url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-1/ma-haha-ggie/GP689926",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Interstellaire Ella S2E3",
+        "url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-3/jour-de-neige/GP689934",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "Organisation Super Insolite S3E1",
+        "url": "https://www.tfo.org/episode/organisation-super-insolite/saison-3/episode-1/debuts-insolites/GP214365",
+        "type": "video",
+        "is_landscape": true,
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "name": "Hugo l'escargot",
+    "url": "https://www.hugolescargot.com",
+    "items": []
+  },
+  {
+    "name": "Boukili",
+    "url": "https://boukili.ca",
+    "items": []
+  },
+  {
+    "name": "Gulli",
+    "url": "https://www.gulli.fr",
+    "items": [
+      {
+        "name": "Marsupilamis",
+        "url": "https://jeux.gulli.fr/marsupilamis-playtouch/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "La Théorie du chaos",
+        "url": "https://jeux.gulli.fr/jurassicplaytouch/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "La course enchantée ",
+        "url": "https://jeux.gulli.fr/unicorns-playtouch-new/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Puzzle Mania",
+        "url": "https://jeux.gulli.fr/louds-playtouch-new/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Coloriages",
+        "url": "https://jeux.gulli.fr/coloriage/03022025/index.html",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Un jeu et des BD",
+        "url": "https://jeux.gulli.fr/playtouch-sisters/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Les bulles enchantées",
+        "url": "https://jeux.gulli.fr/gabbyplaytouch/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Les poings de la destinée",
+        "url": "https://jeux.gulli.fr/kungfu-panda-playtouch/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Ennemis à gogo",
+        "url": "https://jeux.gulli.fr/totally-spies-playtouch/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "La crèche à la maison",
+        "url": "https://jeux.gulli.fr/dad-armstrong-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Tous en rang",
+        "url": "https://jeux.gulli.fr/boygirl-armstrong-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Pestouille Puissance 3",
+        "url": "https://jeux.gulli.fr/sisters/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Les Loud s'alignent",
+        "url": "https://jeux.gulli.fr/louds-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Le royaume des lasagnes",
+        "url": "https://jeux.gulli.fr/garfield-armstrong-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Aventure souterraine",
+        "url": "https://jeux.gulli.fr/trollhunters-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "La grande battle",
+        "url": "https://jeux.gulli.fr/bakugan-2-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "L'Entraînement des Super-Héros",
+        "url": "https://jeux.gulli.fr/alvin-runner-french/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "A l'aise fraise",
+        "url": "https://jeux.gulli.fr/molang/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Jurassic World - L'échappée des dinosaures",
+        "url": "https://jeux.gulli.fr/jurassic-World-lechappee-des-dinosaures/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "L’héritage secret",
+        "url": "https://jeux.gulli.fr/jungle-run_transformers-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Papatte",
+        "url": "https://jeux.gulli.fr/PollyPocket-Papatte-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "La part de monstre",
+        "url": "https://jeux.gulli.fr/MonsterHigh-Lapartdemonstre/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Libère-nous",
+        "url": "https://jeux.gulli.fr/babyshark/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Les Cornichons",
+        "url": "https://jeux.gulli.fr/armstrong-loud-2-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Coupe Coupe",
+        "url": "https://jeux.gulli.fr/razmoket/20231026-2/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Cafards en cuisine",
+        "url": "https://jeux.gulli.fr/whack-a-fish_oggy-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Le sauvetage des Pizzaïolos",
+        "url": "https://jeux.gulli.fr/armstrong-totally-spies-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "L'attaque des moustiques mutants",
+        "url": "https://jeux.gulli.fr/armstrong-jamie-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Rendez-vous au Krusty Krab",
+        "url": "https://jeux.gulli.fr/bob-eponge-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Peux-tu attraper tous les Pokémon ?",
+        "url": "https://jeux.gulli.fr/pokemon-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Pas facile de laver son linge",
+        "url": "https://jeux.gulli.fr/alvin-armstrong-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Course vers le rocher de l'aigle",
+        "url": "https://jeux.gulli.fr/blaze-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Puissance Ultime",
+        "url": "https://jeux.gulli.fr/bakugan-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Barbie et la course aux gâteaux",
+        "url": "https://jeux.gulli.fr/barbie-2-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Le ranch de Lucky",
+        "url": "https://jeux.gulli.fr/spirit-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Trésor des dragons",
+        "url": "https://jeux.gulli.fr/dragons-2-fr-web/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Chat perché",
+        "url": "https://jeux.gulli.fr/chat-potte-web/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Chevaliers du bac à sable",
+        "url": "https://jeux.gulli.fr/zig-et-sharko-3-web-new/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Pros du surf",
+        "url": "https://jeux.gulli.fr/zig-et-sharko-2-web/",
+        "type": "game",
+        "is_landscape": true,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "name": "Course de Dragons",
+        "url": "https://jeux.gulli.fr/dragons-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Métier de rêve",
+        "url": "https://jeux.gulli.fr/barbie-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Poppy et sa coiffure de folie",
+        "url": "https://jeux.gulli.fr/poppys-fr-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      },
+      {
+        "name": "Super lanceur",
+        "url": "https://jeux.gulli.fr/zig-et-sharko-web/",
+        "type": "game",
+        "is_landscape": false,
+        "width": 600,
+        "height": 800
+      }
+    ]
+  }
+]
