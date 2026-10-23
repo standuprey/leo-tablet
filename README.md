@@ -83,12 +83,14 @@ On any machine with GTK3 and PyGObject: `python3 launcher.py`. Tiles for missing
 
 ## Parent-mode implementation plan
 
-The parent area, game review workflow, home-slot selection, and iwd-backed Wi-Fi/captive-portal support are **specified but not implemented**:
+The parent area, game review workflow, home-slot selection, and iwd-backed Wi-Fi/captive-portal support are **specified; domain foundations are implemented but not integrated into the launcher**:
 
 - [Architecture and product behavior](docs/parent-mode/architecture.md)
 - [Detailed implementation backlog](docs/parent-mode/backlog.md) — 68 dependency-linked tasks with Fibonacci sizes, domains, acceptance criteria, and tests
 - [Machine-readable tasks](docs/parent-mode/tasks.json)
 - [Saved discovery catalog](web-games.json) — source data, not a list of verified playable games
+- [Implementation status](docs/parent-mode/implementation-status.md) — completed task IDs and remaining integration gates
+- [Development and test commands](docs/parent-mode/development.md)
 
 The planned gestures (Up/Down/Down for parent mode; Down/Down/Up to return) replace the current shortcut only when the implementation is deployed. The current behavior described above is unchanged.
 

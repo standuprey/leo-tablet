@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "leo-kiosk"
+version = "0.1.0"
+description = "Native GTK tablet kiosk and parent-mode services"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3,<10",
+    "hypothesis>=6.120,<7",
+    "ruff>=0.11,<1",
+    "mypy>=1.14,<3",
+]
+
+[tool.setuptools.packages.find]
+include = ["leo_kiosk*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--strict-markers --strict-config"
+markers = [
+    "display: requires a configured GTK display and --run-display",
+    "wayland: requires a Wayland compositor and --run-wayland",
+    "hardware: requires explicit target-device access and --run-hardware",
+    "local_network: permits loopback connections to controlled test fixtures only",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# Do not churn the legacy launcher/watcher during domain-only work.
+"launcher.py" = ["UP031"]
+"backwatch.py" = ["UP031"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
