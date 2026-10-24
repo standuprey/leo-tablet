@@ -4,7 +4,7 @@ Source: [web-games.json](../../web-games.json), a temporary discovery input with
 
 ## Current counts (input as found, not a target)
 
-- 14 provider groups, 109 entries: **93 labeled game, 16 video, 0 other**.
+- Input as found: 14 provider groups, 109 entries (**93 labeled game, 16 video**). After exclusions (hubs + the parent-requested ABCya removal), the generated bootstrap carries **97 games / 13 providers**.
 - Two providers have zero entries (Hugo l'escargot, Boukili); they remain in the file as source context.
 - These counts describe the input. They are **not** the expected eligible/playable game count, and the application must not hard-code either number.
 
@@ -23,6 +23,7 @@ The original six-key export contract (name/url/is_landscape/width/height/type wi
 |---|---|---|---|
 | Starfall | 6 | Fun to Read section | Section page, not a single activity |
 | Sesame Street | 5 | Games page entry | Hub listing entry; individual game ids remain |
+| ABCya | all 10 | entire provider | Removed at parent request (2026-10-23); tombstoned on next import |
 
 Any later-discovered hub/section link must be added here with its source index rather than silently skipped.
 

@@ -50,9 +50,7 @@ def test_exit_callback_is_not_gtk_main_quit(monkeypatch: pytest.MonkeyPatch) -> 
     quits = []
     monkeypatch.setattr(Gtk, "main_quit", lambda: quits.append(True))
     calls: list[str] = []
-    grid = build_parent_home(
-        lambda: None, lambda: None, lambda: calls.append("nav"), lambda: None
-    )
+    grid = build_parent_home(lambda: None, lambda: None, lambda: calls.append("nav"), lambda: None)
     exit_tile = next(
         c for c in grid.get_children() if c.get_sensitive() and c.get_child().get_label() == "Exit"
     )

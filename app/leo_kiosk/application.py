@@ -20,6 +20,7 @@ from leo_kiosk.domain.gestures import (  # noqa: E402
     REVIEW_TRIAL_PATTERNS,
     GestureAction,
 )
+from leo_kiosk.domain.sessions import LaunchOutcome  # noqa: E402
 from leo_kiosk.services.catalog import CatalogService  # noqa: E402
 from leo_kiosk.services.navigation import Route, enter_parent, return_gesture  # noqa: E402
 from leo_kiosk.services.sessions import TrialSessionService  # noqa: E402
@@ -113,6 +114,20 @@ class AppController:
         in_trial = self.trial_token is not None
         if not self.window.is_showing() and not in_trial:
             return  # legacy app foregrounded; only the trial return passes
+        if in_trial:
+            # Any recognized gesture ends the trial: Down/Up returns to this
+            # game's editor, Up/Down/Down goes to the parent home. Stopping
+            # the session drives the visible change via the exit callback;
+            # show_page() on a hidden window would do nothing.
+            outcome = (
+                LaunchOutcome.PARENT_REQUEST
+                if action is GestureAction.ENTER_PARENT
+                else LaunchOutcome.RETURN_GESTURE
+            )
+            token = self.trial_token
+            self.trial_token = None  # further gestures wait for the finish
+            self.sessions.stop(token, outcome)
+            return
         if action is GestureAction.ENTER_PARENT:
             transition = enter_parent(self.route)
         else:
@@ -149,6 +164,8 @@ class AppController:
         page = self.window.stack.get_child_by_name("review")
         for child in list(page.get_children()):
             page.remove(child)
+        page.set_halign(Gtk.Align.FILL)  # placeholder was centered; the list must expand
+        page.set_valign(Gtk.Align.FILL)
         entries = self.catalog.list_review_entries() if self.catalog else ()
         page.pack_start(build_review_list(entries, self._start_trial), True, True, 0)
         page.show_all()
@@ -164,7 +181,10 @@ class AppController:
 
     def trial_finished(self, game_id: UUID, outcome_value: str) -> None:
         self.trial_token = None
-        self.route = Route.REVIEW_EDITOR
+        if outcome_value == LaunchOutcome.PARENT_REQUEST.value:
+            self.route = Route.PARENT_HOME
+        else:
+            self.route = Route.REVIEW_EDITOR
         if self.monitor is not None:
             self.monitor.recognizer.use_patterns(DEFAULT_PATTERNS)
         name = "Game"
@@ -173,13 +193,16 @@ class AppController:
                 name = self.catalog.get_entry(game_id).display_name
             except (LookupError, ValueError):
                 pass
-        editor = self.window.stack.get_child_by_name("editor")
-        for child in list(editor.get_children()):
-            editor.remove(child)
-        editor.pack_start(
-            build_editor_placeholder(name, f"Trial outcome: {outcome_value}"), True, True, 0
-        )
-        editor.show_all()
+        target_page = PAGE_FOR.get(self.route, "child")
+        self.window.show_page(target_page)  # route decides, not the pre-trial page
+        if self.route is Route.REVIEW_EDITOR:
+            editor = self.window.stack.get_child_by_name(target_page)
+            for child in list(editor.get_children()):
+                editor.remove(child)
+            editor.pack_start(
+                build_editor_placeholder(name, f"Trial outcome: {outcome_value}"), True, True, 0
+            )
+            editor.show_all()
         self.window.win.show_all()
         self.window.win.fullscreen()
 
@@ -202,6 +225,7 @@ def compose_launcher(
             ),
             "review": _placeholder_page("REVIEW"),
             "wifi": _placeholder_page("WIFI"),
+            "editor": window._editor_page,  # noqa: SLF001 - composition owns wiring
         }
     )
     window.set_trial_launcher(controller._on_app_launch, controller._on_app_exit)
@@ -236,6 +260,9 @@ def _build_catalog_and_sessions():
 
 
 def main() -> None:
+    # Startup banner: makes stale-deploy diagnosis trivial (the legacy launcher
+    # printed nothing on success, so an empty log looked identical to a hang).
+    print("leo-kiosk: starting (parent-mode build)", file=sys.stderr, flush=True)
     try:
         catalog, sessions = _build_catalog_and_sessions()
     except Exception as exc:  # noqa: BLE001 - storage must never kill the tiles

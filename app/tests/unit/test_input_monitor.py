@@ -164,3 +164,25 @@ def test_real_glib_watch_on_a_pipe(fake_clock):
 
 def test_default_pattern_set_unchanged_for_documentation():
     assert DEFAULT_PATTERNS[0][0][0] == UP  # UDD starts with UP
+
+
+def test_real_device_enumeration_has_no_context_manager_regression():
+    """evdev 2.x InputDevice is not a context manager; the probe must close
+    devices explicitly. Runs only where /dev/input is readable."""
+    import glob
+    import os
+
+    import pytest
+
+    pytest.importorskip("evdev")
+    devices = sorted(glob.glob("/dev/input/event*"))
+    if not devices or not os.access(devices[0], os.R_OK):
+        pytest.skip("no readable /dev/input devices")
+    from leo_kiosk.adapters.input import EvdevEventSource, discover_volume_sources
+
+    sources, errors = discover_volume_sources()
+    assert errors == []
+    for source in sources:
+        assert source.path.startswith("/dev/input/event")
+    for path in devices:  # every device must probe without raising
+        EvdevEventSource.is_volume_source(path)

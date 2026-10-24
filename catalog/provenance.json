@@ -38,6 +38,86 @@
       "url": "https://www.sesamestreet.org/games?id=28033",
       "reason": "Hub listing entry; individual id links kept but hub page is not a game",
       "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 0,
+      "name": "Alphabet",
+      "url": "https://www.abcya.com/games/alphabet",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 1,
+      "name": "Counting Fish",
+      "url": "https://www.abcya.com/games/counting_fish",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 2,
+      "name": "Take A Trip",
+      "url": "https://www.abcya.com/games/take_a_trip",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 3,
+      "name": "Tangrams",
+      "url": "https://www.abcya.com/games/tangrams",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 4,
+      "name": "Make A Robot",
+      "url": "https://www.abcya.com/games/make_a_robot",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 5,
+      "name": "Food Groups",
+      "url": "https://www.abcya.com/games/food_groups",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 6,
+      "name": "Shapes Geometry Game",
+      "url": "https://www.abcya.com/games/shapes_geometry_game",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 7,
+      "name": "One Hundred Snowballs",
+      "url": "https://www.abcya.com/games/one_hundred_snowballs",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 8,
+      "name": "Connect The Dots Abc Order",
+      "url": "https://www.abcya.com/games/connect_the_dots_abc_order",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 9,
+      "name": "Numerical Order",
+      "url": "https://www.abcya.com/games/numerical_order",
+      "reason": "Provider excluded at parent request (2026-10-23)",
+      "eligible": false
     }
   ],
   "dimension_caveats": [
@@ -229,7 +309,7 @@
       "name": "Alphabet",
       "url": "https://www.abcya.com/games/alphabet",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -237,7 +317,7 @@
       "name": "Counting Fish",
       "url": "https://www.abcya.com/games/counting_fish",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -245,7 +325,7 @@
       "name": "Take A Trip",
       "url": "https://www.abcya.com/games/take_a_trip",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -253,7 +333,7 @@
       "name": "Tangrams",
       "url": "https://www.abcya.com/games/tangrams",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -261,7 +341,7 @@
       "name": "Make A Robot",
       "url": "https://www.abcya.com/games/make_a_robot",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -269,7 +349,7 @@
       "name": "Food Groups",
       "url": "https://www.abcya.com/games/food_groups",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -277,7 +357,7 @@
       "name": "Shapes Geometry Game",
       "url": "https://www.abcya.com/games/shapes_geometry_game",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -285,7 +365,7 @@
       "name": "One Hundred Snowballs",
       "url": "https://www.abcya.com/games/one_hundred_snowballs",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -293,7 +373,7 @@
       "name": "Connect The Dots Abc Order",
       "url": "https://www.abcya.com/games/connect_the_dots_abc_order",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "abcya",
@@ -301,7 +381,7 @@
       "name": "Numerical Order",
       "url": "https://www.abcya.com/games/numerical_order",
       "type": "game",
-      "eligible": true
+      "eligible": false
     },
     {
       "provider": "sesame-street",
@@ -943,5 +1023,12 @@
       "type": "game",
       "eligible": true
     }
-  ]
+  ],
+  "provider_exclusions": [
+    {
+      "provider": "abcya",
+      "reason": "Removed at parent request (2026-10-23); games excluded from catalog and purged on next import"
+    }
+  ],
+  "eligible_after_exclusions": 97
 }

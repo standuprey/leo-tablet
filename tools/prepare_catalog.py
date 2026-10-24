@@ -17,6 +17,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SOURCE = REPO_ROOT / "web-games.json"
 DEFAULT_OUTPUT = REPO_ROOT / "catalog" / "bootstrap.json"
+DEFAULT_PROVENANCE = REPO_ROOT / "catalog" / "provenance.json"
 BOOTSTRAP_VERSION = 1
 
 # Provider display name -> stable slug (validated by the domain layer).
@@ -131,17 +132,40 @@ def adapt_game(raw, provider_id, provider_evidence):
     }
 
 
-def build_bootstrap(source_path):
+def load_exclusions(provenance_path):
+    """Provider-level and per-entry exclusions from the audited provenance."""
+    exclusions = {"providers": set(), "entries": set()}
+    if not provenance_path.exists():
+        return exclusions
+    prov = json.loads(provenance_path.read_text())
+    for item in prov.get("provider_exclusions", []):
+        exclusions["providers"].add(item["provider"])
+    for item in prov.get("exclusions", []):
+        if not item.get("eligible", True):
+            exclusions["entries"].add((item["provider"], item["source_index"]))
+    return exclusions
+
+
+def build_bootstrap(source_path, provenance_path=DEFAULT_PROVENANCE):
     """Read flexible discovery input and emit a deterministic bootstrap dict."""
     raw = json.loads(source_path.read_bytes())
+    exclusions = load_exclusions(provenance_path)
     providers, games, excluded = [], [], 0
     for group in raw:
         provider_id = slugify(group["name"])
-        providers.append(adapt_provider(group))
+        if provider_id in exclusions["providers"]:
+            excluded += len(group.get("items", []))
+            continue
         evidence = _PROVIDER_EVIDENCE.get(provider_id)
-        for item in group.get("items", []):
-            game = adapt_game(item, provider_id, evidence)
-            games.append(game)
+        provider_games = []
+        for index, item in enumerate(group.get("items", [])):
+            if (provider_id, index) in exclusions["entries"]:
+                excluded += 1
+                continue
+            provider_games.append(adapt_game(item, provider_id, evidence))
+        if provider_games or not group.get("items"):
+            providers.append(adapt_provider(group))
+        games.extend(provider_games)
     seen_urls = set()
     for game in games:
         key = (game["provider_id"], game["source_url"])
@@ -223,6 +247,12 @@ def main(argv=None):
     )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument(
+        "--provenance",
+        type=Path,
+        default=DEFAULT_PROVENANCE,
+        help="Audited exclusions; providers/entries listed there are dropped",
+    )
+    parser.add_argument(
         "--check",
         action="store_true",
         help="Validate the existing output without rewriting it",
@@ -243,7 +273,7 @@ def main(argv=None):
     if not args.source.exists():
         print(f"Discovery source not found: {args.source}", file=sys.stderr)
         return 1
-    payload, _ = build_bootstrap(args.source)
+    payload, _ = build_bootstrap(args.source, args.provenance)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=False) + "\n"

@@ -2,11 +2,6 @@
   "bootstrap_version": 1,
   "providers": [
     {
-      "provider_id": "abcya",
-      "name": "ABCya",
-      "website_url": "https://www.abcya.com"
-    },
-    {
       "provider_id": "boukili",
       "name": "Boukili",
       "website_url": "https://boukili.ca"
@@ -73,96 +68,6 @@
     }
   ],
   "games": [
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/alphabet",
-      "source_name": "Alphabet",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/connect_the_dots_abc_order",
-      "source_name": "Connect The Dots Abc Order",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/counting_fish",
-      "source_name": "Counting Fish",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/food_groups",
-      "source_name": "Food Groups",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/make_a_robot",
-      "source_name": "Make A Robot",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/numerical_order",
-      "source_name": "Numerical Order",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/one_hundred_snowballs",
-      "source_name": "One Hundred Snowballs",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/shapes_geometry_game",
-      "source_name": "Shapes Geometry Game",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/take_a_trip",
-      "source_name": "Take A Trip",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
-      "provider_id": "abcya",
-      "source_url": "https://www.abcya.com/games/tangrams",
-      "source_name": "Tangrams",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
     {
       "provider_id": "code-org",
       "source_url": "https://studio.code.org/s/course1/stage/3/puzzle/2",
@@ -1160,15 +1065,6 @@
       "launch_url": null
     },
     {
-      "provider_id": "sesame-street",
-      "source_url": "https://www.sesamestreet.org/games?id=28033",
-      "source_name": "Games page entry",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": null,
-      "launch_url": null
-    },
-    {
       "provider_id": "starfall",
       "source_url": "https://www.starfall.com/h/abcs/letter-a/",
       "source_name": "Letter a activity",
@@ -1247,19 +1143,6 @@
       "launch_url": null
     },
     {
-      "provider_id": "starfall",
-      "source_url": "https://www.starfall.com/h/fun-to-read/",
-      "source_name": "Fun to Read section",
-      "media_type": 2,
-      "orientation": "unknown",
-      "dimensions": {
-        "width": 1024,
-        "height": 768,
-        "evidence": "design"
-      },
-      "launch_url": null
-    },
-    {
       "provider_id": "tfo",
       "source_url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-1/ma-haha-ggie/GP689926",
       "source_name": "Interstellaire Ella S2E1",
@@ -1287,5 +1170,5 @@
       "launch_url": null
     }
   ],
-  "source_sha256": "fc8d9fb5922b723786c1e3e3735e3c2b6bf043ba6c40ececf4b4adf255c825d0"
+  "source_sha256": "61fcb562ace32a7aa9cdbe617aa4c877b12a8e64c54e5e389357989e599f32c1"
 }
