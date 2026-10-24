@@ -87,6 +87,32 @@ EOF
 
 systemctl enable greetd.service
 
+echo "==> Hiding the GRUB boot menu (kiosk boots straight through)"
+# Hidden menu with a 1 s timeout: nothing visible during normal boot, but
+# holding ESC (or an arrow key) within the first second still opens the menu
+# for recovery (bad kernel, fsck, ...). Fully removing the window
+# (GRUB_TIMEOUT=0) makes a bad boot recoverable only from a live USB.
+GRUB_DEFAULT="/etc/default/grub"
+if [[ -f "$GRUB_DEFAULT" ]]; then
+  if [[ ! -f "$GRUB_DEFAULT.orig" ]]; then
+    cp "$GRUB_DEFAULT" "$GRUB_DEFAULT.orig"
+  fi
+  if grep -q '^GRUB_TIMEOUT=' "$GRUB_DEFAULT"; then
+    sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=1/' "$GRUB_DEFAULT"
+  else
+    echo 'GRUB_TIMEOUT=1' >> "$GRUB_DEFAULT"
+  fi
+  if grep -q '^GRUB_TIMEOUT_STYLE=' "$GRUB_DEFAULT"; then
+    sed -i 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=hidden/' "$GRUB_DEFAULT"
+  else
+    echo 'GRUB_TIMEOUT_STYLE=hidden' >> "$GRUB_DEFAULT"
+  fi
+  grub-mkconfig -o /boot/grub/grub.cfg
+else
+  echo "!! /etc/default/grub not found; not GRUB? Skipping boot menu change."
+fi
+
 echo
 echo "Done. Reboot to start the kiosk:  sudo reboot"
 echo "To go back to a text login later: sudo systemctl disable greetd && sudo systemctl enable getty@tty1"
+echo "To restore the boot menu: sudo cp /etc/default/grub.orig /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg"

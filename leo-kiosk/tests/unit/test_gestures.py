@@ -4,7 +4,17 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from leo_kiosk.domain.gestures import GestureAction, GestureConfig, GestureRecognizer, VolumeKey
+from leo_kiosk.domain.gestures import (
+    DDU,
+    DEFAULT_PATTERNS,
+    DU,
+    REVIEW_TRIAL_PATTERNS,
+    UDD,
+    GestureAction,
+    GestureConfig,
+    GestureRecognizer,
+    VolumeKey,
+)
 
 UP, DOWN = VolumeKey.UP, VolumeKey.DOWN
 
@@ -31,8 +41,77 @@ def test_exact_sequences(fake_clock, codes, action):
     assert taps(recognizer, fake_clock, codes) == [action]
 
 
+def test_review_trial_returns_on_down_up_and_three_tap_ends_in_short_match(fake_clock):
+    recognizer = GestureRecognizer(fake_clock, patterns=REVIEW_TRIAL_PATTERNS)
+    assert taps(recognizer, fake_clock, [DOWN, UP]) == [GestureAction.RETURN]
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    # In trial mode DDU is not a pattern, but its trailing D,U completes a DU
+    # match — geometrically correct and benign: the parent is leaving anyway.
+    assert taps(recognizer, fake_clock, [DOWN, DOWN, UP]) == [GestureAction.RETURN]
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    assert recognizer.feed(UP) is None  # No leftover partial state after cooldown.
+
+
+def test_pattern_sets_swap_with_context_and_default_set_is_unchanged(fake_clock):
+    recognizer = GestureRecognizer(fake_clock)
+    assert taps(recognizer, fake_clock, [UP, DOWN, DOWN]) == [GestureAction.ENTER_PARENT]
+    recognizer.use_patterns(REVIEW_TRIAL_PATTERNS)
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    assert taps(recognizer, fake_clock, [DOWN, UP]) == [GestureAction.RETURN]
+    recognizer.use_patterns(DEFAULT_PATTERNS)
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    assert taps(recognizer, fake_clock, [DOWN, DOWN, UP]) == [GestureAction.RETURN]
+    assert recognizer.patterns == DEFAULT_PATTERNS
+
+
+@pytest.mark.parametrize(
+    "patterns",
+    [
+        [((DOWN, DOWN), GestureAction.RETURN), (DDU, GestureAction.RETURN)],
+        [(UDD, GestureAction.ENTER_PARENT), ((UP, DOWN), GestureAction.RETURN)],
+    ],
+)
+def test_ambiguous_prefix_sets_are_rejected(fake_clock, patterns):
+    with pytest.raises(ValueError, match="Ambiguous"):
+        GestureRecognizer(fake_clock, patterns=patterns)
+
+
+def test_short_return_and_three_tap_sets_are_geometrically_compatible(fake_clock):
+    # DU diverges from DDU at the second key, so both coexist in one recognizer.
+    # Never enabling DU outside review trials is the adapter's contract.
+    combined = list(DEFAULT_PATTERNS) + [(DU, GestureAction.RETURN)]
+    recognizer = GestureRecognizer(fake_clock, patterns=combined)
+    assert taps(recognizer, fake_clock, [DOWN, UP]) == [GestureAction.RETURN]
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    assert taps(recognizer, fake_clock, [DOWN, DOWN, UP]) == [GestureAction.RETURN]
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    assert taps(recognizer, fake_clock, [UP, DOWN, DOWN]) == [GestureAction.ENTER_PARENT]
+
+
+@pytest.mark.parametrize(
+    "patterns",
+    [
+        [],
+        [((DOWN,), GestureAction.RETURN)],
+        [((42,), GestureAction.RETURN)],  # Raw int is rejected by pattern validation.
+        [((DOWN, DOWN), "return")],
+        [(DDU, GestureAction.RETURN), (DDU, GestureAction.RETURN)],
+    ],
+)
+def test_invalid_pattern_sets(patterns):
+    with pytest.raises(ValueError):
+        GestureRecognizer(patterns=patterns)
+
+
 def test_old_shortcut_and_releases_repeats_unrelated_keys(fake_clock):
     recognizer = GestureRecognizer(fake_clock)
+    # Down/Up alone is NOT a default-set gesture; three-tap sets only.
     assert taps(recognizer, fake_clock, [DOWN, UP]) == []
     recognizer.reset("route_changed")
     assert recognizer.feed(UP) is None
@@ -51,6 +130,15 @@ def test_gap_and_total_duration_have_independent_inclusive_boundaries(fake_clock
     assert taps(recognizer, fake_clock, [DOWN, DOWN]) == []
     recognizer = GestureRecognizer(fake_clock, GestureConfig(max_duration=1.0))
     assert taps(recognizer, fake_clock, [UP, DOWN, DOWN], gap=0.75) == []
+
+
+def test_review_trial_short_taps_obey_gap_and_duration(fake_clock):
+    recognizer = GestureRecognizer(fake_clock, patterns=REVIEW_TRIAL_PATTERNS)
+    assert taps(recognizer, fake_clock, [DOWN, UP], gap=1.0) == [GestureAction.RETURN]
+    recognizer = GestureRecognizer(fake_clock, patterns=REVIEW_TRIAL_PATTERNS)
+    assert recognizer.feed(DOWN) is None
+    fake_clock.advance(1.01)
+    assert recognizer.feed(UP) is None
 
 
 def test_wrong_prefix_retains_longest_valid_suffix(fake_clock):

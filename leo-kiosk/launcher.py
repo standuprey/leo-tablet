@@ -29,8 +29,7 @@ window { background: #1b1b2f; }
 .title { color: white; font-size: 44px; font-weight: 800; }
 .status { color: #ffd43b; font-size: 28px; font-weight: 700; }
 .tile { border-radius: 36px; border: none; box-shadow: none; padding: 0; }
-.tile label.emoji { font-size: 96px; }
-.tile label.word { font-size: 34px; font-weight: 800; color: #1b1b2f; }
+.tile label.word { font-size: 44px; font-weight: 800; color: #1b1b2f; }
 """
 
 
@@ -105,11 +104,11 @@ class Launcher:
 
         inner = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
         inner.set_valign(Gtk.Align.CENTER)
-        emoji = Gtk.Label(label=tile["emoji"])
-        emoji.get_style_context().add_class("emoji")
         word = Gtk.Label(label=tile["label"])
         word.get_style_context().add_class("word")
-        inner.pack_start(emoji, False, False, 0)
+        # Wrap so longer labels fit without shrinking the tile or hit area.
+        word.set_line_wrap(True)
+        word.set_justify(Gtk.Justification.CENTER)
         inner.pack_start(word, False, False, 0)
         btn.add(inner)
         btn.connect("clicked", lambda _b, t=tile: self.launch(t))

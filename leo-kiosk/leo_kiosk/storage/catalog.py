@@ -96,6 +96,25 @@ class CatalogRepository(Repository):
         )
         return tuple(self._decode(row) for row in rows)
 
+    def refresh_source_fields(self, game_id: UUID, changes: dict[str, object]) -> None:
+        """Update source-owned columns only; caller owns the transaction and rollback."""
+        if not changes or set(changes) - {
+            "source_name",
+            "launch_url",
+            "media_type",
+            "orientation",
+            "width",
+            "height",
+            "dimension_evidence",
+            "source_metadata_json",
+        }:
+            raise ValidationError("Only source-owned columns may be refreshed")
+        assignments = ", ".join(f"{column} = ?" for column in changes)
+        self._write(
+            f"UPDATE games SET {assignments} WHERE id = ?",
+            (*changes.values(), str(game_id)),
+        )
+
     @staticmethod
     def _decode(row: sqlite3.Row) -> StoredGame:
         return decode_record(lambda: _record(row))

@@ -2,13 +2,65 @@
 
 import sqlite3
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
-from leo_kiosk.domain.catalog import validate_provider_id
+from leo_kiosk.domain.catalog import (
+    CatalogItem,
+    DimensionEvidence,
+    Dimensions,
+    MediaType,
+    Orientation,
+    validate_provider_id,
+)
 from leo_kiosk.domain.catalog_metadata import ImportRecord, Provider
+from leo_kiosk.domain.catalog_records import StoredGame
 from leo_kiosk.domain.errors import NotFoundError
 
 from ._repository import Repository, decode_record
+
+_MEDIA_TYPES = {member.value: member for member in MediaType}
+_ORIENTATIONS = {member.value: member for member in Orientation}
+_EVIDENCE = {member.value: member for member in DimensionEvidence}
+
+
+def _media_type(value: object) -> MediaType:
+    """Accept the domain IntEnum values 0/1/2 as integers or names; never strings like 'game'."""
+    if isinstance(value, MediaType):
+        return value
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError("Media type must be integer 0, 1 or 2")
+    return MediaType(value)
+
+
+def _orientation(value: Any) -> Orientation:
+    if isinstance(value, Orientation):
+        return value
+    if value is None or isinstance(value, bool):
+        # Legacy discovery booleans are orientation-unaware, not measured portrait data.
+        return Orientation.UNKNOWN
+    if isinstance(value, str) and value in _ORIENTATIONS:
+        return Orientation(value)
+    raise ValueError("Orientation must be a domain value or a legacy boolean placeholder")
+
+
+def _dimensions(raw: dict[str, Any]) -> Dimensions:
+    width, height = raw.get("width"), raw.get("height")
+    evidence = raw.get("dimension_evidence", raw.get("evidence"))
+    if width is None and height is None:
+        return Dimensions(None, None, DimensionEvidence.UNKNOWN)
+    if evidence in (None, False, True, ""):  # Sizes without evidence are not measurements.
+        raise ValueError("A provided size requires a dimension evidence category")
+    return Dimensions(width, height, DimensionEvidence(evidence))
+
+
+def _launch(raw: dict[str, Any]) -> str | None:
+    value = raw.get("launch_url")
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ValueError("Launch override must be a string URL")
+    return value
 
 
 class CatalogMetadataRepository(Repository):
@@ -33,10 +85,6 @@ class CatalogMetadataRepository(Repository):
             self._provider(row)
             for row in self._rows("SELECT id, name, website_url FROM providers ORDER BY name, id")
         )
-
-    @staticmethod
-    def _provider(row: sqlite3.Row) -> Provider:
-        return decode_record(lambda: Provider(*row))
 
     def record_import(self, record: ImportRecord) -> None:
         self._write(
@@ -63,6 +111,10 @@ class CatalogMetadataRepository(Repository):
         )
 
     @staticmethod
+    def _provider(row: sqlite3.Row) -> Provider:
+        return decode_record(lambda: Provider(*row))
+
+    @staticmethod
     def _import(row: sqlite3.Row) -> ImportRecord:
         # Row values are validated by the domain constructor, not returned to widgets.
         return decode_record(
@@ -73,3 +125,28 @@ class CatalogMetadataRepository(Repository):
                 UUID(row["id"]),
             )
         )
+
+    # --- source adapters: flexible input shapes -> validated DTOs -------------
+
+    @staticmethod
+    def provider_from_source(raw: dict[str, Any]) -> Provider:
+        try:
+            return Provider(raw["provider_id"], raw["name"], raw["website_url"])
+        except (KeyError, TypeError) as exc:
+            raise ValueError("Source provider requires id, name and website URL") from exc
+
+    @staticmethod
+    def game_from_source(raw: dict[str, Any]) -> StoredGame:
+        try:
+            item = CatalogItem(
+                raw["provider_id"],
+                raw["source_url"],
+                raw["source_name"],
+                _media_type(raw.get("media_type", raw.get("type"))),
+                _orientation(raw.get("orientation", raw.get("is_landscape"))),
+                _dimensions(raw),
+                _launch(raw),
+            )
+            return StoredGame(item, source_metadata_json=raw.get("source_metadata_json") or "{}")
+        except (KeyError, TypeError) as exc:
+            raise ValueError("Source game requires provider, source URL and name") from exc

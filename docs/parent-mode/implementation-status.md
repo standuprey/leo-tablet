@@ -1,6 +1,6 @@
 # Parent-mode implementation status
 
-The feature is **partially implemented, not integrated into the launcher**. Existing child tiles, shortcuts, process launching and system configuration are unchanged. The catalog schema and repositories now exist, but the discovery catalog has not been imported into a live database; home/session schemas, review transactions and UI integration remain pending.
+The feature is **partially implemented, not integrated into the launcher**. Existing child tiles, shortcuts, process launching and system configuration are unchanged. Catalog and state schemas plus repositories exist, but the discovery catalog has not been imported into a live database; review transactions and UI integration remain pending.
 
 ## Completed execution-plan tasks
 
@@ -10,12 +10,15 @@ The feature is **partially implemented, not integrated into the launcher**. Exis
 | parent-5 | Immutable catalog values; media/orientation/dimension-evidence enums; conservative HTTP(S) normalization; stable UUIDv5 identities; launch overrides do not change source identity | `domain/catalog.py`, `test_catalog_model.py` |
 | parent-6 | Validated review drafts, home-slot DTOs, review enums/service protocols, launch roles/outcomes/ownership contexts and typed errors | `domain/reviews.py`, `domain/sessions.py`, `domain/errors.py`, `test_review_model.py` |
 | parent-8 | Private XDG/file initialization, WAL/FULL/foreign-key/busy settings, caller-owned transactions and thread confinement | `storage/database.py`, `integration/test_database.py` |
-| parent-9 | Version-1 provider/game/import-history tables with source identity uniqueness, restricted foreign keys, UUID/rating/revision/dimension/JSON constraints and migration registry | `storage/schema/`, `integration/test_catalog_schema.py` |
+| parent-9 | Version-1 provider/game/import-history tables with source identity uniqueness, restricted foreign keys, UUID/rating/revision/dimension/JSON constraints and migration registry | `storage/schema/v001_catalog.py`, `integration/test_catalog_schema.py` |
+| parent-10 | Version-2 home/history tables: positions 1–9, unique game assignment, exclusive game/legacy occupancy, delete-blocking trigger, role/outcome/started/ended invariants and indexed unfinished sessions | `storage/schema/v002_state.py`, `integration/test_state_schema.py` |
 | parent-21 | Both three-tap patterns, injected monotonic clock, configurable gap/window/cooldown, consumed matches, longest valid suffix, reset reasons and noise handling | `domain/gestures.py`, `test_gestures.py` |
 | parent-87 | Ordered/checksummed migration batches, UTC history, fail-closed schema validation, pre-upgrade SQLite backups and atomic schema/data/history upgrades | `storage/migrations.py`, `integration/test_migrations.py` |
 | parent-88 | Fault tests for corruption, read-only/full/locked writes, rollback, failed/interrupted/timed-out backups, history mismatch, symlinks and cross-thread misuse | `integration/test_storage_failures.py` |
-| parent-89 | Validated immutable provider/import DTOs; parameterized provider upsert and append-only import history; shared transaction/error boundary | `domain/catalog_metadata.py`, `storage/catalog_metadata.py`, `storage/_repository.py`, `integration/test_catalog_metadata.py` |
-| parent-90 | Complete immutable game records with parent/source fields, launch overrides, arbitrary JSON-object provenance, nullable rating, evidence and UTC timestamps; insert/get/list without hidden commits or review replacement | `domain/catalog_records.py`, `storage/catalog.py`, `integration/test_catalog_repository.py` |
+| parent-89 | Validated immutable provider/import DTOs; parameterized provider upsert and append-only import history; shared transaction/error boundary; flexible source adapters (legacy boolean orientation stays unknown; sizes require evidence) | `domain/catalog_metadata.py`, `storage/catalog_metadata.py`, `storage/_repository.py`, `integration/test_catalog_metadata.py` |
+| parent-90 | Complete immutable game records with parent/source fields, launch overrides, arbitrary JSON-object provenance, nullable rating, evidence and UTC timestamps; insert/get/list/source-refresh without hidden commits or review replacement | `domain/catalog_records.py`, `storage/catalog.py`, `integration/test_catalog_repository.py` |
+| parent-13 | Atomic/idempotent source import: flexible-shape source adapter, provider upserts, source-field-only refreshes, preserved parent decisions/tombstones, duplicate/unlisted-provider rejection, import-history reports | `storage/catalog_import.py`, `integration/test_catalog_import.py` |
+| parent-12 | Versioned `catalog/bootstrap.json` (109 games/14 providers) generated deterministically from the flexible discovery input with explicit unknown orientation, nullable dimensions carrying provider-level evidence (Gulli popup, Starfall design, Lumni inferred), self-checksum, and structural validation via `--check` (tampered checksum, duplicate identity, unknown provider) | `tools/prepare_catalog.py`, `catalog/bootstrap.json`, `unit/test_prepare_catalog.py` |
 
 Implementation paths are under `leo-kiosk/leo_kiosk/`; test files are under `leo-kiosk/tests/`, with unqualified earlier test filenames in `unit/`. Repositories persist data when explicitly called; no repository or database is opened by the unchanged launcher.
 
@@ -30,7 +33,7 @@ Implementation paths are under `leo-kiosk/leo_kiosk/`; test files are under `leo
 
 Executed in a project-local virtual environment using Python 3.14.8 and SQLite 3.54.0:
 
-- Unit/property/integration tests: **209 passed** (143 prior tests plus 66 catalog tests).
+- Unit/property/integration tests: **262 passed** (239 prior plus 23 bootstrap checks). Bootstrap checks cover deterministic regeneration, legacy-boolean→unknown orientation mapping, provider-level dimension evidence, `--check` tamper/duplicate/unknown-provider detection, and unmappable source rejection (unknown provider name, non-HTTP(S) URL, invalid type label, unattributed sizes on providers without a recorded evidence caveat). State checks cover position/uniqueness/exclusive-occupancy constraints, delete-blocked seeded rows and game identity, role/ownership matching, outcome/ended/started consistency, unfinished-session detection and reopen repeatability. Import checks cover fresh/updated/unchanged/reimported sources, preserved reviews and tombstones, unlisted providers, duplicate source identities and unchanged totals on invalid input.
 - Ruff lint/formatting: pass; lint also covers unchanged legacy scripts.
 - Strict mypy: pass for all 17 package source files.
 - Wheel build: pass; schema/repository modules are included and no mutable database/backup artifacts are packaged.
@@ -42,14 +45,14 @@ Reproduce with [development.md](development.md). No target-device or GTK integra
 ## Not yet complete
 
 - parent-2 platform audit, parent-3 touch portal spike and parent-4 libnm/iwd permission spike require actual target measurements. No assumptions have been recorded as passes.
-- Home/session tables, source audit/bootstrap/import, source-refresh upserts, review/selection transactions and the approved game-list service are pending.
+- Source audit and the versioned bootstrap asset are done (provenance/exclusions, `catalog/bootstrap.json` with self-checksum); the import service consumes source adapters and still needs wiring to bootstrap.json at startup plus review/selection transactions and the approved game-list service; home/session storage exists without repository wrappers.
 - Parent GTK screens, evdev integration, owned Firefox sessions, Wi-Fi controls and portal implementation are pending.
 - Repository `list_records()` is a source-record listing of all media types, not a playable/approved queue. It hides tombstones by default; explicit lookup does not restore a tombstone. Selection is not duplicated in the game table.
 - The production watcher still uses the old Down/Up shortcut until integration/cutover. No installer, root configuration, Wi-Fi service, polkit policy, input permissions or physical settings changed.
 
 ## Next independent slices
 
-- parent-10: add constrained home slots and launch/review history using the catalog schema.
+- parent-7: extract the GTK shell while retaining current behavior.
 - parent-11: audit available source records and provenance without freezing the source format.
 - parent-12/13: prepare a versioned bootstrap, verify idempotent SQLite import/reopen and fresh-install seeding, then optionally remove the original JSON and update references.
 - parent-7: extract the GTK shell while retaining current behavior.

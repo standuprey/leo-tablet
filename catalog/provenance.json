@@ -1,0 +1,947 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file": "web-games.json",
+    "sha256": "1dcf4dfeab345fa26be8ba5befd7a42dbe7bd67fbf66b5b68932e18685f1fd4e",
+    "format": "flexible; not a permanent contract",
+    "counts": {
+      "providers": 14,
+      "entries": 109,
+      "game": 93,
+      "video": 16,
+      "other": 0
+    }
+  },
+  "evidence_legend": {
+    "discovered": "URL/name from cataloging session; playback unverified",
+    "http_checked": "returned HTTP 200 during discovery; not proof of playable content",
+    "hub": "section/hub link; excluded from playable queue",
+    "dimensions": {
+      "verified": "measured on the provider page",
+      "inferred": "copied across provider items; not a per-item measurement",
+      "popup": "launcher window size; not game canvas"
+    }
+  },
+  "exclusions": [
+    {
+      "provider": "starfall",
+      "source_index": 6,
+      "name": "Fun to Read section",
+      "url": "https://www.starfall.com/h/fun-to-read/",
+      "reason": "Section page, not a single activity",
+      "eligible": false
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 5,
+      "name": "Games page entry",
+      "url": "https://www.sesamestreet.org/games?id=28033",
+      "reason": "Hub listing entry; individual id links kept but hub page is not a game",
+      "eligible": false
+    }
+  ],
+  "dimension_caveats": [
+    {
+      "provider": "gulli",
+      "scope": "all 43 items",
+      "evidence": "popup",
+      "note": "800x600/600x800 are launcher window sizes from Gulli's own code, not game canvas resolutions"
+    },
+    {
+      "provider": "lumni",
+      "scope": "sample",
+      "evidence": "inferred",
+      "note": "708x600 verified for one game only; others inferred"
+    },
+    {
+      "provider": "starfall",
+      "scope": "all 7 items",
+      "evidence": "design",
+      "note": "1024x768 verified for letter-a composition; letters assumed same design"
+    }
+  ],
+  "providers": {
+    "hugo-l-escargot": {
+      "entries": 0,
+      "note": "printables site; no web games"
+    },
+    "boukili": {
+      "entries": 0,
+      "note": "login-gated reading app; no catalog games"
+    }
+  },
+  "reconciliation": [
+    {
+      "provider": "pbs-kids",
+      "source_index": 0,
+      "name": "Daniel Tiger Miss Elaina Space Bots",
+      "url": "https://pbskids.org/games/play/daniel-tiger-miss-elaina-space-bots/2713595",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 1,
+      "name": "Dicey Escape",
+      "url": "https://pbskids.org/games/play/dicey-escape/1703203",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 2,
+      "name": "Elevator Antics",
+      "url": "https://pbskids.org/games/play/elevator-antics/1902621",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 3,
+      "name": "Lyla and Stu's Hairdos",
+      "url": "https://pbskids.org/games/play/lyla-and-stus-hairdos/1769066",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 4,
+      "name": "Race Car",
+      "url": "https://pbskids.org/games/play/race-car/105",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 5,
+      "name": "Rainbow Tree Treasures",
+      "url": "https://pbskids.org/games/play/rainbow-tree-treasures/2761169",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 6,
+      "name": "Reboot Rescue",
+      "url": "https://pbskids.org/games/play/reboot-rescue/2663516",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 7,
+      "name": "Riding with Rosie",
+      "url": "https://pbskids.org/games/play/riding-with-rosie/701859",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 8,
+      "name": "Rosie Travel",
+      "url": "https://pbskids.org/games/play/rosie-travel/2547490",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 9,
+      "name": "Speedy Delivery",
+      "url": "https://pbskids.org/games/play/speedy-delivery/246134",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 10,
+      "name": "Stu's Delivery Service",
+      "url": "https://pbskids.org/games/play/stus-delivery-service/1686643",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "pbs-kids",
+      "source_index": 11,
+      "name": "SWCBA Super Letter Race",
+      "url": "https://pbskids.org/games/play/swcba-super-letter-race/2565419",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 0,
+      "name": "Letter a activity",
+      "url": "https://www.starfall.com/h/abcs/letter-a/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 1,
+      "name": "Letter b activity",
+      "url": "https://www.starfall.com/h/abcs/letter-b/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 2,
+      "name": "Letter c activity",
+      "url": "https://www.starfall.com/h/abcs/letter-c/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 3,
+      "name": "Letter d activity",
+      "url": "https://www.starfall.com/h/abcs/letter-d/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 4,
+      "name": "Letter e activity",
+      "url": "https://www.starfall.com/h/abcs/letter-e/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 5,
+      "name": "Letter f activity",
+      "url": "https://www.starfall.com/h/abcs/letter-f/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "starfall",
+      "source_index": 6,
+      "name": "Fun to Read section",
+      "url": "https://www.starfall.com/h/fun-to-read/",
+      "type": "game",
+      "eligible": false
+    },
+    {
+      "provider": "abcya",
+      "source_index": 0,
+      "name": "Alphabet",
+      "url": "https://www.abcya.com/games/alphabet",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 1,
+      "name": "Counting Fish",
+      "url": "https://www.abcya.com/games/counting_fish",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 2,
+      "name": "Take A Trip",
+      "url": "https://www.abcya.com/games/take_a_trip",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 3,
+      "name": "Tangrams",
+      "url": "https://www.abcya.com/games/tangrams",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 4,
+      "name": "Make A Robot",
+      "url": "https://www.abcya.com/games/make_a_robot",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 5,
+      "name": "Food Groups",
+      "url": "https://www.abcya.com/games/food_groups",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 6,
+      "name": "Shapes Geometry Game",
+      "url": "https://www.abcya.com/games/shapes_geometry_game",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 7,
+      "name": "One Hundred Snowballs",
+      "url": "https://www.abcya.com/games/one_hundred_snowballs",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 8,
+      "name": "Connect The Dots Abc Order",
+      "url": "https://www.abcya.com/games/connect_the_dots_abc_order",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "abcya",
+      "source_index": 9,
+      "name": "Numerical Order",
+      "url": "https://www.abcya.com/games/numerical_order",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 0,
+      "name": "Critter Quest (direct game player)",
+      "url": "https://interactive.sesamestreet.org/games/prod/game-308-critter-quest/52b8883f81248894c0f6cf09bf085d0985fd7496/run/index.html",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 1,
+      "name": "Super Salad Diner (direct game player)",
+      "url": "https://interactive.sesamestreet.org/games/prod/242-super-salad-diner/5d4e5a685a2c494a0f39a39103c4838d27361ee5/run/index.html",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 2,
+      "name": "Cookie Gameshow (direct game player)",
+      "url": "https://interactive.sesamestreet.org/games/prod/271-cookie-gameshow/0d24d06556769ff33566a0b68580f00a6af98d62/run/index.html",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 3,
+      "name": "Dress Up (direct game player)",
+      "url": "https://interactive.sesamestreet.org/games/prod/214-dressup/c07d2f4ebb1d987239d3d181302d2432929269e1/run/indexSesame.html",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 4,
+      "name": "Supermarket Race (direct game player)",
+      "url": "https://interactive.sesamestreet.org/games/prod/game-414-supermarket-race/03513846a5abdc085737d80e08c067cb14eec050/run/index.html",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "sesame-street",
+      "source_index": 5,
+      "name": "Games page entry",
+      "url": "https://www.sesamestreet.org/games?id=28033",
+      "type": "game",
+      "eligible": false
+    },
+    {
+      "provider": "nat-geo-kids",
+      "source_index": 0,
+      "name": "Dung Beetle Derby",
+      "url": "https://kids.nationalgeographic.com/games/action-adventure/article/dung-beetle-derby",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "nat-geo-kids",
+      "source_index": 1,
+      "name": "Letter Predator",
+      "url": "https://kids.nationalgeographic.com/games/action-adventure/article/letter-predator",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "nat-geo-kids",
+      "source_index": 2,
+      "name": "Matching Animals",
+      "url": "https://kids.nationalgeographic.com/games/puzzles/article/matching-animals",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "nat-geo-kids",
+      "source_index": 3,
+      "name": "Matching Gemstones",
+      "url": "https://kids.nationalgeographic.com/games/puzzles/article/matching-gemstones",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "nat-geo-kids",
+      "source_index": 4,
+      "name": "Crack The Code 1",
+      "url": "https://kids.nationalgeographic.com/games/action-adventure/article/crack-the-code-1",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "code.org",
+      "source_index": 0,
+      "name": "Course 1 stage 3 puzzle 2 (block-coding game)",
+      "url": "https://studio.code.org/s/course1/stage/3/puzzle/2",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "code.org",
+      "source_index": 1,
+      "name": "Course 1 stage 4 puzzle 1 (block-coding game)",
+      "url": "https://studio.code.org/s/course1/stage/4/puzzle/1",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "mystery-science",
+      "source_index": 0,
+      "name": "Why Do Your Biceps and Triceps Muscles Need to Work in Pairs? (lesson video)",
+      "url": "https://mysteryscience.com/body/mystery-1/muscles-skeleton/59",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "mystery-science",
+      "source_index": 1,
+      "name": "What Makes a Roller Coaster Go Fast? (lesson video)",
+      "url": "https://mysteryscience.com/energy/mystery-4/energy-transfer-engineering/35",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "cosmic-kids-yoga",
+      "source_index": 0,
+      "name": "Cosmic Kids Yoga video",
+      "url": "https://www.youtube.com/watch?v=Q4fyzEm0bOQ",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "cosmic-kids-yoga",
+      "source_index": 1,
+      "name": "Cosmic Kids Yoga video",
+      "url": "https://www.youtube.com/watch?v=wUcqBo4Tbks",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "cosmic-kids-yoga",
+      "source_index": 2,
+      "name": "Cosmic Kids Yoga video",
+      "url": "https://www.youtube.com/watch?v=nNv2CqXigBg",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "cosmic-kids-yoga",
+      "source_index": 3,
+      "name": "Cosmic Kids Yoga video",
+      "url": "https://www.youtube.com/watch?v=2-dKLTcCdxg",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "cosmic-kids-yoga",
+      "source_index": 4,
+      "name": "Cosmic Kids Yoga video",
+      "url": "https://www.youtube.com/watch?v=y7o0cc-LtPE",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "cosmic-kids-yoga",
+      "source_index": 5,
+      "name": "Cosmic Kids Yoga video",
+      "url": "https://www.youtube.com/watch?v=T2Wltv2e4lA",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 0,
+      "name": "Adjectif Nom Ou Verbe",
+      "url": "https://www.lumni.fr/jeu/adjectif-nom-ou-verbe",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 1,
+      "name": "Chronos L Histoire En Jeu",
+      "url": "https://www.lumni.fr/jeu/chronos-l-histoire-en-jeu",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 2,
+      "name": "Desert Fleuve Ou Montagne",
+      "url": "https://www.lumni.fr/jeu/desert-fleuve-ou-montagne",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 3,
+      "name": "France Fleuve Montagne Ou Littoral",
+      "url": "https://www.lumni.fr/jeu/france-fleuve-montagne-ou-littoral",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 4,
+      "name": "France Region Ou Departement",
+      "url": "https://www.lumni.fr/jeu/france-region-ou-departement",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 5,
+      "name": "La Frise Chronologique",
+      "url": "https://www.lumni.fr/jeu/la-frise-chronologique",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 6,
+      "name": "La Scolarite En Anglais",
+      "url": "https://www.lumni.fr/jeu/la-scolarite-en-anglais",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 7,
+      "name": "La Transformation De La Matiere",
+      "url": "https://www.lumni.fr/jeu/la-transformation-de-la-matiere",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "lumni-enfance",
+      "source_index": 8,
+      "name": "Pourquoi change-t-on d'heure? (video)",
+      "url": "https://www.lumni.fr/video/pourquoi-change-t-on-d-heure",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "okoo",
+      "source_index": 0,
+      "name": "La Mutinerie Partie 1",
+      "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911128-la-mutinerie-partie-1.html",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "okoo",
+      "source_index": 1,
+      "name": "La Station Sans Retour",
+      "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911134-la-station-sans-retour.html",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "okoo",
+      "source_index": 2,
+      "name": "Le Mentor",
+      "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911140-le-mentor.html",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "okoo",
+      "source_index": 3,
+      "name": "Le Debrouillard",
+      "url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911155-le-debrouillard.html",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "tfo",
+      "source_index": 0,
+      "name": "Interstellaire Ella S2E1",
+      "url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-1/ma-haha-ggie/GP689926",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "tfo",
+      "source_index": 1,
+      "name": "Interstellaire Ella S2E3",
+      "url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-3/jour-de-neige/GP689934",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "tfo",
+      "source_index": 2,
+      "name": "Organisation Super Insolite S3E1",
+      "url": "https://www.tfo.org/episode/organisation-super-insolite/saison-3/episode-1/debuts-insolites/GP214365",
+      "type": "video",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 0,
+      "name": "Marsupilamis",
+      "url": "https://jeux.gulli.fr/marsupilamis-playtouch/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 1,
+      "name": "La Théorie du chaos",
+      "url": "https://jeux.gulli.fr/jurassicplaytouch/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 2,
+      "name": "La course enchantée ",
+      "url": "https://jeux.gulli.fr/unicorns-playtouch-new/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 3,
+      "name": "Puzzle Mania",
+      "url": "https://jeux.gulli.fr/louds-playtouch-new/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 4,
+      "name": "Coloriages",
+      "url": "https://jeux.gulli.fr/coloriage/03022025/index.html",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 5,
+      "name": "Un jeu et des BD",
+      "url": "https://jeux.gulli.fr/playtouch-sisters/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 6,
+      "name": "Les bulles enchantées",
+      "url": "https://jeux.gulli.fr/gabbyplaytouch/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 7,
+      "name": "Les poings de la destinée",
+      "url": "https://jeux.gulli.fr/kungfu-panda-playtouch/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 8,
+      "name": "Ennemis à gogo",
+      "url": "https://jeux.gulli.fr/totally-spies-playtouch/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 9,
+      "name": "La crèche à la maison",
+      "url": "https://jeux.gulli.fr/dad-armstrong-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 10,
+      "name": "Tous en rang",
+      "url": "https://jeux.gulli.fr/boygirl-armstrong-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 11,
+      "name": "Pestouille Puissance 3",
+      "url": "https://jeux.gulli.fr/sisters/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 12,
+      "name": "Les Loud s'alignent",
+      "url": "https://jeux.gulli.fr/louds-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 13,
+      "name": "Le royaume des lasagnes",
+      "url": "https://jeux.gulli.fr/garfield-armstrong-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 14,
+      "name": "Aventure souterraine",
+      "url": "https://jeux.gulli.fr/trollhunters-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 15,
+      "name": "La grande battle",
+      "url": "https://jeux.gulli.fr/bakugan-2-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 16,
+      "name": "L'Entraînement des Super-Héros",
+      "url": "https://jeux.gulli.fr/alvin-runner-french/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 17,
+      "name": "A l'aise fraise",
+      "url": "https://jeux.gulli.fr/molang/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 18,
+      "name": "Jurassic World - L'échappée des dinosaures",
+      "url": "https://jeux.gulli.fr/jurassic-World-lechappee-des-dinosaures/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 19,
+      "name": "L’héritage secret",
+      "url": "https://jeux.gulli.fr/jungle-run_transformers-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 20,
+      "name": "Papatte",
+      "url": "https://jeux.gulli.fr/PollyPocket-Papatte-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 21,
+      "name": "La part de monstre",
+      "url": "https://jeux.gulli.fr/MonsterHigh-Lapartdemonstre/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 22,
+      "name": "Libère-nous",
+      "url": "https://jeux.gulli.fr/babyshark/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 23,
+      "name": "Les Cornichons",
+      "url": "https://jeux.gulli.fr/armstrong-loud-2-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 24,
+      "name": "Coupe Coupe",
+      "url": "https://jeux.gulli.fr/razmoket/20231026-2/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 25,
+      "name": "Cafards en cuisine",
+      "url": "https://jeux.gulli.fr/whack-a-fish_oggy-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 26,
+      "name": "Le sauvetage des Pizzaïolos",
+      "url": "https://jeux.gulli.fr/armstrong-totally-spies-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 27,
+      "name": "L'attaque des moustiques mutants",
+      "url": "https://jeux.gulli.fr/armstrong-jamie-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 28,
+      "name": "Rendez-vous au Krusty Krab",
+      "url": "https://jeux.gulli.fr/bob-eponge-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 29,
+      "name": "Peux-tu attraper tous les Pokémon ?",
+      "url": "https://jeux.gulli.fr/pokemon-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 30,
+      "name": "Pas facile de laver son linge",
+      "url": "https://jeux.gulli.fr/alvin-armstrong-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 31,
+      "name": "Course vers le rocher de l'aigle",
+      "url": "https://jeux.gulli.fr/blaze-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 32,
+      "name": "Puissance Ultime",
+      "url": "https://jeux.gulli.fr/bakugan-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 33,
+      "name": "Barbie et la course aux gâteaux",
+      "url": "https://jeux.gulli.fr/barbie-2-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 34,
+      "name": "Le ranch de Lucky",
+      "url": "https://jeux.gulli.fr/spirit-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 35,
+      "name": "Trésor des dragons",
+      "url": "https://jeux.gulli.fr/dragons-2-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 36,
+      "name": "Chat perché",
+      "url": "https://jeux.gulli.fr/chat-potte-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 37,
+      "name": "Chevaliers du bac à sable",
+      "url": "https://jeux.gulli.fr/zig-et-sharko-3-web-new/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 38,
+      "name": "Pros du surf",
+      "url": "https://jeux.gulli.fr/zig-et-sharko-2-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 39,
+      "name": "Course de Dragons",
+      "url": "https://jeux.gulli.fr/dragons-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 40,
+      "name": "Métier de rêve",
+      "url": "https://jeux.gulli.fr/barbie-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 41,
+      "name": "Poppy et sa coiffure de folie",
+      "url": "https://jeux.gulli.fr/poppys-fr-web/",
+      "type": "game",
+      "eligible": true
+    },
+    {
+      "provider": "gulli",
+      "source_index": 42,
+      "name": "Super lanceur",
+      "url": "https://jeux.gulli.fr/zig-et-sharko-web/",
+      "type": "game",
+      "eligible": true
+    }
+  ]
+}

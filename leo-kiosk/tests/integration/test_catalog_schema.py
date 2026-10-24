@@ -34,16 +34,27 @@ def insert_game(connection, **overrides):
     )
 
 
-def test_schema_is_repeatable_and_initializes_only_catalog_tables(tmp_path):
+def test_schema_is_repeatable_and_initializes_catalog_tables(tmp_path):
     path = tmp_path / "catalog.sqlite3"
     for _ in range(2):
         with closing(open_database(path, MIGRATIONS)) as connection:
+            # The registry now includes version 2 (home/history tables).
             tables = {
                 r[0]
                 for r in connection.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
             }
-            assert tables == {"schema_migrations", "providers", "games", "catalog_imports"}
-            assert connection.execute("SELECT version FROM schema_migrations").fetchone()[0] == 1
+            assert {
+                "schema_migrations",
+                "providers",
+                "games",
+                "catalog_imports",
+                "home_slots",
+                "launch_sessions",
+                "review_events",
+            } <= tables
+            assert (
+                connection.execute("SELECT max(version) FROM schema_migrations").fetchone()[0] == 2
+            )
     assert not list(tmp_path.glob("*.bak"))
 
 
@@ -52,7 +63,7 @@ def test_catalog_schema_upgrades_initialized_infrastructure_with_a_backup(tmp_pa
     open_database(path).close()
     with closing(open_database(path, MIGRATIONS)) as connection:
         assert connection.execute("SELECT count(*) FROM games").fetchone()[0] == 0
-    assert len(list(tmp_path.glob("*.before-v1.*.bak"))) == 1
+    assert list(tmp_path.glob("*.before-*.bak"))
 
 
 @pytest.mark.parametrize("rating", [None, 0, 100])

@@ -1,8 +1,12 @@
-"""Pure volume-tap recognizer. No device access, signals or UI side effects."""
+"""Pure volume-tap recognizer. No device access, signals or UI side effects.
+
+Enabled patterns are context-owned: a Down/Up return exists for review trials
+and must never be enabled alongside Down/Down/Up, which it would match first.
+"""
 
 import math
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from enum import IntEnum, StrEnum
 
@@ -35,23 +39,73 @@ class GestureConfig:
                 raise ValueError(f"Invalid gesture timing: {name}")
 
 
-_PATTERNS = {
-    (VolumeKey.UP, VolumeKey.DOWN, VolumeKey.DOWN): GestureAction.ENTER_PARENT,
-    (VolumeKey.DOWN, VolumeKey.DOWN, VolumeKey.UP): GestureAction.RETURN,
-}
-_PREFIXES = {pattern[:length] for pattern in _PATTERNS for length in (1, 2)}
+# Default set: parent entry from the child surface and return from parent surfaces.
+UDD = (VolumeKey.UP, VolumeKey.DOWN, VolumeKey.DOWN)
+DDU = (VolumeKey.DOWN, VolumeKey.DOWN, VolumeKey.UP)
+DU = (VolumeKey.DOWN, VolumeKey.UP)
+
+DEFAULT_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
+    (UDD, GestureAction.ENTER_PARENT),
+    (DDU, GestureAction.RETURN),
+)
+REVIEW_TRIAL_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
+    # Exiting a game under review uses the short Down/Up return.
+    (DU, GestureAction.RETURN),
+)
 
 
 class GestureRecognizer:
     def __init__(
-        self, clock: Callable[[], float] = time.monotonic, config: GestureConfig | None = None
+        self,
+        clock: Callable[[], float] = time.monotonic,
+        config: GestureConfig | None = None,
+        patterns: Iterable[tuple[tuple[VolumeKey, ...], GestureAction]] = DEFAULT_PATTERNS,
     ) -> None:
         self.clock = clock
         self.config = config or GestureConfig()
+        self._patterns = self._validate(patterns)
         self._buffer: list[tuple[VolumeKey, float]] = []
         self._cooldown_until = -math.inf
         self._last_time: float | None = None
         self.last_reset_reason: str | None = None
+
+    @staticmethod
+    def _validate(
+        patterns: Iterable[tuple[tuple[VolumeKey, ...], GestureAction]],
+    ) -> tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...]:
+        ordered = tuple(patterns)
+        if not ordered:
+            raise ValueError("At least one gesture pattern is required")
+        seen: set[tuple[VolumeKey, ...]] = set()
+        for sequence, action in ordered:
+            if (
+                not isinstance(sequence, tuple)
+                or len(sequence) < 2  # A one-key pattern would swallow every volume tap.
+                or not all(type(key) is VolumeKey for key in sequence)
+                or not isinstance(action, GestureAction)
+            ):
+                raise ValueError("Patterns require VolumeKey sequences and GestureActions")
+            if sequence in seen:
+                raise ValueError("Duplicate gesture pattern")
+            seen.add(sequence)
+        # Ambiguity gate: no enabled pattern may be a prefix of another enabled
+        # pattern; the shorter would always win and shadow the longer. Note that
+        # DU and DDU are NOT ambiguous (they diverge at the second key), so both
+        # may coexist geometrically. Product-level separation — never enabling
+        # the short return outside review trials — is the adapter's contract.
+        for left in seen:
+            for right in seen:
+                if left != right and right[: len(left)] == left:
+                    raise ValueError(f"Ambiguous pattern set: {left} prefixes {right}")
+        return ordered
+
+    def use_patterns(self, patterns: Iterable[tuple[tuple[VolumeKey, ...], GestureAction]]) -> None:
+        """Swap context-owned pattern sets (callers reset explicitly if wanted)."""
+        self._patterns = self._validate(patterns)
+
+    @property
+    def patterns(self) -> tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...]:
+        return self._patterns
 
     def reset(self, reason: str) -> None:
         """Discard partial taps, but preserve cooldown across a route change."""
@@ -76,13 +130,17 @@ class GestureRecognizer:
         self._buffer = [(k, t) for k, t in self._buffer if now - t <= self.config.max_duration]
         self._buffer.append((key, now))
         keys = tuple(k for k, _ in self._buffer)
-        if keys in _PATTERNS:
-            action = _PATTERNS[keys]
+        actions = dict(self._patterns)
+        if keys in actions:
+            action = actions[keys]
             self.reset("matched")
             self._cooldown_until = now + self.config.cooldown
             return action
+        enabled_prefixes = {
+            pattern[:length] for pattern, _ in self._patterns for length in range(1, len(pattern))
+        }
         for index in range(len(keys)):
-            if keys[index:] in _PREFIXES:
+            if keys[index:] in enabled_prefixes:
                 self._buffer = self._buffer[index:]
                 break
         else:

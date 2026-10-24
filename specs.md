@@ -8,7 +8,7 @@ Repository baseline: `leo-kiosk/launcher.py` owns the nine legacy tiles and muta
 
 Behavior and assumptions:
 - **Up, Down, Down** enters a nine-grey-tile parent screen: **Review**, **Wifi**, **Exit** plus six disabled blanks. Exit returns to child home, never a console/logout. Retire the hidden five-tap exit and old Down/Up gesture.
-- **Down, Down, Up** stops child playback to home or a review trial to that exact game's editor. Portal return goes to Wifi. Use the full [navigation table](docs/parent-mode/architecture.md#7-navigation-and-volume-gestures), including unsaved-change guards.
+- **Down, Up** exits a game under review back to its editor; **Down, Down, Up** stops child playback to the child home or parent surfaces back to the child home. Portal return goes to Wifi. Use the full [navigation table](docs/parent-mode/architecture.md#7-navigation-and-volume-gestures), including unsaved-change guards.
 - Review status is **new/tested/reviewed/selected**; successful browser spawn means trial attempted, not proven playback. Selected is derived from occupying one of nine stable positions, not a separate flag. Keep existing legacy slots until explicitly replaced.
 - Editor: trimmed 1–80-character name, optional integer **0–100%** rating, Keep/Select draft choice and **Delete / Ok / Ok and see next**. Null differs from zero. Save metadata/selection atomically; soft-delete/unselect atomically; require occupant-aware replacement confirmation. Next follows a frozen queue, skips ineligible/deleted IDs and never wraps.
 - SQLite is the authoritative catalog and review store. `web-games.json` is a temporary discovery input, currently 14 providers and 109 entries (93 labeled games, 16 videos), not a fixed format or a required permanent file. It may be rearranged or removed after a verified import. Keep provenance/checksums and a versioned bootstrap asset for fresh installs; exclude confirmed hubs, retain videos separately and do not misreport inferred dimensions as measurements. No exact six-key JSON schema is required.
@@ -45,7 +45,7 @@ Execution contracts:
 - **Depends on:** none
 - **Model:** openai/gpt-6.1-sol
 - **Summary:** Record the actual tablet platform and recovery path
-- **Details:** Create docs/parent-mode/platform-audit.md with read-only measurements of GTK/GIR/Cage/Firefox/NM/iwd/SQLite versions and SQLite JSON-function availability, volume-device udev identity, compositor protocols, display scaling, current DHCP/DNS/supplicant ownership and leo permissions. Record physical/SSH recovery before any network migration; do not infer live state from README or run privileged changes. Verify: `python3 --version; cage -v; firefox --version; nmcli general status; systemctl is-active NetworkManager iwd; loginctl session-status; record unavailable commands explicitly`.
+- **Details:** Create docs/parent-mode/platform-audit.md with read-only measurements of GTK/GIR/Cage/Firefox/NM/iwd/SQLite versions, SQLite JSON-function availability and version-1 schema dependencies, volume-device udev identity, compositor protocols, display scaling, current DHCP/DNS/supplicant ownership and leo permissions. Record physical/SSH recovery before any network migration; do not infer live state from README or run privileged changes. Verify: `python3 --version; cage -v; firefox --version; nmcli general status; systemctl is-active NetworkManager iwd; loginctl session-status; record unavailable commands explicitly`.
 
 ### parent-3 (frontend)
 - **ID:** parent-3
@@ -145,7 +145,7 @@ Execution contracts:
 - **Depends on:** parent-5, parent-11, parent-90
 - **Model:** z-ai/glm-5.3-flash
 - **Summary:** Prepare a versioned bootstrap catalog without fixing the original source format
-- **Details:** Add tools/prepare_catalog.py, a versioned catalog/bootstrap.json and its validation schema for fresh installs. Adapt the available discovery source into provider/game DTO data with provenance/exclusions; use explicit unknown orientation and nullable dimensions, not false/zero placeholders. Preserve canonical source identity and unknown metadata. The bootstrap format may include any fields needed by SQLite; it is not the original six-key contract. Check it independently of the optional web-games.json after migration. Verify: `python3 tools/prepare_catalog.py --check; PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_prepare_catalog.py`.
+- **Details:** Add tools/prepare_catalog.py, a versioned catalog/bootstrap.json for fresh installs. Adapt the available discovery source into provider/game DTO data with provenance/exclusions; use explicit unknown orientation and nullable dimensions carrying provider-level evidence from catalog/provenance.json (Gulli popup, Starfall design, Lumni inferred), not false/zero placeholders. Preserve canonical source identity and unknown metadata; include a self-checksum verified by `--check` (tampered checksum, duplicate identity, unknown provider, structural gaps). The bootstrap format may include any fields needed by SQLite; it is not the original six-key contract. Check it independently of the optional web-games.json after migration. Verify: `python3 tools/prepare_catalog.py --check; PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_prepare_catalog.py`.
 
 ### parent-13 (backend)
 - **ID:** parent-13
@@ -234,8 +234,8 @@ Execution contracts:
 - **Difficulty:** medium
 - **Depends on:** parent-1
 - **Model:** z-ai/glm-5.3-flash
-- **Summary:** Implement the pure three-tap gesture recognizer
-- **Details:** Add domain/gestures.py accepting volume key-downs only: UDD enters parent, DDU returns. Use injected monotonic time, maximum 1-second gaps/2-second sequence, consumed matches and 500-ms cooldown. Ignore repeats/releases/unrelated keys, keep valid wrong-prefix suffixes and expose reset(reason). Old DU must not match; one event cannot belong to two emitted actions. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_gestures.py`.
+- **Summary:** Implement the pure context-owned gesture recognizer
+- **Details:** Add domain/gestures.py accepting volume key-downs only: UDD enters parent, DDU returns on child/parent/list/editor/Wifi/portal surfaces, and DU returns during review trials. Pattern sets are context-owned and swapped on route change; DU and DDU are geometrically compatible (they diverge at the second key) but must never be enabled simultaneously outside trials, because the short return would swallow ordinary volume adjustments. Use injected monotonic time, maximum 1-second gaps/2-second sequence, consumed matches and 500-ms cooldown. Ignore repeats/releases/unrelated keys, keep valid wrong-prefix suffixes and expose reset(reason). One event cannot belong to two emitted actions; reject empty, duplicate, single-key or prefix-ambiguous pattern sets. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_gestures.py`.
 
 ### parent-22 (backend)
 - **ID:** parent-22
@@ -325,7 +325,7 @@ Execution contracts:
 - **Depends on:** parent-7, parent-22, parent-29, parent-27
 - **Model:** deepseek/deepseek-v4-flash
 - **Summary:** Dispatch gestures while GTK or Firefox is foregrounded
-- **Details:** Add application-level input/navigation binding. UDD stops owned playback before parent home; DDU stops review trial before its editor or child activity before child home. Reset recognizer on route changes and restore the existing window after failures/exits; do not depend on GTK key focus or open duplicate windows. Test portal/dirty-editor cases using fake views. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/ui/test_gesture_routes.py`.
+- **Details:** Add application-level input/navigation binding. UDD stops owned playback before parent home; DDU stops child activity before child home; DU stops review trial before its editor. Pattern sets swap on route change so the short return is enabled only during trial playback. Reset recognizer on route changes and restore the existing window after failures/exits; do not depend on GTK key focus or open duplicate windows. Test portal/dirty-editor cases using fake views. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/ui/test_gesture_routes.py`.
 
 ### parent-31 (other)
 - **ID:** parent-31
@@ -385,7 +385,7 @@ Execution contracts:
 - **Depends on:** parent-34, parent-26, parent-27, parent-29
 - **Model:** deepseek/deepseek-v4-flash
 - **Summary:** Connect row trials to the correct review editor context
-- **Details:** Add review trial orchestration with immediate loading feedback and DDU instructions; block repeat taps while starting. Open the actual item URL and on gesture/natural exit/crash/timeout return the captured game/queue/outcome to the editor. Failed spawn leaves the list/retry state intact and does not mark tested. No automatic approval on return. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/ui/test_review_trial.py`.
+- **Details:** Add review trial orchestration with immediate loading feedback and DU return instructions; block repeat taps while starting. Open the actual item URL and on gesture/natural exit/crash/timeout return the captured game/queue/outcome to the editor. Failed spawn leaves the list/retry state intact and does not mark tested. No automatic approval on return. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/ui/test_review_trial.py`.
 
 ### parent-37 (frontend)
 - **ID:** parent-37
@@ -765,7 +765,7 @@ Execution contracts:
 - **Depends on:** parent-21, parent-23, parent-30, parent-28
 - **Model:** openai/gpt-6.1-sol
 - **Summary:** Verify noisy physical-input and timing behavior
-- **Details:** Add property tests for arbitrary volume/nonvolume streams, releases/repeats, wrong suffixes, gap/window boundaries, cooldown, route resets and suspend/hotplug. Use fake clock/fds and sanitized volume-only target fixtures; prove old DU never matches and a consumed event cannot emit another action. No live keyboard capture in CI. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_gesture_properties.py`.
+- **Details:** Add property tests for arbitrary volume/nonvolume streams, releases/repeats, wrong suffixes, gap/window boundaries, cooldown, route resets and suspend/hotplug. Use fake clock/fds and sanitized volume-only target fixtures; prove the short return only matches within the trial pattern set (never on the default set) and a consumed event cannot emit another action. No live keyboard capture in CI. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_gesture_properties.py`.
 
 ### parent-75 (other)
 - **ID:** parent-75
