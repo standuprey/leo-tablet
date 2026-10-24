@@ -100,7 +100,7 @@
       ],
       "paths": [
         "docs/parent-mode/dependencies.md",
-        "leo-kiosk/requirements-dev.txt"
+        "app/requirements-dev.txt"
       ],
       "steps": [
         "Map each selected runtime import to Arch packages and test the GIR namespaces Gtk 3.0, NM 1.0 and WebKit2 4.1.",
@@ -182,8 +182,8 @@
         "T003"
       ],
       "paths": [
-        "leo-kiosk/pyproject.toml",
-        "leo-kiosk/tests/conftest.py",
+        "app/pyproject.toml",
+        "app/tests/conftest.py",
         "docs/parent-mode/development.md"
       ],
       "steps": [
@@ -208,9 +208,9 @@
         "T006"
       ],
       "paths": [
-        "leo-kiosk/launcher.py",
-        "leo-kiosk/leo_kiosk/application.py",
-        "leo-kiosk/leo_kiosk/ui/window.py"
+        "app/launcher.py",
+        "app/leo_kiosk/application.py",
+        "app/leo_kiosk/ui/window.py"
       ],
       "steps": [
         "Move window construction and dependency setup into a package while preserving the current nine tile labels, commands, colors and time limits.",
@@ -235,8 +235,8 @@
         "T006"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/domain/models.py",
-        "leo-kiosk/tests/unit/test_models.py"
+        "app/leo_kiosk/domain/models.py",
+        "app/tests/unit/test_models.py"
       ],
       "steps": [
         "Define MediaType (0 other, 1 video, 2 game), review status, selection intent, launch role/outcome, network state and dimension-evidence enums.",
@@ -260,8 +260,8 @@
         "T008"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/storage/database.py",
-        "leo-kiosk/leo_kiosk/storage/migrations/001_initial.sql"
+        "app/leo_kiosk/storage/database.py",
+        "app/leo_kiosk/storage/migrations/001_initial.sql"
       ],
       "steps": [
         "Create the schema described in architecture section 6, parameterized connection setup, UTC timestamps and migration tracking. Enable foreign keys/WAL and a finite busy timeout.",
@@ -286,8 +286,8 @@
         "T009"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/storage/repositories.py",
-        "leo-kiosk/leo_kiosk/services/home.py"
+        "app/leo_kiosk/storage/repositories.py",
+        "app/leo_kiosk/services/home.py"
       ],
       "steps": [
         "Implement catalog/query, home-slot and launch-history repositories with parameterized SQL and DTO returns.",
@@ -372,8 +372,8 @@
         "T012"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/catalog.py",
-        "leo-kiosk/tests/integration/test_catalog_import.py"
+        "app/leo_kiosk/services/catalog.py",
+        "app/tests/integration/test_catalog_import.py"
       ],
       "steps": [
         "Validate an entire normalized source/manifest before opening the import transaction; emit added/updated/unchanged/excluded/error counts and checksum.",
@@ -399,8 +399,8 @@
         "T013"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/catalog.py",
-        "leo-kiosk/leo_kiosk/storage/repositories.py"
+        "app/leo_kiosk/services/catalog.py",
+        "app/leo_kiosk/storage/repositories.py"
       ],
       "steps": [
         "Derive selected/reviewed/tested/new in the documented precedence; keep deleted and launch failures as separate dimensions.",
@@ -425,8 +425,8 @@
         "T014"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/home.py",
-        "leo-kiosk/tests/unit/test_home_assignments.py"
+        "app/leo_kiosk/services/home.py",
+        "app/tests/unit/test_home_assignments.py"
       ],
       "steps": [
         "Expose transactional choose/replace/move/unselect operations over positions 1–9 and reject unreviewed/deleted/nongame entries.",
@@ -451,8 +451,8 @@
         "T015"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/reviews.py",
-        "leo-kiosk/tests/integration/test_review_transactions.py"
+        "app/leo_kiosk/services/reviews.py",
+        "app/tests/integration/test_review_transactions.py"
       ],
       "steps": [
         "Implement save_review with expected revision, name/rating validation, Keep/Select intent and optional slot operation in one transaction.",
@@ -477,8 +477,8 @@
         "T014"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/domain/review_queue.py",
-        "leo-kiosk/tests/unit/test_review_queue.py"
+        "app/leo_kiosk/domain/review_queue.py",
+        "app/tests/unit/test_review_queue.py"
       ],
       "steps": [
         "Snapshot the displayed eligible IDs on trial activation and store current index separately from search/sort widgets.",
@@ -503,8 +503,8 @@
         "T016"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/recovery.py",
-        "leo-kiosk/leo_kiosk/storage/repositories.py"
+        "app/leo_kiosk/services/recovery.py",
+        "app/leo_kiosk/storage/repositories.py"
       ],
       "steps": [
         "On startup mark unfinished historical launch rows abandoned and offer recovery of the most recent review trial; do not signal stored PIDs.",
@@ -529,8 +529,8 @@
         "T008"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/domain/gestures.py",
-        "leo-kiosk/tests/unit/test_gestures.py"
+        "app/leo_kiosk/domain/gestures.py",
+        "app/tests/unit/test_gestures.py"
       ],
       "steps": [
         "Implement Up/Down/Down and Down/Down/Up with rolling suffix handling, configurable gap/total window and consumed-sequence cooldown.",
@@ -555,7 +555,7 @@
         "T019"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/input.py"
+        "app/leo_kiosk/adapters/input.py"
       ],
       "steps": [
         "Enumerate evdev capabilities and open only configured devices exposing volume keys, using measured stable identity where available.",
@@ -580,7 +580,7 @@
         "T020"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/input.py"
+        "app/leo_kiosk/adapters/input.py"
       ],
       "steps": [
         "Attach pyudev input-device monitoring to GLib and reuse the same capability/identity filter on additions.",
@@ -605,8 +605,8 @@
         "T010"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/sessions.py",
-        "leo-kiosk/leo_kiosk/adapters/legacy_apps.py"
+        "app/leo_kiosk/services/sessions.py",
+        "app/leo_kiosk/adapters/legacy_apps.py"
       ],
       "steps": [
         "Replace unstructured self.proc state with a tokenized session object, launch role, return context, captured process group and explicit lifecycle phases.",
@@ -632,8 +632,8 @@
         "T022"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/firefox.py",
-        "leo-kiosk/tests/integration/test_firefox_adapter.py"
+        "app/leo_kiosk/adapters/firefox.py",
+        "app/tests/integration/test_firefox_adapter.py"
       ],
       "steps": [
         "Build validated argument arrays for kiosk/no-remote/new-instance/profile modes; choose native Wayland environment settings compatible with the installed version.",
@@ -661,7 +661,7 @@
         "T022"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/navigation.py"
+        "app/leo_kiosk/services/navigation.py"
       ],
       "steps": [
         "Represent all routes and their payloads explicitly; implement the architecture gesture/context transition table.",
@@ -687,7 +687,7 @@
         "T023"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/sessions.py"
+        "app/leo_kiosk/services/sessions.py"
       ],
       "steps": [
         "Add nonblocking process observation, deadlines, TERM then bounded KILL escalation and owned-group cleanup.",
@@ -714,8 +714,8 @@
         "T025"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/application.py",
-        "leo-kiosk/leo_kiosk/ui/window.py"
+        "app/leo_kiosk/application.py",
+        "app/leo_kiosk/ui/window.py"
       ],
       "steps": [
         "Connect InputMonitor actions to the controller, stopping owned playback before showing the target parent/child/review route.",
@@ -741,8 +741,8 @@
         "T025"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/sessions.py",
-        "leo-kiosk/leo_kiosk/application.py"
+        "app/leo_kiosk/services/sessions.py",
+        "app/leo_kiosk/application.py"
       ],
       "steps": [
         "Subscribe to logind sleep/resume notifications through Gio and reset gesture state/rescan input/refresh networking on wake.",
@@ -767,9 +767,9 @@
         "T027"
       ],
       "paths": [
-        "leo-kiosk/run.sh",
-        "leo-kiosk/backwatch.py",
-        "leo-kiosk/launcher.py",
+        "app/run.sh",
+        "app/backwatch.py",
+        "app/launcher.py",
         "README.md"
       ],
       "steps": [
@@ -796,8 +796,8 @@
         "T010"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/tile_grid.py",
-        "leo-kiosk/leo_kiosk/ui/styles.css"
+        "app/leo_kiosk/ui/tile_grid.py",
+        "app/leo_kiosk/ui/styles.css"
       ],
       "steps": [
         "Extract shared three-by-three geometry with homogeneous expansion, margins, spacing and large touch targets.",
@@ -823,7 +823,7 @@
         "T029"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/parent_home.py"
+        "app/leo_kiosk/ui/parent_home.py"
       ],
       "steps": [
         "Render grey Review/Wifi/Exit tiles followed by six blank disabled grey tiles and a Parent title.",
@@ -848,7 +848,7 @@
         "T030"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/review_list.py"
+        "app/leo_kiosk/ui/review_list.py"
       ],
       "steps": [
         "Build a touch-scrollable list with name, status badge, provider, optional rating and sanitized last-trial evidence.",
@@ -874,7 +874,7 @@
         "T031"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/review_list.py"
+        "app/leo_kiosk/ui/review_list.py"
       ],
       "steps": [
         "Add status/provider/search controls and default game-only eligibility, with optional separate video discovery filtering but no video launch feature.",
@@ -901,8 +901,8 @@
         "T032"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/review_list.py",
-        "leo-kiosk/leo_kiosk/services/reviews.py"
+        "app/leo_kiosk/ui/review_list.py",
+        "app/leo_kiosk/services/reviews.py"
       ],
       "steps": [
         "On row activation show loading/return-gesture guidance, launch the exact game URL and mark tested only after successful spawn.",
@@ -927,7 +927,7 @@
         "T029"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/keyboard.py"
+        "app/leo_kiosk/ui/keyboard.py"
       ],
       "steps": [
         "Implement Gtk.Editable-targeted insert/delete/cursor actions, layouts for names/passwords and numeric entry, and an explicit show/hide control.",
@@ -954,7 +954,7 @@
         "T034"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/review_editor.py"
+        "app/leo_kiosk/ui/review_editor.py"
       ],
       "steps": [
         "Render original/display names, editable 1–80 character name, optional rating with slider/numeric +/- controls and Keep/Select draft choice.",
@@ -980,8 +980,8 @@
         "T035"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/slot_picker.py",
-        "leo-kiosk/leo_kiosk/ui/review_editor.py"
+        "app/leo_kiosk/ui/slot_picker.py",
+        "app/leo_kiosk/ui/review_editor.py"
       ],
       "steps": [
         "Show nine numbered positions with current native/game occupant names and the current assignment when present.",
@@ -1009,7 +1009,7 @@
         "T036"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/review_editor.py"
+        "app/leo_kiosk/ui/review_editor.py"
       ],
       "steps": [
         "Add a fixed bottom action bar; Delete confirms tombstone/unselection, Ok saves and returns to list, Next saves then launches the frozen next ID.",
@@ -1036,8 +1036,8 @@
         "T037"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/review_editor.py",
-        "leo-kiosk/leo_kiosk/services/navigation.py"
+        "app/leo_kiosk/ui/review_editor.py",
+        "app/leo_kiosk/services/navigation.py"
       ],
       "steps": [
         "Track dirty drafts separately from persisted trial state and intercept back, parent gesture and page changes.",
@@ -1064,8 +1064,8 @@
         "T037"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/child_home.py",
-        "leo-kiosk/leo_kiosk/services/home.py"
+        "app/leo_kiosk/ui/child_home.py",
+        "app/leo_kiosk/services/home.py"
       ],
       "steps": [
         "Render all nine persisted slots, preserving native activity styles/commands and displaying selected games with parent names and deterministic colors.",
@@ -1093,7 +1093,7 @@
         "T039"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/diagnostics.py"
+        "app/leo_kiosk/ui/diagnostics.py"
       ],
       "steps": [
         "Render typed catalog/database/browser/input errors with Retry/Back and safe recovery choices, without resetting state.",
@@ -1118,8 +1118,8 @@
         "T008"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/wifi.py",
-        "leo-kiosk/tests/unit/test_wifi_state.py"
+        "app/leo_kiosk/services/wifi.py",
+        "app/tests/unit/test_wifi_state.py"
       ],
       "steps": [
         "Define device/AP/connection snapshots, radio/connectivity enums, request generations and cancellable backend operations.",
@@ -1144,7 +1144,7 @@
         "T041"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/networkmanager.py"
+        "app/leo_kiosk/adapters/networkmanager.py"
       ],
       "steps": [
         "Construct NM.Client, subscribe to service/device/radio/permission changes and translate them into immutable snapshots.",
@@ -1169,7 +1169,7 @@
         "T042"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/networkmanager.py"
+        "app/leo_kiosk/adapters/networkmanager.py"
       ],
       "steps": [
         "Use async request_scan and AP change signals with rate limiting and one outstanding scan per device.",
@@ -1193,7 +1193,7 @@
         "T042"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/secret_agent.py"
+        "app/leo_kiosk/adapters/secret_agent.py"
       ],
       "steps": [
         "Subclass/register NM.SecretAgentOld and map GetSecrets/CancelGetSecrets/save/delete callbacks to bounded parent credential requests.",
@@ -1219,8 +1219,8 @@
         "T044"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/adapters/networkmanager.py",
-        "leo-kiosk/leo_kiosk/services/wifi.py"
+        "app/leo_kiosk/adapters/networkmanager.py",
+        "app/leo_kiosk/services/wifi.py"
       ],
       "steps": [
         "Activate compatible saved connections or create validated user-restricted profiles for open/WPA2/supported WPA3 and hidden personal networks.",
@@ -1245,8 +1245,8 @@
         "T045"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/wifi.py",
-        "leo-kiosk/leo_kiosk/adapters/networkmanager.py"
+        "app/leo_kiosk/services/wifi.py",
+        "app/leo_kiosk/adapters/networkmanager.py"
       ],
       "steps": [
         "Track ownership of newly requested activations so Cancel can deactivate only that pending attempt.",
@@ -1272,8 +1272,8 @@
         "T045"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/wifi.py",
-        "leo-kiosk/leo_kiosk/adapters/networkmanager.py"
+        "app/leo_kiosk/services/wifi.py",
+        "app/leo_kiosk/adapters/networkmanager.py"
       ],
       "steps": [
         "Expose configured check availability/URI and NM unknown/none/limited/portal/full distinctly.",
@@ -1303,7 +1303,7 @@
         "T047"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/wifi.py"
+        "app/leo_kiosk/ui/wifi.py"
       ],
       "steps": [
         "Show radio state, accessible AP rows, signal/security/saved/active text, Scan and connection/disconnect/forget controls.",
@@ -1331,7 +1331,7 @@
         "T048"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/wifi_credentials.py"
+        "app/leo_kiosk/ui/wifi_credentials.py"
       ],
       "steps": [
         "Provide masked password entry/show toggle, Remember choice, hidden SSID/security form and open-network warning.",
@@ -1357,8 +1357,8 @@
         "T034"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/keyboard.py",
-        "leo-kiosk/leo_kiosk/ui/portal.py"
+        "app/leo_kiosk/ui/keyboard.py",
+        "app/leo_kiosk/ui/portal.py"
       ],
       "steps": [
         "Convert the successful prototype into a separate focused-webview input target using supported editing commands and capability checks.",
@@ -1386,7 +1386,7 @@
         "T050"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/portal.py"
+        "app/leo_kiosk/ui/portal.py"
       ],
       "steps": [
         "Create a fresh ephemeral WebKit context per connection workflow and load the administrator-configured HTTP entrypoint on explicit parent action.",
@@ -1414,8 +1414,8 @@
         "T051"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/ui/portal.py",
-        "leo-kiosk/leo_kiosk/services/wifi.py"
+        "app/leo_kiosk/ui/portal.py",
+        "app/leo_kiosk/services/wifi.py"
       ],
       "steps": [
         "Poll connectivity modestly while open, never reload/submit the form automatically, and show success with explicit Done.",
@@ -1442,7 +1442,7 @@
         "T046"
       ],
       "paths": [
-        "leo-kiosk/system/polkit/50-leo-network.rules",
+        "config/system/polkit/50-leo-network.rules",
         "docs/parent-mode/permissions.md"
       ],
       "steps": [
@@ -1470,7 +1470,7 @@
         "T047"
       ],
       "paths": [
-        "leo-kiosk/system/networkmanager/leo-iwd.conf",
+        "config/system/networkmanager/leo-iwd.conf",
         "docs/parent-mode/network-provisioning.md"
       ],
       "steps": [
@@ -1499,7 +1499,7 @@
         "T052"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/services/wifi.py"
+        "app/leo_kiosk/services/wifi.py"
       ],
       "steps": [
         "Map common NM reasons into stable errors: authentication, authorization, no device, rfkill, DHCP/DNS, scan throttle and unsupported security.",
@@ -1528,8 +1528,8 @@
         "T018"
       ],
       "paths": [
-        "leo-kiosk/tests/unit/test_catalog_properties.py",
-        "leo-kiosk/tests/integration/test_review_transactions.py"
+        "app/tests/unit/test_catalog_properties.py",
+        "app/tests/integration/test_review_transactions.py"
       ],
       "steps": [
         "Add property/model-based command sequences for import/test/review/select/move/delete/reimport and compare derived state to a small reference model.",
@@ -1557,8 +1557,8 @@
         "T027"
       ],
       "paths": [
-        "leo-kiosk/tests/unit/test_gesture_properties.py",
-        "leo-kiosk/tests/integration/test_input_adapter.py"
+        "app/tests/unit/test_gesture_properties.py",
+        "app/tests/integration/test_input_adapter.py"
       ],
       "steps": [
         "Use Hypothesis/fake clock to generate noisy sequences, releases/repeats, timing boundaries, resets and cooldowns.",
@@ -1588,7 +1588,7 @@
         "T039"
       ],
       "paths": [
-        "leo-kiosk/tests/integration/test_sessions.py"
+        "app/tests/integration/test_sessions.py"
       ],
       "steps": [
         "Create controlled child/descendant fixtures, including ignored TERM and immediate exit, to verify group cleanup and token ownership.",
@@ -1618,8 +1618,8 @@
         "T055"
       ],
       "paths": [
-        "leo-kiosk/tests/integration/test_networkmanager.py",
-        "leo-kiosk/tests/fixtures/networkmanager.py"
+        "app/tests/integration/test_networkmanager.py",
+        "app/tests/fixtures/networkmanager.py"
       ],
       "steps": [
         "Use python-dbusmock with custom NM AP/secret/connectivity scenarios on an isolated test bus; never target the host system bus.",
@@ -1646,8 +1646,8 @@
         "T059"
       ],
       "paths": [
-        "leo-kiosk/tests/fixtures/portal_server.py",
-        "leo-kiosk/tests/ui/test_portal.py"
+        "app/tests/fixtures/portal_server.py",
+        "app/tests/ui/test_portal.py"
       ],
       "steps": [
         "Serve a local HTTP redirect/login fixture, separate iframe origin, popup case and HTTPS error case; drive online transition through the fake NM backend.",
@@ -1679,7 +1679,7 @@
         "T052"
       ],
       "paths": [
-        "leo-kiosk/tests/ui/test_parent_workflows.py"
+        "app/tests/ui/test_parent_workflows.py"
       ],
       "steps": [
         "Automate widget/controller interactions for parent entry/Exit, row trial, review edits, replacement, deletion, next queue, filters and errors with fake adapters.",
@@ -1705,8 +1705,8 @@
         "T041"
       ],
       "paths": [
-        "leo-kiosk/leo_kiosk/diagnostics.py",
-        "leo-kiosk/run.sh"
+        "app/leo_kiosk/diagnostics.py",
+        "app/run.sh"
       ],
       "steps": [
         "Use standard logging with component/event/session IDs, sanitized reason codes and no credential/URL-query/general input logging.",
@@ -1736,8 +1736,8 @@
         "T062"
       ],
       "paths": [
-        "leo-kiosk/install-kiosk.sh",
-        "leo-kiosk/run.sh"
+        "install-kiosk.sh",
+        "app/run.sh"
       ],
       "steps": [
         "Install package directories/assets/catalog and validated runtime packages rather than only the two original Python files.",

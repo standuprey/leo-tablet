@@ -6,7 +6,7 @@ The feature is **functional for game trials; not yet deployed to the tablet**. T
 
 | Task | Implemented scope | Files |
 |---|---|---|
-| parent-1 | Editable Python package, development dependencies, pytest/Ruff/mypy configuration, temporary storage/D-Bus isolation, network guards, inert clock/process fixtures and explicit hardware/display opt-ins | `leo-kiosk/pyproject.toml`, `leo-kiosk/tests/conftest.py`, `test_harness.py`, `.gitignore` |
+| parent-1 | Editable Python package, development dependencies, pytest/Ruff/mypy configuration, temporary storage/D-Bus isolation, network guards, inert clock/process fixtures and explicit hardware/display opt-ins | `app/pyproject.toml`, `app/tests/conftest.py`, `test_harness.py`, `.gitignore` |
 | parent-5 | Immutable catalog values; media/orientation/dimension-evidence enums; conservative HTTP(S) normalization; stable UUIDv5 identities; launch overrides do not change source identity | `domain/catalog.py`, `test_catalog_model.py` |
 | parent-6 | Validated review drafts, home-slot DTOs, review enums/service protocols, launch roles/outcomes/ownership contexts and typed errors | `domain/reviews.py`, `domain/sessions.py`, `domain/errors.py`, `test_review_model.py` |
 | parent-8 | Private XDG/file initialization, WAL/FULL/foreign-key/busy settings, caller-owned transactions and thread confinement | `storage/database.py`, `integration/test_database.py` |
@@ -27,7 +27,7 @@ The feature is **functional for game trials; not yet deployed to the tablet**. T
 | parent-33 | Grey parent menu (Review/Wifi/Exit active, six blanks) with retro amber-on-dark styling; Exit navigates, never quits the loop | `ui/parent_home.py`, `ui/test_parent_home.py` |
 | parent-22 | Volume input monitor: evdev sources (capability-filtered), GLib fd watches, pump-based event drain, typed scan errors; verified end-to-end through GLib using synthetic input_event pipes | `adapters/input.py`, `unit/test_input_monitor.py` |
 | Wiring (part of composition) | Parent mode reachable in the running window: stack pages (child/parent/review/wifi placeholders), gesture dispatch through the navigation controller, Exit returns to child home; gestures ignored while an app is foregrounded | `application.py`, `ui/window.py` (attach_pages/show_page), `ui/test_parent_wiring.py` |
-Implementation paths are under `leo-kiosk/leo_kiosk/`; test files are under `leo-kiosk/tests/`, with unqualified earlier test filenames in `unit/`. Repositories persist data when explicitly called; no repository or database is opened by the unchanged launcher.
+Implementation paths are under `app/leo_kiosk/`; test files are under `app/tests/`, with unqualified earlier test filenames in `unit/`. Repositories persist data when explicitly called; no repository or database is opened by the unchanged launcher.
 | parent-14 | Catalog query service: status derivation (new/tested/reviewed/selected derived from slots), game-only eligibility, deterministic ordering, evidence labels | `services/catalog.py`, `unit/test_catalog_service.py` |
 | Startup import | `catalog/bootstrap.json` loaded through a checksum-gated source adapter at startup; storage failure degrades to legacy tiles only | `adapters/catalog_source.py`, `application.py` |
 | parent-23/24 | Private per-trial Firefox profiles (0700, kiosk user.js prefs, sandbox/TLS untouched, persistent child profile) and argv builder (no-remote/new-instance/profile/kiosk, HTTP(S)-only) | `adapters/browser_profiles.py`, `adapters/firefox.py`, `unit/test_trial_sessions.py` |

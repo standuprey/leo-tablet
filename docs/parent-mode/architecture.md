@@ -36,11 +36,11 @@ These defaults are explicit so a developer does not have to invent product behav
 
 Inspected files:
 
-- `leo-kiosk/launcher.py`: one GTK3 window, nine configurable tiles, `subprocess.Popen`, a time limit, and a hidden parent-exit corner.
-- `leo-kiosk/backwatch.py`: raw Linux input parsing; watches every input device, recognizes Down then Up, and kills the group in `.app-pid`.
-- `leo-kiosk/run.sh`: starts backwatch separately, then execs the launcher.
-- `leo-kiosk/tiles.json`: nine native/local activities and their existing time limits.
-- `leo-kiosk/install-kiosk.sh`: Arch package installation, copying individual files, input-group membership, and greetd/Cage setup.
+- `app/launcher.py`: one GTK3 window, nine configurable tiles, `subprocess.Popen`, a time limit, and a hidden parent-exit corner.
+- `app/backwatch.py`: raw Linux input parsing; watches every input device, recognizes Down then Up, and kills the group in `.app-pid`.
+- `app/run.sh`: starts backwatch separately, then execs the launcher.
+- `config/tiles.json`: nine native/local activities and their existing time limits.
+- `install-kiosk.sh`: Arch package installation, copying individual files, input-group membership, and greetd/Cage setup.
 - `README.md`: reports setup using `nmtui`; this suggests NetworkManager was used, but does **not** verify the tablet's current networking backend.
 - `web-games.json`: already saved at the project root. Fourteen provider groups, **109 items: 93 labeled game, 16 video**. It is an input catalog, not proof that every entry is an actual, playable single game.
 
@@ -103,7 +103,7 @@ Portal: WebKitGTK isolated network context -> HTTP login redirect -> HTTPS login
 ### Modules and allowed dependencies
 
 ```text
-leo-kiosk/
+app/
   launcher.py                     # small application entry point
   leo_kiosk/
     application.py                # construction, GLib lifecycle, cleanup

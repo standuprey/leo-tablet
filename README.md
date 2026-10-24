@@ -2,12 +2,14 @@
 
 A fullscreen picture-tile home screen for a 5-year-old, running on Arch Linux with the `cage` kiosk compositor.
 
-## What's in this folder
-| File | What it is |
+## Repository layout
+| Path | What it is |
 |---|---|
-| `launcher.py` | Fullscreen GTK3 home screen with big picture tiles |
-| `tiles.json` | The tiles: label, color, command, time limit (minutes) |
+| `app/` | The Python app: `pyproject.toml`, `leo_kiosk/` package, `tests/`, plus the legacy `launcher.py`, `backwatch.py`, `run.sh` |
+| `config/` | Files installed onto the tablet: `tiles.json` (the tiles), `logind-power.conf`, `sleep-power.conf`, `90-leotablet-typecover.rules` |
+| `docs/` | `parent-mode/` architecture, backlog and status docs; `specs.md` |
 | `install-kiosk.sh` | Installs packages, copies the files, makes content folders, sets up greetd auto-login |
+| `catalog/`, `tools/`, `web-games.json` | Game-catalog discovery data and the import tool |
 | `voices/` | Optional: record Papa saying each word as `<tile id>.wav` (e.g. `draw.wav`); played on tap |
 
 ## How it behaves
@@ -28,7 +30,7 @@ The admin user's key (`id_ed25519`) is authorized on the tablet, so no password 
 ```
 rsync -av --exclude .venv --exclude .git --exclude '__pycache__' \
   ~/Projects/leo-tablet/ standup@192.168.1.186:leo-kiosk/
-ssh standup@192.168.1.186 'cd ~/leo-kiosk/leo-kiosk && sudo ./install-kiosk.sh'
+ssh standup@192.168.1.186 'cd ~/leo-kiosk && sudo ./install-kiosk.sh'
 ```
 The installer deploys from its own directory to the runtime location `/home/leo/kiosk/` and writes a `deploy-manifest` there, so the running version can always be identified.
 

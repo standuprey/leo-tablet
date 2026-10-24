@@ -169,7 +169,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** other
 - **Dependencies:** T002
-- **Files/outputs:** `docs/parent-mode/dependencies.md`, `leo-kiosk/requirements-dev.txt`
+- **Files/outputs:** `docs/parent-mode/dependencies.md`, `app/requirements-dev.txt`
 
 **Implementation steps**
 
@@ -241,7 +241,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** other
 - **Dependencies:** T003
-- **Files/outputs:** `leo-kiosk/pyproject.toml`, `leo-kiosk/tests/conftest.py`, `docs/parent-mode/development.md`
+- **Files/outputs:** `app/pyproject.toml`, `app/tests/conftest.py`, `docs/parent-mode/development.md`
 
 **Implementation steps**
 
@@ -265,7 +265,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T006
-- **Files/outputs:** `leo-kiosk/launcher.py`, `leo-kiosk/leo_kiosk/application.py`, `leo-kiosk/leo_kiosk/ui/window.py`
+- **Files/outputs:** `app/launcher.py`, `app/leo_kiosk/application.py`, `app/leo_kiosk/ui/window.py`
 
 **Implementation steps**
 
@@ -287,7 +287,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T001, T006
-- **Files/outputs:** `leo-kiosk/leo_kiosk/domain/models.py`, `leo-kiosk/tests/unit/test_models.py`
+- **Files/outputs:** `app/leo_kiosk/domain/models.py`, `app/tests/unit/test_models.py`
 
 **Implementation steps**
 
@@ -309,7 +309,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T008
-- **Files/outputs:** `leo-kiosk/leo_kiosk/storage/database.py`, `leo-kiosk/leo_kiosk/storage/migrations/001_initial.sql`
+- **Files/outputs:** `app/leo_kiosk/storage/database.py`, `app/leo_kiosk/storage/migrations/001_initial.sql`
 
 **Implementation steps**
 
@@ -332,7 +332,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T009
-- **Files/outputs:** `leo-kiosk/leo_kiosk/storage/repositories.py`, `leo-kiosk/leo_kiosk/services/home.py`
+- **Files/outputs:** `app/leo_kiosk/storage/repositories.py`, `app/leo_kiosk/services/home.py`
 
 **Implementation steps**
 
@@ -403,7 +403,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T010, T012
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/catalog.py`, `leo-kiosk/tests/integration/test_catalog_import.py`
+- **Files/outputs:** `app/leo_kiosk/services/catalog.py`, `app/tests/integration/test_catalog_import.py`
 
 **Implementation steps**
 
@@ -426,7 +426,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T010, T013
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/catalog.py`, `leo-kiosk/leo_kiosk/storage/repositories.py`
+- **Files/outputs:** `app/leo_kiosk/services/catalog.py`, `app/leo_kiosk/storage/repositories.py`
 
 **Implementation steps**
 
@@ -448,7 +448,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T010, T014
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/home.py`, `leo-kiosk/tests/unit/test_home_assignments.py`
+- **Files/outputs:** `app/leo_kiosk/services/home.py`, `app/tests/unit/test_home_assignments.py`
 
 **Implementation steps**
 
@@ -471,7 +471,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T015
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/reviews.py`, `leo-kiosk/tests/integration/test_review_transactions.py`
+- **Files/outputs:** `app/leo_kiosk/services/reviews.py`, `app/tests/integration/test_review_transactions.py`
 
 **Implementation steps**
 
@@ -494,7 +494,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T014
-- **Files/outputs:** `leo-kiosk/leo_kiosk/domain/review_queue.py`, `leo-kiosk/tests/unit/test_review_queue.py`
+- **Files/outputs:** `app/leo_kiosk/domain/review_queue.py`, `app/tests/unit/test_review_queue.py`
 
 **Implementation steps**
 
@@ -516,7 +516,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T009, T016
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/recovery.py`, `leo-kiosk/leo_kiosk/storage/repositories.py`
+- **Files/outputs:** `app/leo_kiosk/services/recovery.py`, `app/leo_kiosk/storage/repositories.py`
 
 **Implementation steps**
 
@@ -541,7 +541,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T008
-- **Files/outputs:** `leo-kiosk/leo_kiosk/domain/gestures.py`, `leo-kiosk/tests/unit/test_gestures.py`
+- **Files/outputs:** `app/leo_kiosk/domain/gestures.py`, `app/tests/unit/test_gestures.py`
 
 **Implementation steps**
 
@@ -563,7 +563,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T002, T019
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/input.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/input.py`
 
 **Implementation steps**
 
@@ -586,7 +586,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T020
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/input.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/input.py`
 
 **Implementation steps**
 
@@ -608,7 +608,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T008, T010
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/sessions.py`, `leo-kiosk/leo_kiosk/adapters/legacy_apps.py`
+- **Files/outputs:** `app/leo_kiosk/services/sessions.py`, `app/leo_kiosk/adapters/legacy_apps.py`
 
 **Implementation steps**
 
@@ -631,7 +631,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T003, T022
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/firefox.py`, `leo-kiosk/tests/integration/test_firefox_adapter.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/firefox.py`, `app/tests/integration/test_firefox_adapter.py`
 
 **Implementation steps**
 
@@ -655,7 +655,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T007, T017, T022
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/navigation.py`
+- **Files/outputs:** `app/leo_kiosk/services/navigation.py`
 
 **Implementation steps**
 
@@ -678,7 +678,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T022, T023
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/sessions.py`
+- **Files/outputs:** `app/leo_kiosk/services/sessions.py`
 
 **Implementation steps**
 
@@ -701,7 +701,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T020, T024, T025
-- **Files/outputs:** `leo-kiosk/leo_kiosk/application.py`, `leo-kiosk/leo_kiosk/ui/window.py`
+- **Files/outputs:** `app/leo_kiosk/application.py`, `app/leo_kiosk/ui/window.py`
 
 **Implementation steps**
 
@@ -724,7 +724,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T021, T025
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/sessions.py`, `leo-kiosk/leo_kiosk/application.py`
+- **Files/outputs:** `app/leo_kiosk/services/sessions.py`, `app/leo_kiosk/application.py`
 
 **Implementation steps**
 
@@ -746,7 +746,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** other
 - **Dependencies:** T026, T027
-- **Files/outputs:** `leo-kiosk/run.sh`, `leo-kiosk/backwatch.py`, `leo-kiosk/launcher.py`, `README.md`
+- **Files/outputs:** `app/run.sh`, `app/backwatch.py`, `app/launcher.py`, `README.md`
 
 **Implementation steps**
 
@@ -771,7 +771,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** frontend
 - **Dependencies:** T007, T010
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/tile_grid.py`, `leo-kiosk/leo_kiosk/ui/styles.css`
+- **Files/outputs:** `app/leo_kiosk/ui/tile_grid.py`, `app/leo_kiosk/ui/styles.css`
 
 **Implementation steps**
 
@@ -793,7 +793,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** frontend
 - **Dependencies:** T001, T024, T029
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/parent_home.py`
+- **Files/outputs:** `app/leo_kiosk/ui/parent_home.py`
 
 **Implementation steps**
 
@@ -815,7 +815,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T014, T030
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/review_list.py`
+- **Files/outputs:** `app/leo_kiosk/ui/review_list.py`
 
 **Implementation steps**
 
@@ -838,7 +838,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** frontend
 - **Dependencies:** T017, T031
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/review_list.py`
+- **Files/outputs:** `app/leo_kiosk/ui/review_list.py`
 
 **Implementation steps**
 
@@ -860,7 +860,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T023, T025, T026, T032
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/review_list.py`, `leo-kiosk/leo_kiosk/services/reviews.py`
+- **Files/outputs:** `app/leo_kiosk/ui/review_list.py`, `app/leo_kiosk/services/reviews.py`
 
 **Implementation steps**
 
@@ -882,7 +882,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T004, T029
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/keyboard.py`
+- **Files/outputs:** `app/leo_kiosk/ui/keyboard.py`
 
 **Implementation steps**
 
@@ -905,7 +905,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T016, T031, T034
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/review_editor.py`
+- **Files/outputs:** `app/leo_kiosk/ui/review_editor.py`
 
 **Implementation steps**
 
@@ -927,7 +927,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T015, T029, T035
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/slot_picker.py`, `leo-kiosk/leo_kiosk/ui/review_editor.py`
+- **Files/outputs:** `app/leo_kiosk/ui/slot_picker.py`, `app/leo_kiosk/ui/review_editor.py`
 
 **Implementation steps**
 
@@ -950,7 +950,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T016, T017, T033, T036
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/review_editor.py`
+- **Files/outputs:** `app/leo_kiosk/ui/review_editor.py`
 
 **Implementation steps**
 
@@ -973,7 +973,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** frontend
 - **Dependencies:** T024, T035, T037
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/review_editor.py`, `leo-kiosk/leo_kiosk/services/navigation.py`
+- **Files/outputs:** `app/leo_kiosk/ui/review_editor.py`, `app/leo_kiosk/services/navigation.py`
 
 **Implementation steps**
 
@@ -995,7 +995,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T015, T023, T029, T037
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/child_home.py`, `leo-kiosk/leo_kiosk/services/home.py`
+- **Files/outputs:** `app/leo_kiosk/ui/child_home.py`, `app/leo_kiosk/services/home.py`
 
 **Implementation steps**
 
@@ -1018,7 +1018,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** frontend
 - **Dependencies:** T018, T033, T038, T039
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/diagnostics.py`
+- **Files/outputs:** `app/leo_kiosk/ui/diagnostics.py`
 
 **Implementation steps**
 
@@ -1042,7 +1042,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T005, T008
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/wifi.py`, `leo-kiosk/tests/unit/test_wifi_state.py`
+- **Files/outputs:** `app/leo_kiosk/services/wifi.py`, `app/tests/unit/test_wifi_state.py`
 
 **Implementation steps**
 
@@ -1064,7 +1064,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T003, T041
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/networkmanager.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/networkmanager.py`
 
 **Implementation steps**
 
@@ -1087,7 +1087,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T042
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/networkmanager.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/networkmanager.py`
 
 **Implementation steps**
 
@@ -1109,7 +1109,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T042
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/secret_agent.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/secret_agent.py`
 
 **Implementation steps**
 
@@ -1132,7 +1132,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T043, T044
-- **Files/outputs:** `leo-kiosk/leo_kiosk/adapters/networkmanager.py`, `leo-kiosk/leo_kiosk/services/wifi.py`
+- **Files/outputs:** `app/leo_kiosk/adapters/networkmanager.py`, `app/leo_kiosk/services/wifi.py`
 
 **Implementation steps**
 
@@ -1155,7 +1155,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T045
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/wifi.py`, `leo-kiosk/leo_kiosk/adapters/networkmanager.py`
+- **Files/outputs:** `app/leo_kiosk/services/wifi.py`, `app/leo_kiosk/adapters/networkmanager.py`
 
 **Implementation steps**
 
@@ -1178,7 +1178,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** backend
 - **Dependencies:** T042, T045
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/wifi.py`, `leo-kiosk/leo_kiosk/adapters/networkmanager.py`
+- **Files/outputs:** `app/leo_kiosk/services/wifi.py`, `app/leo_kiosk/adapters/networkmanager.py`
 
 **Implementation steps**
 
@@ -1201,7 +1201,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T030, T034, T041, T043, T046, T047
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/wifi.py`
+- **Files/outputs:** `app/leo_kiosk/ui/wifi.py`
 
 **Implementation steps**
 
@@ -1224,7 +1224,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T034, T044, T045, T048
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/wifi_credentials.py`
+- **Files/outputs:** `app/leo_kiosk/ui/wifi_credentials.py`
 
 **Implementation steps**
 
@@ -1247,7 +1247,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T004, T034
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/keyboard.py`, `leo-kiosk/leo_kiosk/ui/portal.py`
+- **Files/outputs:** `app/leo_kiosk/ui/keyboard.py`, `app/leo_kiosk/ui/portal.py`
 
 **Implementation steps**
 
@@ -1270,7 +1270,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T003, T024, T047, T050
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/portal.py`
+- **Files/outputs:** `app/leo_kiosk/ui/portal.py`
 
 **Implementation steps**
 
@@ -1293,7 +1293,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** frontend
 - **Dependencies:** T026, T047, T048, T051
-- **Files/outputs:** `leo-kiosk/leo_kiosk/ui/portal.py`, `leo-kiosk/leo_kiosk/services/wifi.py`
+- **Files/outputs:** `app/leo_kiosk/ui/portal.py`, `app/leo_kiosk/services/wifi.py`
 
 **Implementation steps**
 
@@ -1316,7 +1316,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T005, T042, T046
-- **Files/outputs:** `leo-kiosk/system/polkit/50-leo-network.rules`, `docs/parent-mode/permissions.md`
+- **Files/outputs:** `config/system/polkit/50-leo-network.rules`, `docs/parent-mode/permissions.md`
 
 **Implementation steps**
 
@@ -1339,7 +1339,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T002, T005, T047
-- **Files/outputs:** `leo-kiosk/system/networkmanager/leo-iwd.conf`, `docs/parent-mode/network-provisioning.md`
+- **Files/outputs:** `config/system/networkmanager/leo-iwd.conf`, `docs/parent-mode/network-provisioning.md`
 
 **Implementation steps**
 
@@ -1363,7 +1363,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** backend
 - **Dependencies:** T046, T047, T052
-- **Files/outputs:** `leo-kiosk/leo_kiosk/services/wifi.py`
+- **Files/outputs:** `app/leo_kiosk/services/wifi.py`
 
 **Implementation steps**
 
@@ -1387,7 +1387,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T013, T014, T015, T016, T017, T018
-- **Files/outputs:** `leo-kiosk/tests/unit/test_catalog_properties.py`, `leo-kiosk/tests/integration/test_review_transactions.py`
+- **Files/outputs:** `app/tests/unit/test_catalog_properties.py`, `app/tests/integration/test_review_transactions.py`
 
 **Implementation steps**
 
@@ -1409,7 +1409,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** other
 - **Dependencies:** T019, T020, T021, T026, T027
-- **Files/outputs:** `leo-kiosk/tests/unit/test_gesture_properties.py`, `leo-kiosk/tests/integration/test_input_adapter.py`
+- **Files/outputs:** `app/tests/unit/test_gesture_properties.py`, `app/tests/integration/test_input_adapter.py`
 
 **Implementation steps**
 
@@ -1431,7 +1431,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T023, T024, T025, T027, T028, T033, T039
-- **Files/outputs:** `leo-kiosk/tests/integration/test_sessions.py`
+- **Files/outputs:** `app/tests/integration/test_sessions.py`
 
 **Implementation steps**
 
@@ -1453,7 +1453,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T042, T043, T044, T045, T046, T047, T055
-- **Files/outputs:** `leo-kiosk/tests/integration/test_networkmanager.py`, `leo-kiosk/tests/fixtures/networkmanager.py`
+- **Files/outputs:** `app/tests/integration/test_networkmanager.py`, `app/tests/fixtures/networkmanager.py`
 
 **Implementation steps**
 
@@ -1475,7 +1475,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T050, T051, T052, T059
-- **Files/outputs:** `leo-kiosk/tests/fixtures/portal_server.py`, `leo-kiosk/tests/ui/test_portal.py`
+- **Files/outputs:** `app/tests/fixtures/portal_server.py`, `app/tests/ui/test_portal.py`
 
 **Implementation steps**
 
@@ -1497,7 +1497,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T030, T032, T037, T038, T039, T040, T048, T049, T052
-- **Files/outputs:** `leo-kiosk/tests/ui/test_parent_workflows.py`
+- **Files/outputs:** `app/tests/ui/test_parent_workflows.py`
 
 **Implementation steps**
 
@@ -1519,7 +1519,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 3
 - **Domain:** other
 - **Dependencies:** T008, T022, T041
-- **Files/outputs:** `leo-kiosk/leo_kiosk/diagnostics.py`, `leo-kiosk/run.sh`
+- **Files/outputs:** `app/leo_kiosk/diagnostics.py`, `app/run.sh`
 
 **Implementation steps**
 
@@ -1541,7 +1541,7 @@ The original fixed six-key JSON/immutable `web-games.json` requirements below ar
 - **Size:** 5
 - **Domain:** other
 - **Dependencies:** T003, T012, T028, T039, T053, T054, T062
-- **Files/outputs:** `leo-kiosk/install-kiosk.sh`, `leo-kiosk/run.sh`
+- **Files/outputs:** `install-kiosk.sh`, `app/run.sh`
 
 **Implementation steps**
 
