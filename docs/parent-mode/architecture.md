@@ -238,7 +238,7 @@ Core tables:
 
 | Table | Essential columns |
 |---|---|
-| `schema_migrations` | version, applied_at |
+| `schema_migrations` | version, checksum, applied_at |
 | `providers` | id, name, website_url |
 | `catalog_imports` | id, source_checksum, imported_at, report_json |
 | `games` | id, provider_id, canonical_source_url, launch_url, source_name, parent_name nullable, media_type, source_metadata_json, tested_at nullable, reviewed_at nullable, rating nullable, deleted_at nullable, revision |
@@ -503,7 +503,7 @@ Release gates: platform audit passed; portal keyboard prototype passed; all tran
 
 ## 13. Implementation sequencing and estimates
 
-See `backlog.md` for independently actionable tasks, and `tasks.json` for the same backlog in machine-readable form. Every task has a Fibonacci size, one domain, dependencies, implementation steps, acceptance criteria and tests. Sizes describe relative complexity, not days.
+See `backlog.md` and `tasks.json` for the original 68-task backlog with Fibonacci sizes. The authoritative implementation graph is now [specs.md](../../specs.md), refined into 88 atomic tasks with per-type model assignments; [implementation-status.md](implementation-status.md) records completion. The SQLite startup/migration/fault work was split into parent-8, parent-87 and parent-88. Original Fibonacci sizes describe relative complexity, not days.
 
 Phase order:
 

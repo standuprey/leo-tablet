@@ -16,7 +16,7 @@ Behavior and assumptions:
 - NetworkManager owns DHCP/routes/DNS; iwd handles association. Use async libnm/secret-agent APIs and narrowly scoped active-local-session permissions. Support open/personal networks; enterprise Wi-Fi, cloud sync, video playback, guaranteed web filtering and PIN authentication are out of scope. Hidden-network UI and catalog search are P1 additions.
 - Captive login must be **touch-only** with separate portal cookies and intact TLS/sandboxing. Platform keyboard and restricted libnm/iwd spikes are blocking gates. Network/root changes require explicit administrator approval and a physical rollback path; never execute sudo autonomously.
 
-References: [architecture](docs/parent-mode/architecture.md), [original detailed backlog](docs/parent-mode/backlog.md), [original task JSON](docs/parent-mode/tasks.json), [discovery catalog](web-games.json). This execution plan refines the earlier 68-task backlog into **86 atomic tasks**; use the IDs/dependencies/models below for DEEEPR, not the older T001-style graph. Proposed module paths may be split to avoid concurrent edits to a monolithic repository/adapter.
+References: [architecture](docs/parent-mode/architecture.md), [original detailed backlog](docs/parent-mode/backlog.md), [original task JSON](docs/parent-mode/tasks.json), [discovery catalog](web-games.json). This execution plan refines the earlier 68-task backlog into **88 atomic tasks**; use the IDs/dependencies/models below for DEEEPR, not the older T001-style graph. Proposed module paths may be split to avoid concurrent edits to a monolithic repository/adapter.
 
 Execution contracts:
 - Model assignments come from [`.deeepr/config.json`](.deeepr/config.json): backend **z-ai/glm-5.3-flash**, frontend **deepseek/deepseek-v4-flash**, other **openai/gpt-6.1-sol**. Backend means local services, not a server.
@@ -104,15 +104,15 @@ Execution contracts:
 - **Difficulty:** medium
 - **Depends on:** parent-1, parent-6
 - **Model:** z-ai/glm-5.3-flash
-- **Summary:** Implement safe XDG SQLite bootstrap and migration runner
-- **Details:** Add storage/database.py: private XDG data directory, foreign keys, WAL, bounded busy timeout, parameterized transactions and versioned migrations. Back up existing databases using SQLite backup before upgrades. Roll back failed migrations and expose typed errors for corrupt/read-only/full storage; never silently replace data or share a connection across threads. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_database.py`.
+- **Summary:** Implement private SQLite connections and transaction scopes
+- **Details:** Add storage/database.py with private XDG paths/files, foreign keys, WAL, bounded busy timeout, thread-confined connections and explicit nonnested transactions. Translate storage failures without resetting data. Versioned migrations/backups and fault coverage are split into parent-87 and parent-88 to keep each change cohesive. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_database.py`.
 
 ### parent-9 (backend)
 - **ID:** parent-9
 - **Type:** backend
 - **Precedence:** P0
 - **Difficulty:** medium
-- **Depends on:** parent-8
+- **Depends on:** parent-88
 - **Model:** z-ai/glm-5.3-flash
 - **Summary:** Create provider, catalog and import-history persistence
 - **Details:** Add numbered migrations and storage/catalog.py for providers, games and catalog_imports. Store stable source identity, launch URL, original/parent names, source evidence, tested/reviewed/deleted timestamps, nullable rating and revision. Enforce unique provider/URL identity, integer ratings and foreign keys; repository methods return domain DTOs. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_schema.py`.
@@ -886,5 +886,25 @@ Execution contracts:
 - **Model:** openai/gpt-6.1-sol
 - **Summary:** Add optional read-only sanitized support diagnostics
 - **Details:** Add tools/leo_diagnostics.py reporting versions/schema/catalog checksum, slot invariants, abandoned-session summary and network capability availability. Default read-only; optional explicit SQLite backup reuses the safe backup API. Exclude secrets, browser profiles/history and full URLs; never auto-repair data, change Wi-Fi or signal processes. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_support_diagnostics.py; python3 tools/leo_diagnostics.py --help`.
+
+### parent-87 (backend)
+- **ID:** parent-87
+- **Type:** backend
+- **Precedence:** P0
+- **Difficulty:** medium
+- **Depends on:** parent-8
+- **Model:** z-ai/glm-5.3-flash
+- **Summary:** Apply versioned migrations with private pre-upgrade backups
+- **Details:** Add storage/migrations.py with immutable numbered/checksummed statement batches, UTC migration history, fail-closed version/history checks and one rollback-safe upgrade transaction. Use SQLite backup API before changing initialized databases; retain successful backups on failed upgrades, clean partial backups, reject transaction-control statements and never use executescript. Wire into open_database without sharing connections across threads. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_migrations.py`.
+
+### parent-88 (other)
+- **ID:** parent-88
+- **Type:** other
+- **Precedence:** P0
+- **Difficulty:** medium
+- **Depends on:** parent-87
+- **Model:** openai/gpt-6.1-sol
+- **Summary:** Verify migration and storage failure behavior before adding application schemas
+- **Details:** Add integration/test_storage_failures.py covering corruption, read-only access, disk-full/locked writes, migration rollback, backup failure, invalid/newer/edited history and cross-thread misuse. Use temporary SQLite files and bounded fault injection, never fill the real disk or modify system paths. Assert original data/history survive failed operations and no partial backup is advertised as valid. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_storage_failures.py`.
 
 DEEEPR:PLAN_READY
