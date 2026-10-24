@@ -31,7 +31,9 @@ from leo_kiosk.ui.parent_home import build_parent_screen  # noqa: E402
 from leo_kiosk.ui.review_list import build_editor_placeholder, build_review_list  # noqa: E402
 from leo_kiosk.ui.window import LauncherWindow  # noqa: E402
 
-# The package lives in <repo>/leo-kiosk/leo_kiosk/; config/assets sit one level up.
+# HERE is the app/ directory (parent of the leo_kiosk package). tiles.json is
+# installed flat next to the legacy scripts on the tablet; in this repo the
+# canonical copy lives in config/ (see install-kiosk.sh).
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG = os.path.join(HERE, "tiles.json")
 VOICES = os.path.join(HERE, "voices")
