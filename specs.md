@@ -11,12 +11,12 @@ Behavior and assumptions:
 - **Down, Down, Up** stops child playback to home or a review trial to that exact game's editor. Portal return goes to Wifi. Use the full [navigation table](docs/parent-mode/architecture.md#7-navigation-and-volume-gestures), including unsaved-change guards.
 - Review status is **new/tested/reviewed/selected**; successful browser spawn means trial attempted, not proven playback. Selected is derived from occupying one of nine stable positions, not a separate flag. Keep existing legacy slots until explicitly replaced.
 - Editor: trimmed 1–80-character name, optional integer **0–100%** rating, Keep/Select draft choice and **Delete / Ok / Ok and see next**. Null differs from zero. Save metadata/selection atomically; soft-delete/unselect atomically; require occupant-aware replacement confirmation. Next follows a frozen queue, skips ineligible/deleted IDs and never wraps.
-- `web-games.json` is an immutable discovery snapshot: 14 providers, 109 entries (93 labeled games, 16 videos), not verified playback. Preserve originals/provenance, exclude hubs from game trials, retain videos separately, and do not misreport popup/inferred dimensions as measured game resolutions. Normalize to an actual flat catalog file as specified in the architecture.
+- SQLite is the authoritative catalog and review store. `web-games.json` is a temporary discovery input, currently 14 providers and 109 entries (93 labeled games, 16 videos), not a fixed format or a required permanent file. It may be rearranged or removed after a verified import. Keep provenance/checksums and a versioned bootstrap asset for fresh installs; exclude confirmed hubs, retain videos separately and do not misreport inferred dimensions as measurements. No exact six-key JSON schema is required.
 - Use private per-trial Firefox profiles, a separate persistent child profile, UUID-owned process groups/callbacks and suspend-aware CLOCK_BOOTTIME deadlines. Historical PIDs are never actionable after restart.
 - NetworkManager owns DHCP/routes/DNS; iwd handles association. Use async libnm/secret-agent APIs and narrowly scoped active-local-session permissions. Support open/personal networks; enterprise Wi-Fi, cloud sync, video playback, guaranteed web filtering and PIN authentication are out of scope. Hidden-network UI and catalog search are P1 additions.
 - Captive login must be **touch-only** with separate portal cookies and intact TLS/sandboxing. Platform keyboard and restricted libnm/iwd spikes are blocking gates. Network/root changes require explicit administrator approval and a physical rollback path; never execute sudo autonomously.
 
-References: [architecture](docs/parent-mode/architecture.md), [original detailed backlog](docs/parent-mode/backlog.md), [original task JSON](docs/parent-mode/tasks.json), [discovery catalog](web-games.json). This execution plan refines the earlier 68-task backlog into **88 atomic tasks**; use the IDs/dependencies/models below for DEEEPR, not the older T001-style graph. Proposed module paths may be split to avoid concurrent edits to a monolithic repository/adapter.
+References: [architecture](docs/parent-mode/architecture.md), [original detailed backlog](docs/parent-mode/backlog.md), [original task JSON](docs/parent-mode/tasks.json), [discovery catalog](web-games.json). This execution plan refines the earlier 68-task backlog into **90 atomic tasks**; use the IDs/dependencies/models below for DEEEPR, not the older T001-style graph. Proposed module paths may be split to avoid concurrent edits to a monolithic repository/adapter.
 
 Execution contracts:
 - Model assignments come from [`.deeepr/config.json`](.deeepr/config.json): backend **z-ai/glm-5.3-flash**, frontend **deepseek/deepseek-v4-flash**, other **openai/gpt-6.1-sol**. Backend means local services, not a server.
@@ -45,7 +45,7 @@ Execution contracts:
 - **Depends on:** none
 - **Model:** openai/gpt-6.1-sol
 - **Summary:** Record the actual tablet platform and recovery path
-- **Details:** Create docs/parent-mode/platform-audit.md with read-only measurements of GTK/GIR/Cage/Firefox/NM/iwd versions, volume-device udev identity, compositor protocols, display scaling, current DHCP/DNS/supplicant ownership and leo permissions. Record physical/SSH recovery before any network migration; do not infer live state from README or run privileged changes. Verify: `python3 --version; cage -v; firefox --version; nmcli general status; systemctl is-active NetworkManager iwd; loginctl session-status; record unavailable commands explicitly`.
+- **Details:** Create docs/parent-mode/platform-audit.md with read-only measurements of GTK/GIR/Cage/Firefox/NM/iwd/SQLite versions and SQLite JSON-function availability, volume-device udev identity, compositor protocols, display scaling, current DHCP/DNS/supplicant ownership and leo permissions. Record physical/SSH recovery before any network migration; do not infer live state from README or run privileged changes. Verify: `python3 --version; cage -v; firefox --version; nmcli general status; systemctl is-active NetworkManager iwd; loginctl session-status; record unavailable commands explicitly`.
 
 ### parent-3 (frontend)
 - **ID:** parent-3
@@ -114,15 +114,15 @@ Execution contracts:
 - **Difficulty:** medium
 - **Depends on:** parent-88
 - **Model:** z-ai/glm-5.3-flash
-- **Summary:** Create provider, catalog and import-history persistence
-- **Details:** Add numbered migrations and storage/catalog.py for providers, games and catalog_imports. Store stable source identity, launch URL, original/parent names, source evidence, tested/reviewed/deleted timestamps, nullable rating and revision. Enforce unique provider/URL identity, integer ratings and foreign keys; repository methods return domain DTOs. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_schema.py`.
+- **Summary:** Create constrained provider, game and import-history tables
+- **Details:** Add storage/schema/v001_catalog.py and the ordered schema migration registry. Store stable source identity, launch overrides, original/parent names, evidence, tested/reviewed/deleted timestamps, nullable integer rating and revision. Enforce identity uniqueness, foreign keys, JSON-object metadata, dimension pairs and range constraints. Metadata DTO/repository and game DTO/repository work is split into parent-89 and parent-90 to keep slices bounded. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_schema.py`.
 
 ### parent-10 (backend)
 - **ID:** parent-10
 - **Type:** backend
 - **Precedence:** P0
 - **Difficulty:** medium
-- **Depends on:** parent-9
+- **Depends on:** parent-90
 - **Model:** z-ai/glm-5.3-flash
 - **Summary:** Create constrained home slots and launch/review history
 - **Details:** Add migration(s), storage/home.py and storage/sessions.py for home_slots, launch_sessions and review_events. Constrain positions to 1–9, unique game assignment and mutually exclusive game/legacy content; prohibit deleting seeded slot rows. Persist role/outcome and UTC history, not actionable historical PIDs or secrets. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_state_schema.py`.
@@ -135,27 +135,27 @@ Execution contracts:
 - **Depends on:** parent-5
 - **Model:** openai/gpt-6.1-sol
 - **Summary:** Audit the saved discovery catalog without rewriting it
-- **Details:** Account for all 109 source records in catalog/provenance.json and docs/parent-mode/catalog-audit.md; preserve web-games.json bytes/checksum. Mark known hub/section URLs ineligible, retain video records separately and label copied/inferred dimensions or Gulli popup sizes as unverified. Do not equate HTTP 200 with playable single-game content or invent a final eligible count. Verify: `python3 -m json.tool web-games.json; python3 -m json.tool catalog/provenance.json; reconcile every source index with its checksum`.
+- **Details:** Audit the available discovery input and record checksums, source identities, evidence and exclusions in docs/parent-mode/catalog-audit.md and bootstrap metadata. The current source has 109 records, but its layout/count are not fixed. Exclude confirmed hubs, retain videos and distinguish inferred/window sizes from game resolutions. A query-based game URL is not a hub merely because its path says games. Original JSON may be reformatted or removed after verified import; preserve useful provenance, not a permanent byte-for-byte source requirement. Verify every audited input record is accounted for before migration.
 
 ### parent-12 (backend)
 - **ID:** parent-12
 - **Type:** backend
 - **Precedence:** P0
 - **Difficulty:** medium
-- **Depends on:** parent-5, parent-11
+- **Depends on:** parent-5, parent-11, parent-90
 - **Model:** z-ai/glm-5.3-flash
-- **Summary:** Generate the flat catalog and JSON schema deterministically
-- **Details:** Add tools/normalize_catalog.py, catalog/games.schema.json and generated catalog/games.json. Emit exactly name/url/is_landscape/width/height/type; use 0/0 for unknown size, 0/1/2 type mapping and an orientation_known sidecar flag for unknown boolean placeholders. Preserve provenance/exclusions and queries/fragments; validate using jsonschema Draft 2020-12. Verify: `python3 tools/normalize_catalog.py --check; PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_normalize_catalog.py`.
+- **Summary:** Prepare a versioned bootstrap catalog without fixing the original source format
+- **Details:** Add tools/prepare_catalog.py, a versioned catalog/bootstrap.json and its validation schema for fresh installs. Adapt the available discovery source into provider/game DTO data with provenance/exclusions; use explicit unknown orientation and nullable dimensions, not false/zero placeholders. Preserve canonical source identity and unknown metadata. The bootstrap format may include any fields needed by SQLite; it is not the original six-key contract. Check it independently of the optional web-games.json after migration. Verify: `python3 tools/prepare_catalog.py --check; PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/unit/test_prepare_catalog.py`.
 
 ### parent-13 (backend)
 - **ID:** parent-13
 - **Type:** backend
 - **Precedence:** P0
 - **Difficulty:** medium
-- **Depends on:** parent-12, parent-9
+- **Depends on:** parent-12, parent-90
 - **Model:** z-ai/glm-5.3-flash
 - **Summary:** Import catalog snapshots atomically and idempotently
-- **Details:** Add services/catalog_import.py. Validate full catalog/provenance before one transaction; upsert only source metadata by stable identity and record checksums/counts. Never reset parent names, ratings, history, slots or tombstones, and retain locally reviewed records removed from later source snapshots. No network fetches during import; invalid input leaves the previous catalog intact. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_import.py`.
+- **Details:** Add services/catalog_import.py to populate authoritative SQLite from the validated versioned bootstrap/source adapter in one transaction. Update source fields only and record checksums/counts; preserve parent names, ratings, history, slots, tombstones and removed-source reviewed items. Reconcile all IDs/metadata after reopen and test a fresh bootstrap before optionally deleting web-games.json and updating its links. No network fetches or dependency on its old shape; invalid input leaves the catalog intact. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_import.py`.
 
 ### parent-14 (backend)
 - **ID:** parent-14
@@ -906,5 +906,25 @@ Execution contracts:
 - **Model:** openai/gpt-6.1-sol
 - **Summary:** Verify migration and storage failure behavior before adding application schemas
 - **Details:** Add integration/test_storage_failures.py covering corruption, read-only access, disk-full/locked writes, migration rollback, backup failure, invalid/newer/edited history and cross-thread misuse. Use temporary SQLite files and bounded fault injection, never fill the real disk or modify system paths. Assert original data/history survive failed operations and no partial backup is advertised as valid. Verify: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_storage_failures.py`.
+
+### parent-89 (backend)
+- **ID:** parent-89
+- **Type:** backend
+- **Precedence:** P0
+- **Difficulty:** medium
+- **Depends on:** parent-9
+- **Model:** z-ai/glm-5.3-flash
+- **Summary:** Persist validated provider and import-history metadata
+- **Details:** Add domain/catalog_metadata.py for immutable provider/import DTOs and UTC/JSON/checksum validation, a shared repository boundary, and storage/catalog_metadata.py for provider upsert and append-only import history. Reads return DTOs; writes use SQL parameters and require caller-owned transactions without implicit commits. Verify DTO round-trips, duplicate identities, invalid metadata and cross-repository rollback: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_metadata.py`.
+
+### parent-90 (backend)
+- **ID:** parent-90
+- **Type:** backend
+- **Precedence:** P0
+- **Difficulty:** medium
+- **Depends on:** parent-89
+- **Model:** z-ai/glm-5.3-flash
+- **Summary:** Persist and read immutable catalog records without overwriting reviews
+- **Details:** Add domain/catalog_records.py and storage/catalog.py for complete source/review DTOs, parameterized insert/get/list operations, stable-ID integrity checks, missing-record errors and deterministic listing. Preserve null/zero ratings, source evidence, launch overrides and tombstones; do not implement importer upserts or selection status here. Require caller-owned write transactions and verify parameter safety, reopen persistence and rollback: `PYTHONPATH=leo-kiosk python3 -m pytest leo-kiosk/tests/integration/test_catalog_repository.py`.
 
 DEEEPR:PLAN_READY

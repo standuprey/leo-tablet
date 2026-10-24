@@ -39,7 +39,7 @@ Only the legacy launcher's/watcher's existing percent-formatting is exempted fro
 - `open_database()` resolves `${XDG_DATA_HOME:-~/.local/share}/leo-kiosk/catalog.sqlite3`; relative/empty XDG overrides fall back to the home directory. The application directory is 0700, the database file 0600. Explicit path overrides must be caller-controlled; existing override-directory permissions are not changed.
 - Returned connections use WAL, foreign keys, FULL synchronous writes, an explicit 3-second busy timeout and SQLite's same-thread guard. Close them explicitly (for example with `contextlib.closing`); SQLite's own connection context manager commits/rolls back but does **not** close the connection.
 - Use `transaction(connection)` for one caller-owned transaction. It rejects nesting, rolls back domain errors without replacing their type, and translates SQLite failures to `StorageError`. Bind values through SQL parameters. Lower-level repository methods must not open another transaction inside a service-owned scope.
-- Pass all trusted `Migration(version, statements)` values, in order starting at 1, whenever opening an application schema. Applied statement checksums and UTC timestamps are recorded in `schema_migrations`. Never edit an applied batch; append a new version instead. The default empty batch initializes infrastructure only; it does not create game/home tables yet.
+- Pass all trusted `Migration(version, statements)` values, in order starting at 1, whenever opening an application schema. Applied statement checksums and UTC timestamps are recorded in `schema_migrations`. Never edit an applied batch; append a new version instead. The default empty batch initializes infrastructure only. Use `leo_kiosk.storage.schema.MIGRATIONS` explicitly for the application catalog schema; home/session tables are not implemented yet.
 - Startup refuses newer, incomplete, edited or unrecognized schema histories and corrupt files; it never silently resets existing data. Imports must not supply SQL. Migration SQL is trusted application code, not a general-purpose SQL sandbox.
 - Before an initialized database is upgraded, SQLite's backup API snapshots committed data, including data still in WAL. Private `catalog.sqlite3.before-vN.<random>.bak` files remain beside the source; incomplete copies use `.partial` and are removed after failure when possible. A complete copy is flushed, renamed and its directory flushed before the schema transaction starts.
 - All pending migrations share one transaction; failed SQL rolls back their schema/data/history changes and retains the pre-upgrade backup. Migration statements cannot commit, begin/savepoint transactions, attach databases or change PRAGMAs; `executescript` is never used.
@@ -54,6 +54,23 @@ Focused checks:
 ```
 
 The disk-full case uses SQLite's page limit on a temporary file, not a full host disk. Permission and backup failures are bounded fault injections; these are not claims of testing real hardware/filesystem failures.
+
+## Catalog repositories and discovery inputs
+
+- The version-1 registry in `storage/schema/` creates providers, games and import history. SQLite must provide JSON validation functions (available in the development SQLite 3.54.0); verify target package capabilities during the platform audit. Applied migration strings are immutable; later schema changes require another numbered migration.
+- `CatalogMetadataRepository` upserts provider metadata and appends import events. `CatalogRepository` inserts/reads `StoredGame` DTOs and lists source records deterministically. Every write requires an existing `transaction(connection)`; neither repository commits or starts a nested transaction. Missing records raise `NotFoundError`; SQL/binding/invalid persisted-data errors become `StorageError`.
+- `StoredGame` preserves original and parent names separately, null/zero rating, source metadata, launch overrides, UTC review/test/delete timestamps and revision. Its game identity is always derived from the validated provider/source URL. Reads reject a stored ID that does not match that source. Selection is not duplicated as a game-table flag.
+- `list_records()` hides tombstones by default but includes all media types. It is not an approved/playable queue; the future service layer must enforce game eligibility, exclusion evidence and home selection. Explicit lookup can retrieve a tombstone without restoring it.
+- `insert_record()` deliberately does not upsert existing games or replace reviews. Source-refresh/import transactions and UI review mutations are later tasks; the original 109-row catalog has not been imported into a live database.
+- Per the owner’s format change, `web-games.json` is temporary input with no fixed shape or exact six-key contract. SQLite is authoritative. The planned versioned `catalog/bootstrap.json` will support new installations; the original file may be reformatted or removed once import/reopen parity and fresh-install seeding are verified. Arbitrary source provenance can live in the validated JSON-object metadata column rather than a permanent sidecar/file layout.
+
+Catalog checks:
+
+```sh
+.venv/bin/python -m pytest leo-kiosk/tests/integration/test_catalog_schema.py -q
+.venv/bin/python -m pytest leo-kiosk/tests/integration/test_catalog_metadata.py -q
+.venv/bin/python -m pytest leo-kiosk/tests/integration/test_catalog_repository.py -q
+```
 
 ## Current implementation
 

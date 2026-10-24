@@ -181,38 +181,25 @@ Confidence (1 uncertain, 5 strongly supported): retain GTK/SQLite/Firefox **5**;
 
 ## 5. Catalog files, provenance, and import
 
-### Existing source file
+### SQLite authority and flexible discovery inputs
 
-`web-games.json` is already a real file. Preserve it byte-for-byte as the original discovery snapshot. Do not overwrite it with parent ratings or HTTP-check results.
+SQLite is the authoritative catalog/review store. The owner explicitly permits rearranging `web-games.json` or deleting it after its data is migrated. Its current grouped layout and original six-key proposal are **not fixed contracts**. Do not duplicate mutable parent decisions back into JSON.
 
-Its current shape is grouped by provider and includes string `type` values and nullable dimensions. This differs from the originally requested flat schema. Provide a **generated** canonical file, `catalog/games.json`, and an adjacent schema/provenance manifest as implementation work; the app's importer reads the normalized representation. Never pretend a guessed dimension satisfies the original integer contract.
+Keep the current file only until a verified, restart-persistent import and a fresh-install bootstrap are available. Record useful source identities, checksums, unknown metadata, evidence and exclusions in SQLite/bootstrap metadata; permanent byte-for-byte retention of that filename is not required. When removing it, update references and keep small parser fixtures rather than making tests depend on its old shape.
 
-Canonical discovery JSON uses exactly these six keys per entry:
+Use a versioned `catalog/bootstrap.json` plus validation schema to seed fresh installations without overwriting existing SQLite reviews. The bootstrap is a replaceable deployment asset, not the live datastore; fields may follow the domain DTOs rather than the original display/export format. Validate it independently of the optional original file.
 
-```json
-[
-  {
-    "name": "Letter A activity",
-    "url": "https://www.starfall.com/h/abcs/letter-a/",
-    "is_landscape": true,
-    "width": 1024,
-    "height": 768,
-    "type": 2
-  }
-]
-```
+Domain contracts retained regardless of import layout:
 
-Contract:
-
-- `type`: **0 = other, 1 = video, 2 = game**. These are application enums, not browser MIME types.
-- `width` and `height`: nonnegative integers; **0/0 = unknown**. Reject one zero with one positive dimension. Known dimensions describe a documented design/iframe size, not automatically the display resolution.
-- `is_landscape`: boolean. If orientation is unknown, export `false` as a schema-compatibility placeholder and record `orientation_known=false` in the provenance sidecar. Never interpret that placeholder as measured portrait orientation in UI; show “Unknown.”
-- For known square dimensions, `is_landscape=false` is the documented export convention; the UI can show “Square.”
-- The sidecar is keyed by stable game ID and contains provider, original URL/type/dimensions, evidence category, and exclusions. Runtime domain models allow unknown orientation/dimensions instead of conflating unknown with portrait.
+- Media types: **0 = other, 1 = video, 2 = game**; these are application enums, not browser MIME types.
+- Unknown dimensions are nullable; known sizes are a positive integer pair with explicit `unknown/design/iframe/popup/inferred` evidence. Popup/inferred values are not measured game resolutions.
+- Orientation is explicit `unknown/landscape/portrait/square`. There is no need for false/zero compatibility placeholders now that the source format is unconstrained.
+- Stable source IDs and original/parent names remain separate. Source URL, launch override and provenance survive reformatting, import and restart.
+- Preserve arbitrary JSON-object source metadata in `source_metadata_json` without promoting it to review status or executable commands.
 
 ### Discovery hygiene
 
-The current 109 entries include a Starfall section URL, a Sesame generic games entry, and metadata inferred across games. Audit every entry structurally, retain its original record, and exclude confirmed section/hub links from the playable queue. Do not hard-code an expected final game count of 93.
+The current 109 entries include a Starfall section URL, query-based Sesame game links and metadata inferred across games. Audit available records and preserve useful provenance, excluding only confirmed section/hub links from the playable queue. A `/games?id=...` path may identify an individual game and must not be discarded just for its path/name. Do not hard-code either the current input count or an expected eligible count of 93.
 
 - Initial HTTP 200 proves neither a single-game page nor successful playback. Record discovered/checked evidence separately from parent status.
 - Keep Gulli geo-blocking and per-item portrait/landscape metadata. Its launcher popup sizes are **not** game-canvas resolutions.
@@ -503,7 +490,7 @@ Release gates: platform audit passed; portal keyboard prototype passed; all tran
 
 ## 13. Implementation sequencing and estimates
 
-See `backlog.md` and `tasks.json` for the original 68-task backlog with Fibonacci sizes. The authoritative implementation graph is now [specs.md](../../specs.md), refined into 88 atomic tasks with per-type model assignments; [implementation-status.md](implementation-status.md) records completion. The SQLite startup/migration/fault work was split into parent-8, parent-87 and parent-88. Original Fibonacci sizes describe relative complexity, not days.
+See `backlog.md` and `tasks.json` for the original 68-task backlog with Fibonacci sizes. The authoritative implementation graph is now [specs.md](../../specs.md), refined into 90 atomic tasks with per-type model assignments; [implementation-status.md](implementation-status.md) records completion. The SQLite startup/migration/fault work was split into parent-8, parent-87 and parent-88; catalog schema/metadata/record persistence is split into parent-9, parent-89 and parent-90. The latest input-format decision permits rearranging or removing `web-games.json` after verified SQLite migration and fresh-install bootstrap coverage. Original Fibonacci sizes describe relative complexity, not days.
 
 Phase order:
 

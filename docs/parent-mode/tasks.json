@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
-  "status": "planned",
+  "status": "historical",
+  "execution_plan": "../../specs.md",
+  "superseded_contracts": ["Fixed six-key JSON export", "Permanent immutable web-games.json"],
   "estimation": "Fibonacci relative complexity, not days",
   "architecture": "architecture.md",
   "definition_of_done": [

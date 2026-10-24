@@ -1,6 +1,8 @@
 # Implementation backlog: parent mode, review and Wi-Fi
 
-Status: planned, not implemented. Architecture: [architecture.md](architecture.md). Machine-readable copy: [tasks.json](tasks.json).
+Status: historical 68-task sizing reference. The authoritative execution graph is [specs.md](../../specs.md); progress is in [implementation-status.md](implementation-status.md). Architecture: [architecture.md](architecture.md). Historical machine-readable copy: [tasks.json](tasks.json).
+
+The original fixed six-key JSON/immutable `web-games.json` requirements below are superseded: discovery input may be rearranged or removed after verified SQLite import, with a bootstrap asset retained for fresh installs. Follow the current execution plan and architecture, not those historical format restrictions.
 
 ## How a junior developer should use this backlog
 

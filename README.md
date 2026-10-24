@@ -88,7 +88,7 @@ The parent area, game review workflow, home-slot selection, and iwd-backed Wi-Fi
 - [Architecture and product behavior](docs/parent-mode/architecture.md)
 - [Detailed implementation backlog](docs/parent-mode/backlog.md) — 68 dependency-linked tasks with Fibonacci sizes, domains, acceptance criteria, and tests
 - [Machine-readable tasks](docs/parent-mode/tasks.json)
-- [Saved discovery catalog](web-games.json) — source data, not a list of verified playable games
+- [Discovery input](web-games.json) — temporary source data, not verified playable games; its format may change or the file may be removed after verified SQLite import
 - [Implementation status](docs/parent-mode/implementation-status.md) — completed task IDs and remaining integration gates
 - [Development and test commands](docs/parent-mode/development.md)
 
