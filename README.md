@@ -15,7 +15,7 @@ A fullscreen picture-tile home screen for a 5-year-old, running on Arch Linux wi
 ## How it behaves
 - Tap a tile: the app opens fullscreen. When Léo quits it, **tap volume-down then volume-up within 1 second**, or the tile's time limit runs out, he's back on the home screen.
 - **Boot**: the GRUB menu is hidden — the tablet goes straight to the kiosk. For recovery (bad kernel, fsck), hold **ESC** or an arrow key within the first second of power-on to open the menu. To undo: `sudo cp /etc/default/grub.orig /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg`.
-- Power button (via `leopowerd.service`): **press = screen off**, **press again = screen on**, and after **60 s with the screen off the tablet suspends**; waking restores the screen. The EC reports the button as an atomic press+release (no hold info reaches the OS), so logind ignores the key (`config/logind-power.conf`) and power-off lives in the **parent-mode "Power off" tile**.
+- Power button (via `leopowerd.service`): **during a game, press = exit to the home screen** (guarded kill, see below); otherwise **press = screen off**, **press again = screen on**, and after **60 s with the screen off the tablet suspends**; waking restores the screen. The EC reports the button as an atomic press+release (no hold info reaches the OS), so logind ignores the key (`config/logind-power.conf`) and power-off lives in the **parent-mode "Power off" tile**. Because leopowerd runs as root, it only kills a PID from `.app-pid` if it belongs to user `leo` AND matches a known tile command.
 - Parent escape: tap the invisible top-left corner **5 times within 4 seconds**. The kiosk exits and you get a text login.
 - If an app isn't installed, the tile says "Ask Papa to fix this one!" instead of crashing.
 
