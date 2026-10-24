@@ -60,6 +60,8 @@ class LauncherWindow:
         self.deadline = 0.0
         self.corner_taps = []
 
+        self._on_launch_started = None
+        self._on_launch_ended = None
         self.win = Gtk.Window()
         self.win.connect("destroy", Gtk.main_quit)
         self.win.set_title("Leo")
@@ -106,9 +108,6 @@ class LauncherWindow:
         self.stack: Gtk.Stack | None = None
         self._content = overlay
         self._page_names: dict[object, str] = {}
-        self._editor_page = None
-        self._launch_callbacks = None
-        self._trial_name = ""
 
     # --- route pages (parent mode); no-op unless pages were attached -----
     def attach_pages(self, pages: dict[str, Gtk.Widget]) -> None:
@@ -139,35 +138,22 @@ class LauncherWindow:
     def is_showing(self) -> bool:
         return self.win.get_visible()
 
-    # --- trial/editor support (inert unless composed) ---------------------
-    def set_editor_page(self, page) -> None:
-        self._editor_page = page
-
-    def set_trial_launcher(self, on_launch_started, on_launch_ended) -> None:
-        self._launch_callbacks = (on_launch_started, on_launch_ended)
-
-    def set_trial_context(self, name: str) -> None:
-        self._trial_name = name
+    # --- route-page hooks (inert unless composed) --------------------------
+    def set_launch_state_callback(self, on_launch_started, on_launch_ended) -> None:
+        """Notified when a legacy tile starts/stops foregrounding an app."""
+        self._on_launch_started = on_launch_started
+        self._on_launch_ended = on_launch_ended
 
     # --- tiles ----------------------------------------------------------
     def make_tile(self, tile):
-        btn = Gtk.Button()
-        btn.get_style_context().add_class("tile")
-        css = Gtk.CssProvider()
-        css.load_from_data(f"button {{ background: {tile['color']}; }}".encode())
-        btn.get_style_context().add_provider(css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + 1)
+        from leo_kiosk.ui.tile_grid import TileSpec, make_tile_button
 
-        inner = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        inner.set_valign(Gtk.Align.CENTER)
-        word = Gtk.Label(label=tile["label"])
-        word.get_style_context().add_class("word")
-        # Wrap so longer labels fit without shrinking the tile or hit area.
-        word.set_line_wrap(True)
-        word.set_justify(Gtk.Justification.CENTER)
-        inner.pack_start(word, False, False, 0)
-        btn.add(inner)
-        btn.connect("clicked", lambda _b, t=tile: self.launch(t))
-        return btn
+        spec = TileSpec(
+            label=tile["label"],
+            color=tile["color"],
+            on_activate=lambda t=tile: self.launch(t),
+        )
+        return make_tile_button(spec)
 
     # --- parent corner ---------------------------------------------------
     def on_corner(self, _btn):
@@ -212,8 +198,8 @@ class LauncherWindow:
             self.say("Ask Papa to fix this one!")
             return
         self.deadline = self.clock() + tile.get("minutes", 20) * 60
-        if self._launch_callbacks is not None:
-            self._launch_callbacks[0]()
+        if self._on_launch_started is not None:
+            self._on_launch_started()
         try:
             fd = os.open(self.state_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
             with os.fdopen(fd, "w") as f:
@@ -246,8 +232,8 @@ class LauncherWindow:
         return False
 
     def back_home(self):
-        if self._launch_callbacks is not None:
-            self._launch_callbacks[1]()
+        if self._on_launch_ended is not None:
+            self._on_launch_ended()
         try:
             os.remove(self.state_path)
         except OSError:

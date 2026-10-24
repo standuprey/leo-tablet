@@ -46,7 +46,7 @@ def build_grid(tiles: list[TileSpec]) -> Gtk.Grid:
     )
     rendered = 0
     for spec in tiles:
-        grid.attach(_tile_button(spec), rendered % COLUMNS, rendered // COLUMNS, 1, 1)
+        grid.attach(make_tile_button(spec), rendered % COLUMNS, rendered // COLUMNS, 1, 1)
         rendered += 1
     for position in range(rendered, POSITIONS):
         blank = Gtk.Button(sensitive=False, can_focus=False)
@@ -57,7 +57,8 @@ def build_grid(tiles: list[TileSpec]) -> Gtk.Grid:
     return grid
 
 
-def _tile_button(spec: TileSpec) -> Gtk.Button:
+def make_tile_button(spec: TileSpec) -> Gtk.Button:
+    """One touchable tile: color/label for child style, grey for parent style."""
     button = Gtk.Button()
     context = button.get_style_context()
     context.add_class("tile")

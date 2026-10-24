@@ -6,6 +6,7 @@ scheduler/watch hooks are injected so tests run without GLib or processes.
 
 import os
 import signal
+import subprocess
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -73,25 +74,17 @@ class TrialSessionService:
             process = self._popen(
                 command,
                 start_new_session=True,
-                stdout=subprocess_devnull(),
-                stderr=subprocess_devnull(),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
             )
         except OSError as exc:
             self._profiles.cleanup_profile(profile)
-            with transaction(self._repository.connection):
-                self._repository.start_session(
-                    token, game_id, None, LaunchRole.REVIEW_TRIAL.value, self._clock()
-                )
-                self._repository.finish_session(
-                    token, self._clock(), LaunchOutcome.SPAWN_FAILED.value, str(exc)
-                )
+            self._record_history(token, game_id)
+            self._record_finish(token, LaunchOutcome.SPAWN_FAILED, str(exc))
             raise ValidationError("Cannot start the game browser") from exc
         session = _Session(token, game_id, process, profile)
         self._active[token] = session
-        with transaction(self._repository.connection):
-            self._repository.start_session(
-                token, game_id, None, LaunchRole.REVIEW_TRIAL.value, self._clock()
-            )
+        self._record_history(token, game_id)
         self._watch_process(process, lambda _pid, _code: self._on_exit(token))
         return token
 
@@ -127,9 +120,20 @@ class TrialSessionService:
         self._cancel_later(session.kill_timeout_id)
         self._finish(token, session, outcome)
 
-    def _finish(self, token: UUID, session: "_Session", outcome: LaunchOutcome) -> None:
+    def _record_history(self, token: UUID, game_id: UUID) -> None:
         with transaction(self._repository.connection):
-            self._repository.finish_session(token, self._clock(), outcome.value)
+            self._repository.start_session(
+                token, game_id, None, LaunchRole.REVIEW_TRIAL.value, self._clock()
+            )
+
+    def _record_finish(
+        self, token: UUID, outcome: LaunchOutcome, failure_reason: str | None = None
+    ) -> None:
+        with transaction(self._repository.connection):
+            self._repository.finish_session(token, self._clock(), outcome.value, failure_reason)
+
+    def _finish(self, token: UUID, session: "_Session", outcome: LaunchOutcome) -> None:
+        self._record_finish(token, outcome)
         self._profiles.cleanup_profile(session.profile)
         if self.on_finished is not None:
             self.on_finished(token, session.game_id, outcome)
@@ -153,12 +157,6 @@ class _Session:
     profile: Path
     kill_timeout_id: object = None
     pending_outcome: LaunchOutcome | None = None
-
-
-def subprocess_devnull() -> object:
-    import subprocess
-
-    return subprocess.DEVNULL
 
 
 def _noop_scheduler(_seconds: int, _fn: Callable[[], None]) -> None:

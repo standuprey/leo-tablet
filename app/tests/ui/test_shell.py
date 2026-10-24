@@ -3,7 +3,6 @@
 import json
 import os
 import stat
-from pathlib import Path
 
 import pytest
 
@@ -15,10 +14,12 @@ class RecordingPopen:
         self.pid = pid
         self.fail = fail
         self.calls = []
+        self.start_new_session = None
         self.returncode = None
 
     def __call__(self, cmd, start_new_session=False, stdout=None, stderr=None):
         self.calls.append(tuple(cmd))
+        self.start_new_session = start_new_session
         if self.fail:
             raise OSError("executable missing")
         return self
@@ -96,7 +97,7 @@ def test_launch_spawns_with_its_own_session_and_records_pid(shell):
     window, popen, _player, tmp_path = shell
     window.launch(tile_by_label(shell, "ABC"))
     assert popen.calls and popen.calls[0] == ("gcompris-qt",)
-    assert popen.start_new_session is True if hasattr(popen, "start_new_session") else True
+    assert popen.start_new_session is True
     state = tmp_path / ".app-pid"
     assert state.read_text() == "70001"
     assert stat.S_IMODE(state.stat().st_mode) & 0o077 == 0
@@ -159,14 +160,18 @@ def test_watch_with_finished_process_restores_home_and_removes_state(shell):
 
 
 @pytest.mark.display
-def test_watch_after_deadline_sends_term_then_kill(shell, fake_process):
+def test_watch_after_deadline_sends_term_then_kill(shell, monkeypatch):
     window, popen, _player, _tmp = shell
+    signals = []
+    monkeypatch.setattr(
+        os, "killpg", lambda pid, sig: signals.append(sig)
+    )  # records both TERM and KILL for the fake pid
     window.launch(tile_by_label(shell, "ABC"))
     window.deadline = 999.0  # clock() == 1000 is past deadline
     assert window.watch() is False
-    assert 15 in fake_process.signals or True  # real kill path uses os.killpg
+    assert signals == [15]  # SIGTERM first; KILL follows via force_kill
     window.force_kill()
-    assert not (Path(os.environ["XDG_DATA_HOME"]) / "nope").exists() or True
+    assert signals == [15, 9]
 
 
 @pytest.mark.display

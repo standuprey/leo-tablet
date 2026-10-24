@@ -90,9 +90,19 @@ def open_database(
 
 
 @contextmanager
-def transaction(connection: sqlite3.Connection) -> Iterator[sqlite3.Connection]:
-    """Own one transaction, retaining caller/domain errors and rejecting nesting."""
+def transaction(
+    connection: sqlite3.Connection, *, join: bool = False
+) -> Iterator[sqlite3.Connection]:
+    """Own one transaction; with join=True, participate in the caller's scope.
+
+    The owner (the outermost transaction scope) commits and rolls back.
+    Internal service composition passes join=True; direct repository misuse
+    still fails loudly.
+    """
     if connection.in_transaction:
+        if join:
+            yield connection
+            return
         raise StorageError("Nested transactions are not supported; use the caller's scope")
     try:
         connection.execute("BEGIN IMMEDIATE")

@@ -214,7 +214,7 @@ def compose_launcher(
 ) -> tuple[LauncherWindow, AppController]:
     window = LauncherWindow(CONFIG, STATE, VOICES)
     controller = AppController(window, catalog=catalog, sessions=sessions)
-    window.set_editor_page(build_editor_placeholder("", None))
+    editor_page = build_editor_placeholder("", None)
     window.attach_pages(
         {
             "parent": build_parent_screen(
@@ -225,10 +225,10 @@ def compose_launcher(
             ),
             "review": _placeholder_page("REVIEW"),
             "wifi": _placeholder_page("WIFI"),
-            "editor": window._editor_page,  # noqa: SLF001 - composition owns wiring
+            "editor": editor_page,
         }
     )
-    window.set_trial_launcher(controller._on_app_launch, controller._on_app_exit)
+    window.set_launch_state_callback(controller._on_app_launch, controller._on_app_exit)
     if monitor_factory is not None:
         try:
             controller.monitor = monitor_factory(controller.on_gesture)
@@ -242,7 +242,7 @@ def _build_catalog_and_sessions():
     report = import_catalog(db, BootstrapCatalogSource(Path(BOOTSTRAP)))
     print(
         f"catalog import: +{report.added} ~{report.updated} "
-        f"={report.unchanged} kept {report.preserved_local}",
+        f"={report.unchanged} kept {report.preserved_local} purged {report.purged}",
         file=sys.stderr,
         flush=True,
     )

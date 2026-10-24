@@ -273,7 +273,7 @@ def main(argv=None):
     if not args.source.exists():
         print(f"Discovery source not found: {args.source}", file=sys.stderr)
         return 1
-    payload, _ = build_bootstrap(args.source, args.provenance)
+    payload, excluded = build_bootstrap(args.source, args.provenance)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=False) + "\n"
@@ -285,7 +285,7 @@ def main(argv=None):
         return 1
     print(
         f"Wrote {args.output} ({len(payload['games'])} games, "
-        f"{len(payload['providers'])} providers)"
+        f"{len(payload['providers'])} providers, {excluded} excluded)"
     )
     return 0
 

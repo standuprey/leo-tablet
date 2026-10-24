@@ -218,8 +218,8 @@ def test_schema_is_repeatable_on_reopen(tmp_path):
                 for row in connection.execute(
                     "SELECT version FROM schema_migrations ORDER BY version"
                 )
-            ] == [1, 2]
+            ] == [1, 2, 3]
             assert (
-                connection.execute("SELECT max(version) FROM schema_migrations").fetchone()[0] == 2
+                connection.execute("SELECT max(version) FROM schema_migrations").fetchone()[0] == 3
             )
     assert not list(tmp_path.glob("*.bak"))

@@ -150,9 +150,8 @@ def test_review_list_fills_the_page_not_a_centered_square(app):
     window, controller = app
     controller.open_review()
     page = window.stack.get_child_by_name("review")
-    assert page.get_halign() in (Gtk.Align.FILL, Gtk.Align.START, None) or True
     assert page.get_valign() == Gtk.Align.FILL
-    assert page.get_halign() != Gtk.Align.CENTER
+    assert page.get_halign() == Gtk.Align.FILL
     # The list exists and expands in both directions.
     children = [c for c in page.get_children()]
     assert children and isinstance(children[-1], Gtk.ScrolledWindow)
