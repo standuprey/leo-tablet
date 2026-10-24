@@ -24,6 +24,14 @@ ssh standup@192.168.1.186
 ```
 The admin user's key (`id_ed25519`) is authorized on the tablet, so no password is needed. The kiosk user (`leo`) has no SSH access and no sudo.
 
+**Deploy convention**: the canonical checkout on the tablet is `~/leo-kiosk` (i.e. `/home/standup/leo-kiosk`). Keep exactly one; run the installer from it:
+```
+rsync -av --exclude .venv --exclude .git --exclude '__pycache__' \
+  ~/Projects/leo-tablet/ standup@192.168.1.186:leo-kiosk/
+ssh standup@192.168.1.186 'cd ~/leo-kiosk/leo-kiosk && sudo ./install-kiosk.sh'
+```
+The installer deploys from its own directory to the runtime location `/home/leo/kiosk/` and writes a `deploy-manifest` there, so the running version can always be identified.
+
 ## How this device was set up
 For reference if you ever need to rebuild it from scratch — this is what was actually done, in order.
 

@@ -34,12 +34,35 @@ pacman -S --needed --noconfirm luanti 2>/dev/null \
   || pacman -S --needed --noconfirm minetest 2>/dev/null \
   || echo "!! Neither luanti nor minetest installed; the Build tile will show 'Ask Papa'."
 
-echo "==> Copying launcher to $DEST"
+echo "==> Copying launcher to $DEST (source: $HERE)"
 install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST" "$DEST/voices"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/launcher.py" "$DEST/launcher.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/backwatch.py" "$DEST/backwatch.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/run.sh" "$DEST/run.sh"
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/tiles.json" "$DEST/tiles.json"
+
+echo "==> Verifying deployed files match this source tree"
+# Catches partial/failed copies (disk full, interrupted install).
+mismatch=0
+for f in launcher.py backwatch.py run.sh tiles.json; do
+  if ! cmp -s "$HERE/$f" "$DEST/$f"; then
+    echo "MISMATCH: $DEST/$f does not match $HERE/$f" >&2
+    mismatch=1
+  fi
+done
+if [[ $mismatch -ne 0 ]]; then
+  echo "Deployed files differ from this source tree; fix the source checkout and re-run." >&2
+  exit 1
+fi
+# Checksum manifest: the tablet may hold several checkouts (this bit us once).
+# To confirm WHICH tree is deployed, compare this manifest against any checkout:
+#   sha256sum -c <(sed 's/  /  /' "$DEST/deploy-manifest")   # run inside a checkout
+sha256sum "$HERE/launcher.py" "$HERE/backwatch.py" "$HERE/run.sh" "$HERE/tiles.json" \
+  | sed "s|$HERE/||" > "$DEST/deploy-manifest"
+chown "$KIOSK_USER:$KIOSK_USER" "$DEST/deploy-manifest"
+echo "Deployed files verified. Manifest: $DEST/deploy-manifest"
+sha256sum "$DEST/deploy-manifest" >/dev/null
+cat "$DEST/deploy-manifest"
 
 echo "==> Creating content folders"
 for d in carwash gabby pets family science; do
@@ -61,6 +84,17 @@ install -d /etc/systemd/logind.conf.d
 install -m 644 "$HERE/logind-power.conf" /etc/systemd/logind.conf.d/leotablet.conf
 # Drop-ins are read on logind restart; this doesn't kill any session.
 systemctl try-restart systemd-logind.service
+
+# One suspend state only, so a wake press during suspend entry isn't silently
+# swallowed by systemd's multi-state fallback (see sleep-power.conf header).
+install -d /etc/systemd/sleep.conf.d
+install -m 644 "$HERE/sleep-power.conf" /etc/systemd/sleep.conf.d/leotablet.conf
+
+# The Type Cover fires a wakeup event mid-suspend and aborts every attempt.
+install -d /etc/udev/rules.d
+install -m 644 "$HERE/90-leotablet-typecover.rules" /etc/udev/rules.d/90-leotablet-typecover.rules
+udevadm control --reload
+udevadm trigger --subsystem-match=usb --attr-match=idVendor=045e --attr-match=idProduct=096f
 
 echo "==> Letting $KIOSK_USER use audio, video and input devices"
 # 'input' is for backwatch.py (volume-button hold-to-exit).
