@@ -1,8 +1,9 @@
-"""Parent home: nine grey tiles, Review/Wifi/Exit active, six inert blanks.
+"""Parent home: nine grey tiles, Review/Wifi/Exit/Power off active, five inert blanks.
 
 Retro terminal look: near-black background, amber text, square grey tiles
 (Apple-IIc inspired, deliberately not green). Exit is navigation only — it
-must never quit the GTK main loop or the kiosk session.
+must never quit the GTK main loop or the kiosk session. Power off goes through
+logind (active-session polkit), never this menu's own process teardown.
 """
 
 import gi
@@ -27,7 +28,7 @@ window, stack { background: #0f0f10; }
 .tile-blank { background: #1a1a1a; border: 2px solid #3a3a3a; border-radius: 0; }
 """
 
-ACTIVE_TILES = ("Review", "Wifi", "Exit")
+ACTIVE_TILES = ("Review", "Wifi", "Exit", "Power off")
 
 
 def apply_css() -> None:
@@ -38,25 +39,27 @@ def apply_css() -> None:
     )
 
 
-def build_parent_home(on_review, on_wifi, on_exit) -> Gtk.Grid:
+def build_parent_home(on_review, on_wifi, on_exit, on_power) -> Gtk.Grid:
     """Return the parent menu grid; callbacks own navigation decisions."""
-    for callback in (on_review, on_wifi, on_exit):
+    for callback in (on_review, on_wifi, on_exit, on_power):
         if not callable(callback):
             raise ValueError("Parent menu requires navigation callbacks")
     specs = [
         TileSpec(label, style="parent", on_activate=callback)
-        for label, callback in zip(ACTIVE_TILES, (on_review, on_wifi, on_exit), strict=True)
+        for label, callback in zip(
+            ACTIVE_TILES, (on_review, on_wifi, on_exit, on_power), strict=True
+        )
     ]
     specs += [TileSpec(label="", style="parent") for _ in range(POSITIONS - len(specs))]
     return build_grid(specs)
 
 
-def build_parent_screen(on_review, on_wifi, on_exit) -> Gtk.Box:
+def build_parent_screen(on_review, on_wifi, on_exit, on_power) -> Gtk.Box:
     """Fullscreen parent surface: title above the menu grid."""
     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
     box.set_border_width(24)
     title = Gtk.Label(label="PARENT")
     title.get_style_context().add_class("parent-title")
     box.pack_start(title, False, False, 0)
-    box.pack_start(build_parent_home(on_review, on_wifi, on_exit), True, True, 0)
+    box.pack_start(build_parent_home(on_review, on_wifi, on_exit, on_power), True, True, 0)
     return box

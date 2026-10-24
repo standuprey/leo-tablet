@@ -1,6 +1,7 @@
 """Application wiring: catalog, sessions, parent mode, GTK main loop."""
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 from uuid import UUID
@@ -124,6 +125,14 @@ class AppController:
         self.route = transition.route
         self.window.show_page("child")
 
+    def power_off(self) -> None:
+        """Parent-mode action: power the tablet off via logind.
+
+        The active session may power off without polkit interaction; the
+        request goes through systemd so the shutdown is clean.
+        """
+        subprocess.run(["systemctl", "poweroff"], check=False)
+
     def _go(self, route: Route) -> None:
         self.route = route
         self.window.show_page(PAGE_FOR.get(route, "child"))
@@ -189,6 +198,7 @@ def compose_launcher(
                 on_review=controller.open_review,
                 on_wifi=lambda: controller._go(Route.WIFI),
                 on_exit=controller.exit_parent,
+                on_power=controller.power_off,
             ),
             "review": _placeholder_page("REVIEW"),
             "wifi": _placeholder_page("WIFI"),

@@ -40,6 +40,7 @@ install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/launcher.py" "$DEST/
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/backwatch.py" "$DEST/backwatch.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/run.sh" "$DEST/run.sh"
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/config/tiles.json" "$DEST/tiles.json"
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/powerd.py" "$DEST/powerd.py"
 
 echo "==> Copying the application package and catalog bootstrap"
 # The entry point imports the leo_kiosk package from its own directory; without
@@ -55,7 +56,7 @@ install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" \
 echo "==> Verifying deployed files match this source tree"
 # Catches partial/failed copies (disk full, interrupted install).
 mismatch=0
-for f in app/launcher.py app/backwatch.py app/run.sh config/tiles.json; do
+for f in app/launcher.py app/backwatch.py app/run.sh app/powerd.py config/tiles.json; do
   dest=${f#*/}
   if ! cmp -s "$HERE/$f" "$DEST/$dest"; then
     echo "MISMATCH: $DEST/$dest does not match $HERE/$f" >&2
@@ -77,7 +78,7 @@ fi
 # Checksum manifest: the tablet may hold several checkouts (this bit us once).
 # To confirm WHICH tree is deployed, compare this manifest against any checkout:
 #   sha256sum -c <(sed 's/  /  /' "$DEST/deploy-manifest")   # run inside a checkout
-sha256sum "$HERE/app/launcher.py" "$HERE/app/backwatch.py" "$HERE/app/run.sh" "$HERE/config/tiles.json" \
+sha256sum "$HERE/app/launcher.py" "$HERE/app/backwatch.py" "$HERE/app/run.sh" "$HERE/app/powerd.py" "$HERE/config/tiles.json" \
   | sed -e "s|$HERE/app/||" -e "s|$HERE/config/||" > "$DEST/deploy-manifest"
 (find -L "$HERE/app/leo_kiosk" -name '*.py' -type f -print0 | xargs -0 sha256sum \
   | sed -e "s|$HERE/app/leo_kiosk/|leo_kiosk/|" -e "s|$HERE/app/||") >> "$DEST/deploy-manifest"
@@ -118,6 +119,12 @@ install -d /etc/udev/rules.d
 install -m 644 "$HERE/config/90-leotablet-typecover.rules" /etc/udev/rules.d/90-leotablet-typecover.rules
 udevadm control --reload
 udevadm trigger --subsystem-match=usb --attr-match=idVendor=045e --attr-match=idProduct=096f
+
+# leopowerd owns the power button (screen off, 60 s screen-off -> sleep).
+# See config/logind-power.conf for why logind ignores the key instead.
+install -m 644 "$HERE/config/leopowerd.service" /etc/systemd/system/leopowerd.service
+systemctl daemon-reload
+systemctl enable --now leopowerd.service
 
 echo "==> Letting $KIOSK_USER use audio, video and input devices"
 # 'input' is for backwatch.py (volume-button hold-to-exit).
