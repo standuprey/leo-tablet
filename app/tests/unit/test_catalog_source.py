@@ -68,4 +68,4 @@ def test_unsupported_version_is_rejected(tmp_path):
 def test_committed_bootstrap_loads():
     path = Path(__file__).resolve().parents[3] / "catalog" / "bootstrap.json"
     source = BootstrapCatalogSource(path)
-    assert len(source.games) == 109 and len(source.providers) == 14
+    assert len(source.games) == 97 and len(source.providers) == 13

@@ -57,12 +57,17 @@ class EvdevEventSource:
             device = evdev.InputDevice(path)
         except (OSError, PermissionError):
             return False
-        with device:
-            keys = device.capabilities(verbose=False).get(evdev.ecodes.EV_KEY, [])
+        try:
+            # evdev 2.x InputDevice is NOT a context manager; close explicitly.
+            keys = device.capabilities(verbose=False, absinfo=False).get(evdev.ecodes.EV_KEY, [])
             codes = (
                 {key for key, _junk in keys} if keys and isinstance(keys[0], tuple) else set(keys)
             )
             return KEY_VOLUMEUP in codes and KEY_VOLUMEDOWN in codes
+        except (OSError, ValueError):
+            return False
+        finally:
+            device.close()
 
 
 def discover_volume_sources() -> tuple[list[EvdevEventSource], list[str]]:

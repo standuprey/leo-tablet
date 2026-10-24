@@ -5,7 +5,7 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, Protocol
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from leo_kiosk.domain.catalog_metadata import ImportRecord
 from leo_kiosk.domain.catalog_records import StoredGame
@@ -36,6 +36,7 @@ class ImportReport:
     updated: int
     unchanged: int
     preserved_local: int
+    purged: int = 0
 
     def as_json(self) -> str:
         return json.dumps(
@@ -44,6 +45,7 @@ class ImportReport:
                 "updated": self.updated,
                 "unchanged": self.unchanged,
                 "preserved_local": self.preserved_local,
+                "purged": self.purged,
             },
             sort_keys=True,
         )
@@ -79,7 +81,7 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
         )
     }
     known_providers = {row[0] for row in connection.execute("SELECT id FROM providers")}
-    added = updated = unchanged = preserved_local = 0
+    added = updated = unchanged = preserved_local = purged = 0
     with transaction(connection):
         for raw in provider_rows:
             metadata.upsert_provider(CatalogMetadataRepository.provider_from_source(raw))
@@ -101,10 +103,36 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
                     updated += 1
                 else:
                     unchanged += 1
-        # Removed-source records stay locally available until a parent decides.
-        preserved_local = sum(
-            1 for row in existing.values() if row["reviewed_at"] or row["tested_at"]
-        )
+        # Records removed from the source stay until the parent decides:
+        # trialed/reviewed games are always preserved; never-touched games are
+        # soft-deleted (tombstoned) so they leave the review queue, and
+        # reimports cannot resurrect them. Games occupying a home slot are
+        # left visible; unselecting them is the parent's call.
+        for game_id, row in existing.items():
+            if row["tested_at"] is not None or row["reviewed_at"] is not None:
+                preserved_local += 1
+                continue
+            assigned = connection.execute(
+                "SELECT 1 FROM home_slots WHERE game_id = ?", (str(game_id),)
+            ).fetchone()
+            if assigned:
+                preserved_local += 1
+                continue
+            connection.execute(
+                "UPDATE games SET deleted_at = ? WHERE id = ? AND deleted_at IS NULL",
+                (datetime.now(UTC).isoformat(), str(game_id)),
+            )
+            connection.execute(
+                "INSERT INTO review_events (id, game_id, event_kind, timestamp, change_json) "
+                "VALUES (?, ?, 'deleted', ?, ?)",
+                (
+                    str(uuid4()),
+                    str(game_id),
+                    datetime.now(UTC).isoformat(),
+                    '{"auto": "removed-from-source"}',
+                ),
+            )
+            purged += 1
         report = ImportReport(
             source.checksum,
             datetime.now(UTC).isoformat(),
@@ -112,6 +140,7 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
             updated,
             unchanged,
             preserved_local,
+            purged,
         )
         metadata.record_import(
             ImportRecord(

@@ -53,6 +53,7 @@ def test_fresh_import_populates_catalog_and_records_the_report(db):
     assert json.loads(report.as_json()) == {
         "added": 2,
         "preserved_local": 0,
+        "purged": 0,
         "unchanged": 0,
         "updated": 0,
     }
@@ -63,6 +64,7 @@ def test_fresh_import_populates_catalog_and_records_the_report(db):
     assert json.loads(imports[0].report_json) == {
         "added": 2,
         "preserved_local": 0,
+        "purged": 0,
         "unchanged": 0,
         "updated": 0,
     }
@@ -153,8 +155,55 @@ def test_untested_record_removed_from_source_survives_for_parent_decision(db):
     import_catalog(db, source)
     pruned = Source("d" * 64, source.providers, (game(),))
     report = import_catalog(db, pruned)
-    assert report.preserved_local == 0 and report.added == 0 and report.unchanged == 1
-    assert len(CatalogRepository(db).list_records()) == 2
+    # Parent decision (2026-10-23): removed-from-source, never-tried games
+    # leave the queue via tombstone; reimports cannot resurrect them.
+    assert report.purged == 1 and report.added == 0 and report.unchanged == 1
+    kept = CatalogRepository(db).list_records()
+    assert [r.display_name for r in kept] == ["Game"]
+    removed_row = repo_get(db, "Other")
+    assert removed_row["deleted_at"] is not None
+    events = db.execute("SELECT event_kind, change_json FROM review_events").fetchall()
+    assert any(row["event_kind"] == "deleted" for row in events)
+
+
+def repo_get(db, name):
+    row = db.execute("SELECT * FROM games WHERE source_name = ?", (name,)).fetchone()
+    assert row is not None
+    return row
+
+
+def test_provider_removed_from_source_tombstones_its_untested_games(db):
+    """ABCya-style removal: provider gone from the snapshot -> games tombstoned."""
+    providers = ({"provider_id": "pbs", "name": "PBS", "website_url": "https://pbskids.org"},)
+    source = Source("a" * 64, providers, (game(),))
+    import_catalog(db, source)
+    without_provider = Source("b" * 64, (), ())  # provider dropped entirely
+    with pytest.raises(ValidationError):
+        import_catalog(db, without_provider)  # empty provider list is rejected
+    # A source that keeps the provider list but omits the games is the
+    # supported shape for provider removal:
+    partial = Source("c" * 64, providers, ())
+    report = import_catalog(db, partial)
+    assert report.purged == 1
+    assert CatalogRepository(db).list_records() == ()
+
+
+def test_reviewed_game_removed_from_source_is_never_tombstoned(db):
+    source = Source(
+        "a" * 64,
+        ({"provider_id": "pbs", "name": "PBS", "website_url": "https://pbskids.org"},),
+        (game(),),
+    )
+    import_catalog(db, source)
+    with transaction(db):
+        db.execute(
+            "UPDATE games SET reviewed_at = ? WHERE source_name = 'Game'",
+            (datetime.now(UTC).isoformat(),),
+        )
+    pruned = Source("e" * 64, source.providers, ())
+    report = import_catalog(db, pruned)
+    assert report.preserved_local == 1 and report.purged == 0
+    assert [r.display_name for r in CatalogRepository(db).list_records()] == ["Game"]
 
 
 def test_flexible_source_shape_uses_legacy_placeholders_correctly(db):

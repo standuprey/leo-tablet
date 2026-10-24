@@ -53,6 +53,18 @@ install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST/catalog"
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" \
   "$HERE/catalog/bootstrap.json" "$DEST/catalog/bootstrap.json"
 
+echo "==> Installing the invisible cursor (no pointer on the kiosk screen)"
+# An empty cursor theme named 'default' in leo's ~/.icons: both cage (wlroots)
+# and Firefox/GTK clients resolve it, hiding the pointer everywhere. The
+# compositor reads the theme at its own startup, so a reboot is required.
+CURSOR_DIR="$(mktemp -d)"
+python3 "$HERE/tools/make_invisible_cursor.py" --output "$CURSOR_DIR/default" >/dev/null
+install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "/home/$KIOSK_USER/.icons"
+rm -rf "/home/$KIOSK_USER/.icons/default"
+cp -r "$CURSOR_DIR/default" "/home/$KIOSK_USER/.icons/default"
+chown -R "$KIOSK_USER:$KIOSK_USER" "/home/$KIOSK_USER/.icons"
+rm -rf "$CURSOR_DIR"
+
 echo "==> Verifying deployed files match this source tree"
 # Catches partial/failed copies (disk full, interrupted install).
 mismatch=0
@@ -103,11 +115,13 @@ HTML
   chown "$KIOSK_USER:$KIOSK_USER" "$SCI"
 fi
 
-echo "==> Power button: short press = sleep, long press = power off"
+echo "==> Power button: owned by leopowerd; logind ignores the key"
 install -d /etc/systemd/logind.conf.d
 install -m 644 "$HERE/config/logind-power.conf" /etc/systemd/logind.conf.d/leotablet.conf
-# Drop-ins are read on logind restart; this doesn't kill any session.
-systemctl try-restart systemd-logind.service
+# Do NOT restart logind here: restarting it under a live compositor revokes
+# the seat's devices and leaves the running cage frozen (libinput spams
+# "failed to close device: Invalid argument"). The drop-in applies at next
+# reboot - which leo_deploy does by default.
 
 # One suspend state only, so a wake press during suspend entry isn't silently
 # swallowed by systemd's multi-state fallback (see sleep-power.conf header).
