@@ -83,7 +83,7 @@ On any machine with GTK3 and PyGObject: `python3 launcher.py`. Tiles for missing
 
 ## Parent-mode implementation plan
 
-The parent area, game review workflow, home-slot selection, and iwd-backed Wi-Fi/captive-portal support are **specified; domain foundations are implemented but not integrated into the launcher**:
+The parent area, game review workflow, home-slot selection, and iwd-backed Wi-Fi/captive-portal support are **specified; domain and SQLite foundations are implemented but not integrated into the launcher**:
 
 - [Architecture and product behavior](docs/parent-mode/architecture.md)
 - [Detailed implementation backlog](docs/parent-mode/backlog.md) — 68 dependency-linked tasks with Fibonacci sizes, domains, acceptance criteria, and tests
