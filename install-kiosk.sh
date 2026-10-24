@@ -19,7 +19,7 @@ fi
 
 echo "==> Installing packages"
 pacman -S --needed --noconfirm \
-  cage greetd greetd-agreety gtk3 python-gobject \
+  cage greetd greetd-agreety gtk3 python-gobject python-evdev \
   gcompris-qt vlc feh firefox \
   pipewire pipewire-pulse wireplumber libpulse \
   rsync
@@ -41,6 +41,17 @@ install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/backwatch.py" "$DEST
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/run.sh" "$DEST/run.sh"
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/config/tiles.json" "$DEST/tiles.json"
 
+echo "==> Copying the application package and catalog bootstrap"
+# The entry point imports the leo_kiosk package from its own directory; without
+# this the tablet keeps running the old single-file launcher.
+rsync -a --delete --exclude __pycache__ "$HERE/app/leo_kiosk/" "$DEST/leo_kiosk/"
+chown -R "$KIOSK_USER:$KIOSK_USER" "$DEST/leo_kiosk"
+find "$DEST/leo_kiosk" -type d -exec chmod 755 {} +
+find "$DEST/leo_kiosk" -type f -exec chmod 644 {} +
+install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST/catalog"
+install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" \
+  "$HERE/catalog/bootstrap.json" "$DEST/catalog/bootstrap.json"
+
 echo "==> Verifying deployed files match this source tree"
 # Catches partial/failed copies (disk full, interrupted install).
 mismatch=0
@@ -51,6 +62,14 @@ for f in app/launcher.py app/backwatch.py app/run.sh config/tiles.json; do
     mismatch=1
   fi
 done
+if ! diff -rq --exclude __pycache__ "$HERE/app/leo_kiosk" "$DEST/leo_kiosk" >/dev/null; then
+  echo "MISMATCH: $DEST/leo_kiosk differs from $HERE/app/leo_kiosk" >&2
+  mismatch=1
+fi
+if ! cmp -s "$HERE/catalog/bootstrap.json" "$DEST/catalog/bootstrap.json"; then
+  echo "MISMATCH: $DEST/catalog/bootstrap.json does not match the source tree" >&2
+  mismatch=1
+fi
 if [[ $mismatch -ne 0 ]]; then
   echo "Deployed files differ from this source tree; fix the source checkout and re-run." >&2
   exit 1
@@ -60,7 +79,10 @@ fi
 #   sha256sum -c <(sed 's/  /  /' "$DEST/deploy-manifest")   # run inside a checkout
 sha256sum "$HERE/app/launcher.py" "$HERE/app/backwatch.py" "$HERE/app/run.sh" "$HERE/config/tiles.json" \
   | sed -e "s|$HERE/app/||" -e "s|$HERE/config/||" > "$DEST/deploy-manifest"
+(find -L "$HERE/app/leo_kiosk" -name '*.py' -type f -print0 | xargs -0 sha256sum \
+  | sed -e "s|$HERE/app/leo_kiosk/|leo_kiosk/|" -e "s|$HERE/app/||") >> "$DEST/deploy-manifest"
 chown "$KIOSK_USER:$KIOSK_USER" "$DEST/deploy-manifest"
+chmod 644 "$DEST/deploy-manifest"
 echo "Deployed files verified. Manifest: $DEST/deploy-manifest"
 sha256sum "$DEST/deploy-manifest" >/dev/null
 cat "$DEST/deploy-manifest"

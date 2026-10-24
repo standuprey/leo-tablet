@@ -196,7 +196,10 @@ def compose_launcher(
     )
     window.set_trial_launcher(controller._on_app_launch, controller._on_app_exit)
     if monitor_factory is not None:
-        controller.monitor = monitor_factory(controller.on_gesture)
+        try:
+            controller.monitor = monitor_factory(controller.on_gesture)
+        except Exception as exc:  # noqa: BLE001 - input must never kill the tiles
+            print(f"input: unavailable ({exc})", file=sys.stderr, flush=True)
     return window, controller
 
 
