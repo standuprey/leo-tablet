@@ -2,18 +2,20 @@
 
 A fullscreen picture-tile home screen for a 5-year-old, running on Arch Linux with the `cage` kiosk compositor.
 
-## What's in this folder
-| File | What it is |
+## Repository layout
+| Path | What it is |
 |---|---|
-| `launcher.py` | Fullscreen GTK3 home screen with big picture tiles |
-| `tiles.json` | The tiles: label, color, command, time limit (minutes) |
+| `app/` | The Python app: `pyproject.toml`, `leo_kiosk/` package, `tests/`, plus the legacy `launcher.py`, `backwatch.py`, `run.sh` |
+| `config/` | Files installed onto the tablet: `tiles.json` (the tiles), `logind-power.conf`, `sleep-power.conf`, `90-leotablet-typecover.rules` |
+| `docs/` | `parent-mode/` architecture, backlog and status docs; `specs.md` |
 | `install-kiosk.sh` | Installs packages, copies the files, makes content folders, sets up greetd auto-login |
+| `catalog/`, `tools/`, `web-games.json` | Game-catalog discovery data and the import tool |
 | `voices/` | Optional: record Papa saying each word as `<tile id>.wav` (e.g. `draw.wav`); played on tap |
 
 ## How it behaves
 - Tap a tile: the app opens fullscreen. When Léo quits it, **tap volume-down then volume-up within 1 second**, or the tile's time limit runs out, he's back on the home screen.
 - **Boot**: the GRUB menu is hidden — the tablet goes straight to the kiosk. For recovery (bad kernel, fsck), hold **ESC** or an arrow key within the first second of power-on to open the menu. To undo: `sudo cp /etc/default/grub.orig /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg`.
-- Power button: **short press puts the tablet to sleep** (suspend), **holding it ~5 seconds powers it off** (logind long-press; config in `logind-power.conf`).
+- Power button (via `leopowerd.service`): **during a game, press = exit to the home screen** (guarded kill, see below); otherwise **press = screen off**, **press again = screen on**, and after **60 s with the screen off the tablet suspends**; waking restores the screen. The EC reports the button as an atomic press+release (no hold info reaches the OS), so logind ignores the key (`config/logind-power.conf`) and power-off lives in the **parent-mode "Power off" tile**. Because leopowerd runs as root, it only kills a PID from `.app-pid` if it belongs to user `leo` AND matches a known tile command.
 - Parent escape: tap the invisible top-left corner **5 times within 4 seconds**. The kiosk exits and you get a text login.
 - If an app isn't installed, the tile says "Ask Papa to fix this one!" instead of crashing.
 
@@ -23,6 +25,14 @@ From any machine on the same network:
 ssh standup@192.168.1.186
 ```
 The admin user's key (`id_ed25519`) is authorized on the tablet, so no password is needed. The kiosk user (`leo`) has no SSH access and no sudo.
+
+**Deploy convention**: the canonical checkout on the tablet is `~/leo-kiosk` (i.e. `/home/standup/leo-kiosk`). Keep exactly one; run the installer from it:
+```
+rsync -av --exclude .venv --exclude .git --exclude '__pycache__' \
+  ~/Projects/leo-tablet/ standup@192.168.1.186:leo-kiosk/
+ssh standup@192.168.1.186 'cd ~/leo-kiosk && sudo ./install-kiosk.sh'
+```
+The installer deploys from its own directory to the runtime location `/home/leo/kiosk/` and writes a `deploy-manifest` there, so the running version can always be identified.
 
 ## How this device was set up
 For reference if you ever need to rebuild it from scratch — this is what was actually done, in order.

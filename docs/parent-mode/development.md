@@ -16,10 +16,10 @@ The editable project contains only application code. GTK/GIR runtime dependencie
 ## Checks
 
 ```sh
-.venv/bin/python -m pytest leo-kiosk/tests -q
+.venv/bin/python -m pytest app/tests -q
 .venv/bin/python -m ruff check leo-kiosk
-.venv/bin/python -m ruff format --check leo-kiosk/leo_kiosk leo-kiosk/tests
-.venv/bin/python -m mypy --config-file leo-kiosk/pyproject.toml leo-kiosk/leo_kiosk
+.venv/bin/python -m ruff format --check app/leo_kiosk app/tests
+.venv/bin/python -m mypy --config-file app/pyproject.toml app/leo_kiosk
 ```
 
 Only the legacy launcher's/watcher's existing percent-formatting is exempted from Ruff's UP031 rule; their runtime behavior has not been modified.
@@ -48,9 +48,9 @@ Only the legacy launcher's/watcher's existing percent-formatting is exempted fro
 Focused checks:
 
 ```sh
-.venv/bin/python -m pytest leo-kiosk/tests/integration/test_database.py -q
-.venv/bin/python -m pytest leo-kiosk/tests/integration/test_migrations.py -q
-.venv/bin/python -m pytest leo-kiosk/tests/integration/test_storage_failures.py -q
+.venv/bin/python -m pytest app/tests/integration/test_database.py -q
+.venv/bin/python -m pytest app/tests/integration/test_migrations.py -q
+.venv/bin/python -m pytest app/tests/integration/test_storage_failures.py -q
 ```
 
 The disk-full case uses SQLite's page limit on a temporary file, not a full host disk. Permission and backup failures are bounded fault injections; these are not claims of testing real hardware/filesystem failures.
@@ -67,9 +67,9 @@ The disk-full case uses SQLite's page limit on a temporary file, not a full host
 Catalog checks:
 
 ```sh
-.venv/bin/python -m pytest leo-kiosk/tests/integration/test_catalog_schema.py -q
-.venv/bin/python -m pytest leo-kiosk/tests/integration/test_catalog_metadata.py -q
-.venv/bin/python -m pytest leo-kiosk/tests/integration/test_catalog_repository.py -q
+.venv/bin/python -m pytest app/tests/integration/test_catalog_schema.py -q
+.venv/bin/python -m pytest app/tests/integration/test_catalog_metadata.py -q
+.venv/bin/python -m pytest app/tests/integration/test_catalog_repository.py -q
 ```
 
 ## Current implementation

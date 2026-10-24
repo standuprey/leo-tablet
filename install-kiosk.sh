@@ -19,7 +19,7 @@ fi
 
 echo "==> Installing packages"
 pacman -S --needed --noconfirm \
-  cage greetd greetd-agreety gtk3 python-gobject \
+  cage greetd greetd-agreety gtk3 python-gobject python-evdev \
   gcompris-qt vlc feh firefox \
   pipewire pipewire-pulse wireplumber libpulse \
   rsync
@@ -34,12 +34,59 @@ pacman -S --needed --noconfirm luanti 2>/dev/null \
   || pacman -S --needed --noconfirm minetest 2>/dev/null \
   || echo "!! Neither luanti nor minetest installed; the Build tile will show 'Ask Papa'."
 
-echo "==> Copying launcher to $DEST"
+echo "==> Copying launcher to $DEST (source: $HERE)"
 install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST" "$DEST/voices"
-install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/launcher.py" "$DEST/launcher.py"
-install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/backwatch.py" "$DEST/backwatch.py"
-install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/run.sh" "$DEST/run.sh"
-install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/tiles.json" "$DEST/tiles.json"
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/launcher.py" "$DEST/launcher.py"
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/backwatch.py" "$DEST/backwatch.py"
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/run.sh" "$DEST/run.sh"
+install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/config/tiles.json" "$DEST/tiles.json"
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/powerd.py" "$DEST/powerd.py"
+
+echo "==> Copying the application package and catalog bootstrap"
+# The entry point imports the leo_kiosk package from its own directory; without
+# this the tablet keeps running the old single-file launcher.
+rsync -a --delete --exclude __pycache__ "$HERE/app/leo_kiosk/" "$DEST/leo_kiosk/"
+chown -R "$KIOSK_USER:$KIOSK_USER" "$DEST/leo_kiosk"
+find "$DEST/leo_kiosk" -type d -exec chmod 755 {} +
+find "$DEST/leo_kiosk" -type f -exec chmod 644 {} +
+install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST/catalog"
+install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" \
+  "$HERE/catalog/bootstrap.json" "$DEST/catalog/bootstrap.json"
+
+echo "==> Verifying deployed files match this source tree"
+# Catches partial/failed copies (disk full, interrupted install).
+mismatch=0
+for f in app/launcher.py app/backwatch.py app/run.sh app/powerd.py config/tiles.json; do
+  dest=${f#*/}
+  if ! cmp -s "$HERE/$f" "$DEST/$dest"; then
+    echo "MISMATCH: $DEST/$dest does not match $HERE/$f" >&2
+    mismatch=1
+  fi
+done
+if ! diff -rq --exclude __pycache__ "$HERE/app/leo_kiosk" "$DEST/leo_kiosk" >/dev/null; then
+  echo "MISMATCH: $DEST/leo_kiosk differs from $HERE/app/leo_kiosk" >&2
+  mismatch=1
+fi
+if ! cmp -s "$HERE/catalog/bootstrap.json" "$DEST/catalog/bootstrap.json"; then
+  echo "MISMATCH: $DEST/catalog/bootstrap.json does not match the source tree" >&2
+  mismatch=1
+fi
+if [[ $mismatch -ne 0 ]]; then
+  echo "Deployed files differ from this source tree; fix the source checkout and re-run." >&2
+  exit 1
+fi
+# Checksum manifest: the tablet may hold several checkouts (this bit us once).
+# To confirm WHICH tree is deployed, compare this manifest against any checkout:
+#   sha256sum -c <(sed 's/  /  /' "$DEST/deploy-manifest")   # run inside a checkout
+sha256sum "$HERE/app/launcher.py" "$HERE/app/backwatch.py" "$HERE/app/run.sh" "$HERE/app/powerd.py" "$HERE/config/tiles.json" \
+  | sed -e "s|$HERE/app/||" -e "s|$HERE/config/||" > "$DEST/deploy-manifest"
+(find -L "$HERE/app/leo_kiosk" -name '*.py' -type f -print0 | xargs -0 sha256sum \
+  | sed -e "s|$HERE/app/leo_kiosk/|leo_kiosk/|" -e "s|$HERE/app/||") >> "$DEST/deploy-manifest"
+chown "$KIOSK_USER:$KIOSK_USER" "$DEST/deploy-manifest"
+chmod 644 "$DEST/deploy-manifest"
+echo "Deployed files verified. Manifest: $DEST/deploy-manifest"
+sha256sum "$DEST/deploy-manifest" >/dev/null
+cat "$DEST/deploy-manifest"
 
 echo "==> Creating content folders"
 for d in carwash gabby pets family science; do
@@ -58,9 +105,26 @@ fi
 
 echo "==> Power button: short press = sleep, long press = power off"
 install -d /etc/systemd/logind.conf.d
-install -m 644 "$HERE/logind-power.conf" /etc/systemd/logind.conf.d/leotablet.conf
+install -m 644 "$HERE/config/logind-power.conf" /etc/systemd/logind.conf.d/leotablet.conf
 # Drop-ins are read on logind restart; this doesn't kill any session.
 systemctl try-restart systemd-logind.service
+
+# One suspend state only, so a wake press during suspend entry isn't silently
+# swallowed by systemd's multi-state fallback (see sleep-power.conf header).
+install -d /etc/systemd/sleep.conf.d
+install -m 644 "$HERE/config/sleep-power.conf" /etc/systemd/sleep.conf.d/leotablet.conf
+
+# The Type Cover fires a wakeup event mid-suspend and aborts every attempt.
+install -d /etc/udev/rules.d
+install -m 644 "$HERE/config/90-leotablet-typecover.rules" /etc/udev/rules.d/90-leotablet-typecover.rules
+udevadm control --reload
+udevadm trigger --subsystem-match=usb --attr-match=idVendor=045e --attr-match=idProduct=096f
+
+# leopowerd owns the power button (screen off, 60 s screen-off -> sleep).
+# See config/logind-power.conf for why logind ignores the key instead.
+install -m 644 "$HERE/config/leopowerd.service" /etc/systemd/system/leopowerd.service
+systemctl daemon-reload
+systemctl enable --now leopowerd.service
 
 echo "==> Letting $KIOSK_USER use audio, video and input devices"
 # 'input' is for backwatch.py (volume-button hold-to-exit).

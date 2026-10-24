@@ -11,6 +11,7 @@ requires-python = ">=3.11"
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3,<10",
+    "evdev>=2,<3",
     "hypothesis>=6.120,<7",
     "ruff>=0.11,<1",
     "mypy>=1.14,<3",
@@ -42,6 +43,8 @@ extend-exclude = ["launcher.py", "backwatch.py"]
 select = ["E4", "E7", "E9", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
+# GTK tests must require_version before importing gi.repository.
+"tests/ui/*" = ["E402"]
 # Do not churn the legacy launcher/watcher during domain-only work.
 "launcher.py" = ["UP031"]
 "backwatch.py" = ["UP031"]
@@ -49,3 +52,9 @@ select = ["E4", "E7", "E9", "F", "I", "UP", "B"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
+# GTK binding stubs do not exist; GI-dependent modules are lint- and
+# display-test covered instead of strictly type-checked.
+[[tool.mypy.overrides]]
+module = ["gi", "gi.repository", "evdev", "leo_kiosk.ui.*", "leo_kiosk.adapters.*", "leo_kiosk.application"]
+ignore_errors = true
+ignore_missing_imports = true
