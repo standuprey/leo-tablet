@@ -103,11 +103,13 @@ HTML
   chown "$KIOSK_USER:$KIOSK_USER" "$SCI"
 fi
 
-echo "==> Power button: short press = sleep, long press = power off"
+echo "==> Power button: owned by leopowerd; logind ignores the key"
 install -d /etc/systemd/logind.conf.d
 install -m 644 "$HERE/config/logind-power.conf" /etc/systemd/logind.conf.d/leotablet.conf
-# Drop-ins are read on logind restart; this doesn't kill any session.
-systemctl try-restart systemd-logind.service
+# Do NOT restart logind here: restarting it under a live compositor revokes
+# the seat's devices and leaves the running cage frozen (libinput spams
+# "failed to close device: Invalid argument"). The drop-in applies at next
+# reboot - which leo_deploy does by default.
 
 # One suspend state only, so a wake press during suspend entry isn't silently
 # swallowed by systemd's multi-state fallback (see sleep-power.conf header).
