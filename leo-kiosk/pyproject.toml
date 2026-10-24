@@ -33,6 +33,10 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+# Legacy production scripts keep their current formatting until the planned
+# integration/cutover tasks; formatting them now would create noise in diffs
+# that must stay byte-identical for on-device regression checks.
+extend-exclude = ["launcher.py", "backwatch.py"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "UP", "B"]

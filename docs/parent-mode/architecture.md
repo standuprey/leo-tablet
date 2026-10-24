@@ -24,7 +24,7 @@ Deliverables:
 | Catalog content | Import all existing entries for preservation. Review defaults to **games only**; videos have a separate optional filter and are not eligible for game slots in this release. |
 | Existing home activities | Preserve all nine existing tiles initially. Selecting a game replaces one chosen slot, including a legacy activity. Never silently remove an activity. |
 | “Selected” | Occupies exactly one of the nine home positions, rather than merely being a favorite. |
-| Return gesture | **Down, Down, Up** replaces the previous Down, Up shortcut everywhere. |
+| Return gesture | **Down, Up** is retained for exiting a game under review (back to its editor). **Down, Down, Up** handles all other returns (child playback to child home, parent surfaces to child home). The two sets must never be enabled simultaneously; the recognizer swaps context-owned pattern sets on route change. |
 | “Keep/delete/select” versus the three bottom CTAs | Keep/Select is a draft choice in the editor; **Delete**, **Ok**, **Ok and see next** are the three bottom buttons. Delete is the discard choice. |
 | Rating | Optional until supplied; otherwise an integer **0–100**, inclusive. Null means unrated; zero is a real rating. |
 | Delete | Soft-delete from the review queue, removing its home assignment in the same transaction. Keep a tombstone so reimport does not resurrect it. |
@@ -181,38 +181,25 @@ Confidence (1 uncertain, 5 strongly supported): retain GTK/SQLite/Firefox **5**;
 
 ## 5. Catalog files, provenance, and import
 
-### Existing source file
+### SQLite authority and flexible discovery inputs
 
-`web-games.json` is already a real file. Preserve it byte-for-byte as the original discovery snapshot. Do not overwrite it with parent ratings or HTTP-check results.
+SQLite is the authoritative catalog/review store. The owner explicitly permits rearranging `web-games.json` or deleting it after its data is migrated. Its current grouped layout and original six-key proposal are **not fixed contracts**. Do not duplicate mutable parent decisions back into JSON.
 
-Its current shape is grouped by provider and includes string `type` values and nullable dimensions. This differs from the originally requested flat schema. Provide a **generated** canonical file, `catalog/games.json`, and an adjacent schema/provenance manifest as implementation work; the app's importer reads the normalized representation. Never pretend a guessed dimension satisfies the original integer contract.
+Keep the current file only until a verified, restart-persistent import and a fresh-install bootstrap are available. Record useful source identities, checksums, unknown metadata, evidence and exclusions in SQLite/bootstrap metadata; permanent byte-for-byte retention of that filename is not required. When removing it, update references and keep small parser fixtures rather than making tests depend on its old shape.
 
-Canonical discovery JSON uses exactly these six keys per entry:
+Use a versioned `catalog/bootstrap.json` plus validation schema to seed fresh installations without overwriting existing SQLite reviews. The bootstrap is a replaceable deployment asset, not the live datastore; fields may follow the domain DTOs rather than the original display/export format. Validate it independently of the optional original file.
 
-```json
-[
-  {
-    "name": "Letter A activity",
-    "url": "https://www.starfall.com/h/abcs/letter-a/",
-    "is_landscape": true,
-    "width": 1024,
-    "height": 768,
-    "type": 2
-  }
-]
-```
+Domain contracts retained regardless of import layout:
 
-Contract:
-
-- `type`: **0 = other, 1 = video, 2 = game**. These are application enums, not browser MIME types.
-- `width` and `height`: nonnegative integers; **0/0 = unknown**. Reject one zero with one positive dimension. Known dimensions describe a documented design/iframe size, not automatically the display resolution.
-- `is_landscape`: boolean. If orientation is unknown, export `false` as a schema-compatibility placeholder and record `orientation_known=false` in the provenance sidecar. Never interpret that placeholder as measured portrait orientation in UI; show “Unknown.”
-- For known square dimensions, `is_landscape=false` is the documented export convention; the UI can show “Square.”
-- The sidecar is keyed by stable game ID and contains provider, original URL/type/dimensions, evidence category, and exclusions. Runtime domain models allow unknown orientation/dimensions instead of conflating unknown with portrait.
+- Media types: **0 = other, 1 = video, 2 = game**; these are application enums, not browser MIME types.
+- Unknown dimensions are nullable; known sizes are a positive integer pair with explicit `unknown/design/iframe/popup/inferred` evidence. Popup/inferred values are not measured game resolutions.
+- Orientation is explicit `unknown/landscape/portrait/square`. There is no need for false/zero compatibility placeholders now that the source format is unconstrained.
+- Stable source IDs and original/parent names remain separate. Source URL, launch override and provenance survive reformatting, import and restart.
+- Preserve arbitrary JSON-object source metadata in `source_metadata_json` without promoting it to review status or executable commands.
 
 ### Discovery hygiene
 
-The current 109 entries include a Starfall section URL, a Sesame generic games entry, and metadata inferred across games. Audit every entry structurally, retain its original record, and exclude confirmed section/hub links from the playable queue. Do not hard-code an expected final game count of 93.
+The current 109 entries include a Starfall section URL, query-based Sesame game links and metadata inferred across games. Audit available records and preserve useful provenance, excluding only confirmed section/hub links from the playable queue. A `/games?id=...` path may identify an individual game and must not be discarded just for its path/name. Do not hard-code either the current input count or an expected eligible count of 93.
 
 - Initial HTTP 200 proves neither a single-game page nor successful playback. Record discovered/checked evidence separately from parent status.
 - Keep Gulli geo-blocking and per-item portrait/landscape metadata. Its launcher popup sizes are **not** game-canvas resolutions.
@@ -243,14 +230,14 @@ Core tables:
 | `catalog_imports` | id, source_checksum, imported_at, report_json |
 | `games` | id, provider_id, canonical_source_url, launch_url, source_name, parent_name nullable, media_type, source_metadata_json, tested_at nullable, reviewed_at nullable, rating nullable, deleted_at nullable, revision |
 | `home_slots` | position integer PK 1–9, game_id nullable UNIQUE FK, legacy_tile_json nullable |
-| `launch_sessions` | id UUID, game_id nullable, slot nullable, role, started_at, ended_at nullable, outcome, failure_reason nullable |
+| `launch_sessions` | id UUID, game_id nullable, slot nullable, role, started_at nullable, ended_at nullable, outcome nullable (requires ended_at), failure_reason nullable |
 | `review_events` | id, game_id, event_kind, timestamp, change_json; no browser passwords or web history |
 
 Database constraints:
 
 - `rating IS NULL OR rating BETWEEN 0 AND 100`, and enforce integer type in validation/constraint.
 - Unique `(provider_id, canonical_source_url)`.
-- `home_slots` allows either a game, a trusted legacy tile, or an empty slot, never both game and legacy content. Exactly nine slot rows are seeded and are updated, never deleted by application code.
+- `home_slots` allows either a game, a trusted legacy tile, or an empty slot, never both game and legacy content. Exactly nine slot rows are seeded and are updated, never deleted by application code (enforced by a `BEFORE DELETE` trigger, since foreign keys alone cannot prevent row deletion). A set outcome requires `ended_at`; recovery may finish a session without an outcome.
 - Only a nondeleted reviewed **game** may occupy a game slot. Enforce cross-table invariants in one domain transaction and, where practical, constraints/triggers; test invalid repository writes.
 - Selected games occupy one slot each; at most nine can be selected. There can be fewer than nine selected games because other slots can still hold native activities or be empty.
 - Do not store `selected` as a second independent boolean: derive it from `home_slots` to prevent drift.
@@ -296,23 +283,25 @@ Top-level routes: `CHILD_HOME`, `PARENT_HOME`, `REVIEW_LIST`, `REVIEW_TRIAL`, `R
 
 A parent session stays active across Review, Wifi, trial playback, and portal navigation until Exit is chosen. A launch session records its role and return context; closing a process is not enough to decide where to go.
 
-| Current context | Up, Down, Down | Down, Down, Up |
-|---|---|---|
-| Child home | Parent home | No-op |
-| Child game/native activity | Stop owned activity, then parent home | Stop activity, then child home |
-| Parent home | No-op | Child home |
-| Review list | Parent home | Parent home |
-| Review trial | Stop trial, then parent home | Stop trial, then review editor for that exact game |
-| Review editor | Parent home, with unsaved-change confirmation | Review list, with unsaved-change confirmation |
-| Wifi | Parent home; cancel pending UI work safely | Parent home; cancel pending UI work safely |
-| Portal | Close portal, then parent home | Close portal, then Wifi |
+| Current context | Up, Down, Down | Down, Down, Up | Down, Up |
+|---|---|---|---|
+| Child home | Parent home | No-op | No-op |
+| Child game/native activity | Stop owned activity, then parent home | Stop activity, then child home | No-op |
+| Parent home | No-op | Child home | No-op |
+| Review list | Parent home | Parent home | No-op |
+| Review trial | Stop trial, then parent home | No-op (geometrically the trailing D,U completes the short match; see below) | Stop trial, then review editor for that exact game |
+| Review editor | Parent home, with unsaved-change confirmation | Review list, with unsaved-change confirmation | No-op |
+| Wifi | Parent home; cancel pending UI work safely | Parent home; cancel pending UI work safely | No-op |
+| Portal | Close portal, then parent home | Close portal, then Wifi | No-op |
+
+Only one pattern set is enabled at a time. The default set (Up/Down/Down and Down/Down/Up) is active on child, parent, list, editor, Wifi, and portal surfaces. The review-trial set (Down/Up) is active only while a game is running for review, because the short return would otherwise swallow ordinary volume adjustments on every other surface.
 
 Natural browser exit, child timeout, review timeout, and browser crash follow the recorded origin: child activity -> home; review trial -> editor with an outcome banner. Never lose which game was under review. Parent trials use a configurable safety timeout (default 30 minutes), not the child's per-slot time limit.
 
 ### Recognizer contract
 
 - Accept key-down (`EV_KEY`, value 1) for volume up/down only. Ignore releases, repeats (value 2), unrelated keys and power events.
-- Recognize exactly `[UP, DOWN, DOWN]` and `[DOWN, DOWN, UP]` using a rolling three-tap buffer and `time.monotonic()`.
+- Recognize exactly `[UP, DOWN, DOWN]` and `[DOWN, DOWN, UP]` on child/parent/list/editor/Wifi/portal surfaces, and `[DOWN, UP]` during a review trial, using a rolling buffer and `time.monotonic()`. Pattern sets are context-owned and swapped on route change; they are geometrically compatible (Down/Up diverges from Down/Down/Up at the second key) but must never be enabled simultaneously outside trial playback, because the short return would swallow ordinary volume adjustments.
 - Defaults: no gap greater than 1.0 second, complete sequence within 2.0 seconds. Both values are configuration, not sprinkled constants.
 - After a match consume the entire buffer and apply a 500 ms cooldown. Reset on route changes, suspend/resume, device removal, and sequence timeout.
 - Wrong sequences keep only the valid suffix needed for a new match; one press cannot participate in two emitted actions.
@@ -338,7 +327,7 @@ Reuse the home grid's margins, spacing, row/column expansion and tile size. All 
 
 ### Trial playback
 
-Open the actual single-game URL in Firefox kiosk mode. Prefer a provider's actual playable landing page rather than a fragile internal build hash unless the direct URL is already known and deliberately curated. Show a brief parent instruction before launch: “Return: Volume Down, Down, Up.”
+Open the actual single-game URL in Firefox kiosk mode. Prefer a provider's actual playable landing page rather than a fragile internal build hash unless the direct URL is already known and deliberately curated. Show a brief parent instruction before launch: “Return: Volume Down, Up.”
 
 On return persist a session outcome, then display the editor. Network failure, unsupported graphics, ads, account gates and geo-blocks are review evidence, not reasons to auto-approve. Browser startup cannot measure actual canvas resolution; show source dimensions with evidence labels until a parent verifies them.
 
@@ -503,7 +492,7 @@ Release gates: platform audit passed; portal keyboard prototype passed; all tran
 
 ## 13. Implementation sequencing and estimates
 
-See `backlog.md` and `tasks.json` for the original 68-task backlog with Fibonacci sizes. The authoritative implementation graph is now [specs.md](../../specs.md), refined into 88 atomic tasks with per-type model assignments; [implementation-status.md](implementation-status.md) records completion. The SQLite startup/migration/fault work was split into parent-8, parent-87 and parent-88. Original Fibonacci sizes describe relative complexity, not days.
+See `backlog.md` and `tasks.json` for the original 68-task backlog with Fibonacci sizes. The authoritative implementation graph is now [specs.md](../../specs.md), refined into 90 atomic tasks with per-type model assignments; [implementation-status.md](implementation-status.md) records completion. The SQLite startup/migration/fault work was split into parent-8, parent-87 and parent-88; catalog schema/metadata/record persistence is split into parent-9, parent-89 and parent-90. The latest input-format decision permits rearranging or removing `web-games.json` after verified SQLite migration and fresh-install bootstrap coverage. Original Fibonacci sizes describe relative complexity, not days.
 
 Phase order:
 

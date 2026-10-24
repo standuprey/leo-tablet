@@ -6,12 +6,13 @@ A fullscreen picture-tile home screen for a 5-year-old, running on Arch Linux wi
 | File | What it is |
 |---|---|
 | `launcher.py` | Fullscreen GTK3 home screen with big picture tiles |
-| `tiles.json` | The tiles: emoji, label, color, command, time limit (minutes) |
+| `tiles.json` | The tiles: label, color, command, time limit (minutes) |
 | `install-kiosk.sh` | Installs packages, copies the files, makes content folders, sets up greetd auto-login |
 | `voices/` | Optional: record Papa saying each word as `<tile id>.wav` (e.g. `draw.wav`); played on tap |
 
 ## How it behaves
 - Tap a tile: the app opens fullscreen. When Léo quits it, **tap volume-down then volume-up within 1 second**, or the tile's time limit runs out, he's back on the home screen.
+- **Boot**: the GRUB menu is hidden — the tablet goes straight to the kiosk. For recovery (bad kernel, fsck), hold **ESC** or an arrow key within the first second of power-on to open the menu. To undo: `sudo cp /etc/default/grub.orig /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg`.
 - Power button: **short press puts the tablet to sleep** (suspend), **holding it ~5 seconds powers it off** (logind long-press; config in `logind-power.conf`).
 - Parent escape: tap the invisible top-left corner **5 times within 4 seconds**. The kiosk exits and you get a text login.
 - If an app isn't installed, the tile says "Ask Papa to fix this one!" instead of crashing.
@@ -88,7 +89,7 @@ The parent area, game review workflow, home-slot selection, and iwd-backed Wi-Fi
 - [Architecture and product behavior](docs/parent-mode/architecture.md)
 - [Detailed implementation backlog](docs/parent-mode/backlog.md) — 68 dependency-linked tasks with Fibonacci sizes, domains, acceptance criteria, and tests
 - [Machine-readable tasks](docs/parent-mode/tasks.json)
-- [Saved discovery catalog](web-games.json) — source data, not a list of verified playable games
+- [Discovery input](web-games.json) — temporary source data, not verified playable games; its format may change or the file may be removed after verified SQLite import
 - [Implementation status](docs/parent-mode/implementation-status.md) — completed task IDs and remaining integration gates
 - [Development and test commands](docs/parent-mode/development.md)
 

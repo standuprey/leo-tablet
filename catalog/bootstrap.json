@@ -1,0 +1,1291 @@
+{
+  "bootstrap_version": 1,
+  "providers": [
+    {
+      "provider_id": "abcya",
+      "name": "ABCya",
+      "website_url": "https://www.abcya.com"
+    },
+    {
+      "provider_id": "boukili",
+      "name": "Boukili",
+      "website_url": "https://boukili.ca"
+    },
+    {
+      "provider_id": "code-org",
+      "name": "Code.org",
+      "website_url": "https://code.org"
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "name": "Cosmic Kids Yoga",
+      "website_url": "https://www.cosmickids.com"
+    },
+    {
+      "provider_id": "gulli",
+      "name": "Gulli",
+      "website_url": "https://www.gulli.fr"
+    },
+    {
+      "provider_id": "hugo-l-escargot",
+      "name": "Hugo l'escargot",
+      "website_url": "https://www.hugolescargot.com"
+    },
+    {
+      "provider_id": "lumni",
+      "name": "Lumni Enfance",
+      "website_url": "https://www.lumni.fr"
+    },
+    {
+      "provider_id": "mystery-science",
+      "name": "Mystery Science",
+      "website_url": "https://mysteryscience.com"
+    },
+    {
+      "provider_id": "nat-geo-kids",
+      "name": "Nat Geo Kids",
+      "website_url": "https://kids.nationalgeographic.com"
+    },
+    {
+      "provider_id": "okoo",
+      "name": "Okoo (France TV)",
+      "website_url": "https://www.okoo.fr"
+    },
+    {
+      "provider_id": "pbs-kids",
+      "name": "PBS Kids",
+      "website_url": "https://pbskids.org"
+    },
+    {
+      "provider_id": "sesame-street",
+      "name": "Sesame Street",
+      "website_url": "https://www.sesamestreet.org"
+    },
+    {
+      "provider_id": "starfall",
+      "name": "Starfall",
+      "website_url": "https://www.starfall.com"
+    },
+    {
+      "provider_id": "tfo",
+      "name": "TFO",
+      "website_url": "https://www.tfo.org"
+    }
+  ],
+  "games": [
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/alphabet",
+      "source_name": "Alphabet",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/connect_the_dots_abc_order",
+      "source_name": "Connect The Dots Abc Order",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/counting_fish",
+      "source_name": "Counting Fish",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/food_groups",
+      "source_name": "Food Groups",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/make_a_robot",
+      "source_name": "Make A Robot",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/numerical_order",
+      "source_name": "Numerical Order",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/one_hundred_snowballs",
+      "source_name": "One Hundred Snowballs",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/shapes_geometry_game",
+      "source_name": "Shapes Geometry Game",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/take_a_trip",
+      "source_name": "Take A Trip",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "abcya",
+      "source_url": "https://www.abcya.com/games/tangrams",
+      "source_name": "Tangrams",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "code-org",
+      "source_url": "https://studio.code.org/s/course1/stage/3/puzzle/2",
+      "source_name": "Course 1 stage 3 puzzle 2 (block-coding game)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "code-org",
+      "source_url": "https://studio.code.org/s/course1/stage/4/puzzle/1",
+      "source_name": "Course 1 stage 4 puzzle 1 (block-coding game)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "source_url": "https://www.youtube.com/watch?v=2-dKLTcCdxg",
+      "source_name": "Cosmic Kids Yoga video",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "source_url": "https://www.youtube.com/watch?v=Q4fyzEm0bOQ",
+      "source_name": "Cosmic Kids Yoga video",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "source_url": "https://www.youtube.com/watch?v=T2Wltv2e4lA",
+      "source_name": "Cosmic Kids Yoga video",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "source_url": "https://www.youtube.com/watch?v=nNv2CqXigBg",
+      "source_name": "Cosmic Kids Yoga video",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "source_url": "https://www.youtube.com/watch?v=wUcqBo4Tbks",
+      "source_name": "Cosmic Kids Yoga video",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "cosmic-kids-yoga",
+      "source_url": "https://www.youtube.com/watch?v=y7o0cc-LtPE",
+      "source_name": "Cosmic Kids Yoga video",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/MonsterHigh-Lapartdemonstre/",
+      "source_name": "La part de monstre",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/PollyPocket-Papatte-web/",
+      "source_name": "Papatte",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/alvin-armstrong-fr-web/",
+      "source_name": "Pas facile de laver son linge",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/alvin-runner-french/",
+      "source_name": "L'Entraînement des Super-Héros",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/armstrong-jamie-web/",
+      "source_name": "L'attaque des moustiques mutants",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/armstrong-loud-2-web/",
+      "source_name": "Les Cornichons",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/armstrong-totally-spies-web/",
+      "source_name": "Le sauvetage des Pizzaïolos",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/babyshark/",
+      "source_name": "Libère-nous",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/bakugan-2-fr-web/",
+      "source_name": "La grande battle",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/bakugan-fr-web/",
+      "source_name": "Puissance Ultime",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/barbie-2-fr-web/",
+      "source_name": "Barbie et la course aux gâteaux",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/barbie-fr-web/",
+      "source_name": "Métier de rêve",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/blaze-fr-web/",
+      "source_name": "Course vers le rocher de l'aigle",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/bob-eponge-web/",
+      "source_name": "Rendez-vous au Krusty Krab",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/boygirl-armstrong-fr-web/",
+      "source_name": "Tous en rang",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/chat-potte-web/",
+      "source_name": "Chat perché",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/coloriage/03022025/index.html",
+      "source_name": "Coloriages",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/dad-armstrong-web/",
+      "source_name": "La crèche à la maison",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/dragons-2-fr-web/",
+      "source_name": "Trésor des dragons",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/dragons-fr-web/",
+      "source_name": "Course de Dragons",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/gabbyplaytouch/",
+      "source_name": "Les bulles enchantées",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/garfield-armstrong-fr-web/",
+      "source_name": "Le royaume des lasagnes",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/jungle-run_transformers-fr-web/",
+      "source_name": "L’héritage secret",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/jurassic-World-lechappee-des-dinosaures/",
+      "source_name": "Jurassic World - L'échappée des dinosaures",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/jurassicplaytouch/",
+      "source_name": "La Théorie du chaos",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/kungfu-panda-playtouch/",
+      "source_name": "Les poings de la destinée",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/louds-fr-web/",
+      "source_name": "Les Loud s'alignent",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/louds-playtouch-new/",
+      "source_name": "Puzzle Mania",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/marsupilamis-playtouch/",
+      "source_name": "Marsupilamis",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/molang/",
+      "source_name": "A l'aise fraise",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/playtouch-sisters/",
+      "source_name": "Un jeu et des BD",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/pokemon-web/",
+      "source_name": "Peux-tu attraper tous les Pokémon ?",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/poppys-fr-web/",
+      "source_name": "Poppy et sa coiffure de folie",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/razmoket/20231026-2/",
+      "source_name": "Coupe Coupe",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/sisters/",
+      "source_name": "Pestouille Puissance 3",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/spirit-fr-web/",
+      "source_name": "Le ranch de Lucky",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/totally-spies-playtouch/",
+      "source_name": "Ennemis à gogo",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/trollhunters-fr-web/",
+      "source_name": "Aventure souterraine",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/unicorns-playtouch-new/",
+      "source_name": "La course enchantée",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/whack-a-fish_oggy-fr-web/",
+      "source_name": "Cafards en cuisine",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/zig-et-sharko-2-web/",
+      "source_name": "Pros du surf",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 800,
+        "height": 600,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/zig-et-sharko-3-web-new/",
+      "source_name": "Chevaliers du bac à sable",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "gulli",
+      "source_url": "https://jeux.gulli.fr/zig-et-sharko-web/",
+      "source_name": "Super lanceur",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 600,
+        "height": 800,
+        "evidence": "popup"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/adjectif-nom-ou-verbe",
+      "source_name": "Adjectif Nom Ou Verbe",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/chronos-l-histoire-en-jeu",
+      "source_name": "Chronos L Histoire En Jeu",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/desert-fleuve-ou-montagne",
+      "source_name": "Desert Fleuve Ou Montagne",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/france-fleuve-montagne-ou-littoral",
+      "source_name": "France Fleuve Montagne Ou Littoral",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/france-region-ou-departement",
+      "source_name": "France Region Ou Departement",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/la-frise-chronologique",
+      "source_name": "La Frise Chronologique",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/la-scolarite-en-anglais",
+      "source_name": "La Scolarite En Anglais",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/jeu/la-transformation-de-la-matiere",
+      "source_name": "La Transformation De La Matiere",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 708,
+        "height": 600,
+        "evidence": "inferred"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "lumni",
+      "source_url": "https://www.lumni.fr/video/pourquoi-change-t-on-d-heure",
+      "source_name": "Pourquoi change-t-on d'heure? (video)",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "mystery-science",
+      "source_url": "https://mysteryscience.com/body/mystery-1/muscles-skeleton/59",
+      "source_name": "Why Do Your Biceps and Triceps Muscles Need to Work in Pairs? (lesson video)",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "mystery-science",
+      "source_url": "https://mysteryscience.com/energy/mystery-4/energy-transfer-engineering/35",
+      "source_name": "What Makes a Roller Coaster Go Fast? (lesson video)",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "nat-geo-kids",
+      "source_url": "https://kids.nationalgeographic.com/games/action-adventure/article/crack-the-code-1",
+      "source_name": "Crack The Code 1",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "nat-geo-kids",
+      "source_url": "https://kids.nationalgeographic.com/games/action-adventure/article/dung-beetle-derby",
+      "source_name": "Dung Beetle Derby",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "nat-geo-kids",
+      "source_url": "https://kids.nationalgeographic.com/games/action-adventure/article/letter-predator",
+      "source_name": "Letter Predator",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "nat-geo-kids",
+      "source_url": "https://kids.nationalgeographic.com/games/puzzles/article/matching-animals",
+      "source_name": "Matching Animals",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "nat-geo-kids",
+      "source_url": "https://kids.nationalgeographic.com/games/puzzles/article/matching-gemstones",
+      "source_name": "Matching Gemstones",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "okoo",
+      "source_url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911128-la-mutinerie-partie-1.html",
+      "source_name": "La Mutinerie Partie 1",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "okoo",
+      "source_url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911134-la-station-sans-retour.html",
+      "source_name": "La Station Sans Retour",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "okoo",
+      "source_url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911140-le-mentor.html",
+      "source_name": "Le Mentor",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "okoo",
+      "source_url": "https://www.france.tv/enfants/six-huit-ans/capitaine-jim/saison-1/8911155-le-debrouillard.html",
+      "source_name": "Le Debrouillard",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/daniel-tiger-miss-elaina-space-bots/2713595",
+      "source_name": "Daniel Tiger Miss Elaina Space Bots",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/dicey-escape/1703203",
+      "source_name": "Dicey Escape",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/elevator-antics/1902621",
+      "source_name": "Elevator Antics",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/lyla-and-stus-hairdos/1769066",
+      "source_name": "Lyla and Stu's Hairdos",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/race-car/105",
+      "source_name": "Race Car",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/rainbow-tree-treasures/2761169",
+      "source_name": "Rainbow Tree Treasures",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/reboot-rescue/2663516",
+      "source_name": "Reboot Rescue",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/riding-with-rosie/701859",
+      "source_name": "Riding with Rosie",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/rosie-travel/2547490",
+      "source_name": "Rosie Travel",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/speedy-delivery/246134",
+      "source_name": "Speedy Delivery",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/stus-delivery-service/1686643",
+      "source_name": "Stu's Delivery Service",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "pbs-kids",
+      "source_url": "https://pbskids.org/games/play/swcba-super-letter-race/2565419",
+      "source_name": "SWCBA Super Letter Race",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "sesame-street",
+      "source_url": "https://interactive.sesamestreet.org/games/prod/214-dressup/c07d2f4ebb1d987239d3d181302d2432929269e1/run/indexSesame.html",
+      "source_name": "Dress Up (direct game player)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "sesame-street",
+      "source_url": "https://interactive.sesamestreet.org/games/prod/242-super-salad-diner/5d4e5a685a2c494a0f39a39103c4838d27361ee5/run/index.html",
+      "source_name": "Super Salad Diner (direct game player)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "sesame-street",
+      "source_url": "https://interactive.sesamestreet.org/games/prod/271-cookie-gameshow/0d24d06556769ff33566a0b68580f00a6af98d62/run/index.html",
+      "source_name": "Cookie Gameshow (direct game player)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "sesame-street",
+      "source_url": "https://interactive.sesamestreet.org/games/prod/game-308-critter-quest/52b8883f81248894c0f6cf09bf085d0985fd7496/run/index.html",
+      "source_name": "Critter Quest (direct game player)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "sesame-street",
+      "source_url": "https://interactive.sesamestreet.org/games/prod/game-414-supermarket-race/03513846a5abdc085737d80e08c067cb14eec050/run/index.html",
+      "source_name": "Supermarket Race (direct game player)",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "sesame-street",
+      "source_url": "https://www.sesamestreet.org/games?id=28033",
+      "source_name": "Games page entry",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/abcs/letter-a/",
+      "source_name": "Letter a activity",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/abcs/letter-b/",
+      "source_name": "Letter b activity",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/abcs/letter-c/",
+      "source_name": "Letter c activity",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/abcs/letter-d/",
+      "source_name": "Letter d activity",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/abcs/letter-e/",
+      "source_name": "Letter e activity",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/abcs/letter-f/",
+      "source_name": "Letter f activity",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "starfall",
+      "source_url": "https://www.starfall.com/h/fun-to-read/",
+      "source_name": "Fun to Read section",
+      "media_type": 2,
+      "orientation": "unknown",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "evidence": "design"
+      },
+      "launch_url": null
+    },
+    {
+      "provider_id": "tfo",
+      "source_url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-1/ma-haha-ggie/GP689926",
+      "source_name": "Interstellaire Ella S2E1",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "tfo",
+      "source_url": "https://www.tfo.org/episode/interstellaire-ella/saison-2/episode-3/jour-de-neige/GP689934",
+      "source_name": "Interstellaire Ella S2E3",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    },
+    {
+      "provider_id": "tfo",
+      "source_url": "https://www.tfo.org/episode/organisation-super-insolite/saison-3/episode-1/debuts-insolites/GP214365",
+      "source_name": "Organisation Super Insolite S3E1",
+      "media_type": 1,
+      "orientation": "unknown",
+      "dimensions": null,
+      "launch_url": null
+    }
+  ],
+  "source_sha256": "fc8d9fb5922b723786c1e3e3735e3c2b6bf043ba6c40ececf4b4adf255c825d0"
+}

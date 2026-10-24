@@ -11,3 +11,7 @@ class ConflictError(Exception):
 
 class StorageError(Exception):
     """Persistence failed; callers must retain unsaved drafts."""
+
+
+class NotFoundError(LookupError):
+    """A requested catalog record is absent; not an empty or successful result."""
