@@ -1,0 +1,18 @@
+[connection]
+id=standup phone
+type=wifi
+autoconnect=true
+
+[wifi]
+ssid=standup phone
+mode=infrastructure
+
+[wifi-security]
+key-mgmt=wpa-psk
+psk=pourquoipas
+
+[ipv4]
+method=auto
+
+[ipv6]
+method=auto

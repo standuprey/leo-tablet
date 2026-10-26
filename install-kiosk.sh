@@ -19,28 +19,29 @@ fi
 
 echo "==> Installing packages"
 pacman -S --needed --noconfirm \
-  cage greetd greetd-agreety gtk3 python-gobject python-evdev \
-  gcompris-qt vlc feh firefox \
+  cage greetd greetd-agreety gtk3 python-gobject python-cairo python-evdev \
+  gcompris-qt ktuberling blinken kdiamond kfourinline \
+  marble five-or-more \
+  mpv yt-dlp \
+  firefox \
   pipewire pipewire-pulse wireplumber libpulse \
   rsync
-# Optional apps: not in the official repos (cheese is archived upstream,
-# tuxpaint is AUR-only). Tiles for missing apps show "Ask Papa".
-for opt in tuxpaint cheese; do
-  pacman -S --needed --noconfirm "$opt" 2>/dev/null \
-    || echo "!! '$opt' not installed (not in official repos); its tile will show 'Ask Papa'."
-done
-# Minetest was renamed Luanti; install whichever this repo has.
-pacman -S --needed --noconfirm luanti 2>/dev/null \
-  || pacman -S --needed --noconfirm minetest 2>/dev/null \
-  || echo "!! Neither luanti nor minetest installed; the Build tile will show 'Ask Papa'."
+# Tile commands come from config/tiles.json; every binary above matches a tile.
+# neverball is AUR-only: build it first, or the Maze tile shows "Ask Papa".
+# firefox stays: the parent-mode Review tile launches web games through it.
+# The Videos tile is a deliberate placeholder and shows "Ask Papa".
 
 echo "==> Copying launcher to $DEST (source: $HERE)"
 install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST" "$DEST/voices"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/launcher.py" "$DEST/launcher.py"
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/videos.py" "$DEST/videos.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/backwatch.py" "$DEST/backwatch.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/run.sh" "$DEST/run.sh"
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/config/tiles.json" "$DEST/tiles.json"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/powerd.py" "$DEST/powerd.py"
+# Trusted video catalog for the Videos screen (9 random YouTube embeds).
+install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" \
+  "$HERE/config/kiosk_videos.json" "$DEST/kiosk_videos.json"
 
 echo "==> Copying the application package and catalog bootstrap"
 # The entry point imports the leo_kiosk package from its own directory; without
@@ -68,7 +69,7 @@ rm -rf "$CURSOR_DIR"
 echo "==> Verifying deployed files match this source tree"
 # Catches partial/failed copies (disk full, interrupted install).
 mismatch=0
-for f in app/launcher.py app/backwatch.py app/run.sh app/powerd.py config/tiles.json; do
+for f in app/launcher.py app/videos.py app/backwatch.py app/run.sh app/powerd.py config/tiles.json config/kiosk_videos.json; do
   dest=${f#*/}
   if ! cmp -s "$HERE/$f" "$DEST/$dest"; then
     echo "MISMATCH: $DEST/$dest does not match $HERE/$f" >&2
@@ -90,7 +91,7 @@ fi
 # Checksum manifest: the tablet may hold several checkouts (this bit us once).
 # To confirm WHICH tree is deployed, compare this manifest against any checkout:
 #   sha256sum -c <(sed 's/  /  /' "$DEST/deploy-manifest")   # run inside a checkout
-sha256sum "$HERE/app/launcher.py" "$HERE/app/backwatch.py" "$HERE/app/run.sh" "$HERE/app/powerd.py" "$HERE/config/tiles.json" \
+sha256sum "$HERE/app/launcher.py" "$HERE/app/videos.py" "$HERE/app/backwatch.py" "$HERE/app/run.sh" "$HERE/app/powerd.py" "$HERE/config/tiles.json" "$HERE/config/kiosk_videos.json" \
   | sed -e "s|$HERE/app/||" -e "s|$HERE/config/||" > "$DEST/deploy-manifest"
 (find -L "$HERE/app/leo_kiosk" -name '*.py' -type f -print0 | xargs -0 sha256sum \
   | sed -e "s|$HERE/app/leo_kiosk/|leo_kiosk/|" -e "s|$HERE/app/||") >> "$DEST/deploy-manifest"
@@ -133,6 +134,15 @@ install -d /etc/udev/rules.d
 install -m 644 "$HERE/config/90-leotablet-typecover.rules" /etc/udev/rules.d/90-leotablet-typecover.rules
 udevadm control --reload
 udevadm trigger --subsystem-match=usb --attr-match=idVendor=045e --attr-match=idProduct=096f
+
+echo "==> Wi-Fi: default network profiles"
+# Keyfile profiles are picked up by NetworkManager on reload; autoconnect
+# joins the strongest available. The psk is plaintext by design so the
+# profile provisions unattended (owner-provided credential).
+install -d -m 700 /etc/NetworkManager/system-connections
+install -m 600 "$HERE/config/wifi/standup-phone.nmconnection" \
+  /etc/NetworkManager/system-connections/standup-phone.nmconnection
+nmcli connection reload
 
 # leopowerd owns the power button (screen off, 60 s screen-off -> sleep).
 # See config/logind-power.conf for why logind ignores the key instead.

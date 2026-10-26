@@ -1,0 +1,146 @@
+
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fun to Read</title>
+		<meta charset="UTF-8">
+		<meta name="authoring-tool" content="Adobe_Animate_CC">
+		<link rel="stylesheet" href="../_css/stylesheet.css">
+		<script>
+			var indexLinkHelp = "http://help.starfall.com";
+		</script>
+		<script src="/h/_js/jquery/jquery-3.2.1.min.js?ds=20231018"></script>
+		<script src="/h/_js/createjs/createjs-v1.min.js?ds=20200131"></script>
+		<script src="/h/_js/vikram/index-optionalbar.js"></script>
+		<script src="/h/_js/vikram/index-logos.js"></script>
+		<script src='/h/_js/vikram/index-backbutton.js'></script>
+		<script src='/h/_js/vikram/resize.js'></script>
+		<script src="/h/_js/vikram/backbutton-fix.js"></script>
+		<script src="index-fun-to-read.js"></script>
+		<script src="index-controller.js?ds=20240319"></script>
+		<style>
+			body{background-color:#FDC650;}
+			#rotate_icon_container{
+				text-align: center;
+				background-color: #FDC650;
+				position: relative;
+				display: none;
+			}
+			#rotate_icon{position: absolute;}
+			#navigation{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 179px;
+			}
+			#back{width: 100%;}
+			body > img[style="visibility: hidden;"]{ display: none; }
+		</style>
+		<script>
+			var SpecialDefinitions = {
+				buttons: [
+					{id:"btn_me", link:"/h/me/?sn=fun-to-read"},
+					{id:"btn_art", link:"/h/ftr-art/?sn=fun-to-read"},
+					{id:"btn_magic", link:"/h/ftr-magic/?sn=fun-to-read"},
+					{id:"btn_music", link:"/h/ftr-music/?sn=fun-to-read"},
+					{id:"btn_poetry", link:"/h/ftr-poetry/?sn=fun-to-read"},
+					{id:"btn_twister", link:"/h/ftr-twisters/?sn=fun-to-read"},
+					{id:"btn_birdriddles", link:"/h/ftr-birdriddles/?sn=fun-to-read"}
+					]
+			}
+			// Vikram Variables
+			var OptionalBarOn = 0;
+			var stateStandardsOn = 0;
+			var stateStandardsColor = "#197BF6";
+			var stateStandardsLink = indexLinkHelp;
+			var starfallLogoPath = "../_images/starfall-logo.png";
+			// Canvas Generation
+			var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+			var OptionalBarHeight = 40;
+			var stageWidth = 1362, stageHeight = 768, maxStageWidth = 1730, maxStageHeight = 768;
+			function init() {
+				starfall.BackButton.init(stageWidth);
+				canvas = document.getElementById("canvas");
+				anim_container = document.getElementById("animation_container");
+				dom_overlay_container = document.getElementById("dom_overlay_container");
+				var comp=AdobeAn.getComposition("C5C77ABD4006A74B9C9F60BEEAC74E03");
+				var lib=comp.getLibrary();
+				handleComplete(null, comp);
+			}
+			function handleFileLoad(evt, comp) {
+				var images=comp.getImages();
+				if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }
+			}
+			function handleComplete(evt,comp) {
+				toggleLoader(false);
+				var lib=comp.getLibrary();
+				var ss=comp.getSpriteSheet();
+				exportRoot = new lib.indexfuntoread();
+				stage = new lib.Stage(canvas);
+				starfall.Resize.setup(stage,stageWidth,stageHeight,maxStageWidth,maxStageHeight);
+				var controller = new starfall.FtrController(exportRoot);
+				stage.addChild(exportRoot);
+				if(OptionalBarOn){
+					addOptionalbar();	
+				}
+				addLogos();
+				fnStartAnimation = function() {
+					createjs.Ticker.framerate = 12;
+				}
+				AdobeAn.compositionLoaded(lib.properties.id);
+				fnStartAnimation();
+			}
+			function playSound(id, loop) {
+				return createjs.Sound.play(id, createjs.Sound.INTERRUPT_EARLY, 0, 0, loop);
+			}
+			function toggleLoader(show){
+				if(show){
+					dom_overlay_container.style.display = "block";
+					canvas.style.display = "none";
+				}
+				else{
+					dom_overlay_container.style.display = "none";
+					canvas.style.display = "block";
+				}
+			}
+			function addOptionalbar(){
+				var optionalBar = new starfall.OptionalBar(stageWidth);
+				stage.addChild(optionalBar);
+				starfall.Resize.events.addEventListener("resize",function(){
+					optionalBar.resize();
+				});
+				exportRoot.y = OptionalBarHeight;
+				var remainingHeight = stageHeight-OptionalBarHeight;
+				exportRoot.scaleX = exportRoot.scaleY = remainingHeight/stageHeight;
+				exportRoot.x = (stageWidth - (stageWidth*exportRoot.scaleX))/2;
+			}
+			function addLogos(){
+				var logo = new starfall.IndexLogos(exportRoot,stageWidth,stageHeight,stateStandardsColor,stateStandardsLink,stateStandardsOn,starfallLogoPath);
+				exportRoot.addChild(logo);
+			}
+		</script>
+	<link rel="stylesheet" href="/h/_css/accessible.css" type="text/css">
+</head>
+	<body onload="init();" style="margin:0px;">
+<div class="accessible-content">
+                    <a href="https://starfall.com/h/accessibility.php" class="accessible-link">Accessibility Information</a>
+                </div>
+		<div id="animation_container">
+			<canvas id="canvas" width="1024" height="768" style="position: absolute; display: block; background-color:#FDC650; -webkit-tap-highlight-color: transparent;"></canvas>
+			<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; position: absolute; left: 0px; top: 0px; display: block; width:100%; height:100%">
+				<div id='_preload_div_' style='background:#FDC650; display: inline-block; height:100%; width: 100%; vertical-align:middle;position:absolute;left:0px;top:0px;text-align: center;'>
+					<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>
+					<img src="../_images/web-system-wide-loading-stars-GIF.gif?1498454704922" style='vertical-align: middle; max-width: 100%; max-height: 100%'/>
+				</div>
+			</div>
+		</div>
+		<div id="rotate_icon_container">
+			<img id="rotate_icon" src="../_images/rotate-phone-icon-white.png" />
+		</div>
+		<div id="navigation">
+			<a href="https://www.starfall.com/h/index.php?mg=m"><img src="../_images/green-arrow.png" id="back"></a>
+		</div>
+	</body>
+</html>

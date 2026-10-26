@@ -1,0 +1,702 @@
+[
+  {
+    "channel": "SciShow Kids",
+    "title": "The Biggest Volcano Ever is in Space! | SciShow Kids",
+    "minutes": 5.8,
+    "watch_url": "https://www.youtube.com/watch?v=8qdYCpSW2eY",
+    "embed_url": "https://www.youtube.com/embed/8qdYCpSW2eY?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "How to compare and contrast (Little Red Riding Hood): Crash Course Kids Literature #6",
+    "minutes": 5.7,
+    "watch_url": "https://www.youtube.com/watch?v=PkWU-lMdnJg",
+    "embed_url": "https://www.youtube.com/embed/PkWU-lMdnJg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Kids React to More Animals from Africa! | Nat Geo Kids",
+    "minutes": 1.7,
+    "watch_url": "https://www.youtube.com/watch?v=EXYhTpsYHN8",
+    "embed_url": "https://www.youtube.com/embed/EXYhTpsYHN8?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Exploring Our Solar System - A FreeSchool Reader Read-Aloud Book For Kids (Solar System Book 1)",
+    "minutes": 7.9,
+    "watch_url": "https://www.youtube.com/watch?v=TaqsdQADC6s",
+    "embed_url": "https://www.youtube.com/embed/TaqsdQADC6s?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "A Speaker That Shows Sound and 2 More STEM Builds from KiwiCo",
+    "minutes": 5.3,
+    "watch_url": "https://www.youtube.com/watch?v=MUcqcXrCyfE",
+    "embed_url": "https://www.youtube.com/embed/MUcqcXrCyfE?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Iceland: A Land of Ice AND Fire! | SciShow Kids",
+    "minutes": 6.8,
+    "watch_url": "https://www.youtube.com/watch?v=kKqd0_cydZM",
+    "embed_url": "https://www.youtube.com/embed/kKqd0_cydZM?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Poetry explained (Inside Out & Back Again by Thanhhà Lại): Crash Course Kids Literature #5",
+    "minutes": 6.6,
+    "watch_url": "https://www.youtube.com/watch?v=klu7TNy-7qw",
+    "embed_url": "https://www.youtube.com/embed/klu7TNy-7qw?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Spiders vs. Beetles vs. Ants: Battle of the Bugs | Whoa Factor | Nat Geo Kids",
+    "minutes": 5.3,
+    "watch_url": "https://www.youtube.com/watch?v=9q3uiSeT80M",
+    "embed_url": "https://www.youtube.com/embed/9q3uiSeT80M?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "All About the Mayflower for Children: Learn  Facts About the Mayflower for Kids - FreeSchool",
+    "minutes": 5.9,
+    "watch_url": "https://www.youtube.com/watch?v=sm7O4R1uN9s",
+    "embed_url": "https://www.youtube.com/embed/sm7O4R1uN9s?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "We Tried 4 Alternatives to Mentos in Cola… Which One Works Best?",
+    "minutes": 2.6,
+    "watch_url": "https://www.youtube.com/watch?v=sFKvofqmdGs",
+    "embed_url": "https://www.youtube.com/embed/sFKvofqmdGs?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "The Fiordlands of New Zealand! | SciShow Kids",
+    "minutes": 6.2,
+    "watch_url": "https://www.youtube.com/watch?v=HhXnRfyUbeQ",
+    "embed_url": "https://www.youtube.com/embed/HhXnRfyUbeQ?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Understanding nonfiction: Crash Course Kids Literature #4",
+    "minutes": 6.0,
+    "watch_url": "https://www.youtube.com/watch?v=ML2oX207Mwc",
+    "embed_url": "https://www.youtube.com/embed/ML2oX207Mwc?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Ghost jokes to make you LOL this Halloween 👻 | Just Joking 🤣 | Nat Geo Kids",
+    "minutes": 1.5,
+    "watch_url": "https://www.youtube.com/watch?v=gp-ab-aVFl4",
+    "embed_url": "https://www.youtube.com/embed/gp-ab-aVFl4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "What is Snow for Children: How Do Snowflakes Form and Why Does it Snow for Kids - FreeSchool",
+    "minutes": 4.4,
+    "watch_url": "https://www.youtube.com/watch?v=LE8agcLlma8",
+    "embed_url": "https://www.youtube.com/embed/LE8agcLlma8?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "3 Simple Science Experiments To Understand How A Nuclear Power Station Works | #Ad",
+    "minutes": 3.2,
+    "watch_url": "https://www.youtube.com/watch?v=FzGjzwNTMwc",
+    "embed_url": "https://www.youtube.com/embed/FzGjzwNTMwc?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Yellowstone: The World’s First National Park! | SciShow Kids",
+    "minutes": 7.2,
+    "watch_url": "https://www.youtube.com/watch?v=0U4lOGo593k",
+    "embed_url": "https://www.youtube.com/embed/0U4lOGo593k?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "How to find themes (A Wrinkle in Time): Crash Course Kids Literature #3",
+    "minutes": 5.5,
+    "watch_url": "https://www.youtube.com/watch?v=QVw521JjRjA",
+    "embed_url": "https://www.youtube.com/embed/QVw521JjRjA?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Epic Animal Migrations: Which Animal Travels the Farthest?! | Animal Card Quest | Nat Geo Kids",
+    "minutes": 4.8,
+    "watch_url": "https://www.youtube.com/watch?v=adABRbEs4G4",
+    "embed_url": "https://www.youtube.com/embed/adABRbEs4G4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "10 Interesting Facts About Polar Bears for Children: Learn About Polar Bears for Kids - FreeSchool",
+    "minutes": 5.9,
+    "watch_url": "https://www.youtube.com/watch?v=PmFP4K8-3NA",
+    "embed_url": "https://www.youtube.com/embed/PmFP4K8-3NA?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "The EASIEST Elephant Toothpaste Experiment Ever (Even Toddlers Can Do It!)",
+    "minutes": 2.0,
+    "watch_url": "https://www.youtube.com/watch?v=opfjIq0EEfQ",
+    "embed_url": "https://www.youtube.com/embed/opfjIq0EEfQ?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Senses You Didn’t Know You Have | SciShow Kids",
+    "minutes": 7.8,
+    "watch_url": "https://www.youtube.com/watch?v=vKxpbmdPSyk",
+    "embed_url": "https://www.youtube.com/embed/vKxpbmdPSyk?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Character Traits Explained (King and the Dragonflies): Crash Course Kids Literature #2",
+    "minutes": 5.8,
+    "watch_url": "https://www.youtube.com/watch?v=WrUX6j9MwUY",
+    "embed_url": "https://www.youtube.com/embed/WrUX6j9MwUY?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Does anybody else wish they had a pet avocado right now? 🙋| Kids React! | Nat Geo Kids",
+    "minutes": 1.5,
+    "watch_url": "https://www.youtube.com/watch?v=cWSWNr3qlYU",
+    "embed_url": "https://www.youtube.com/embed/cWSWNr3qlYU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "The Louisiana Purchase for Kids: Facts About the Louisiana Purchase for Children - FreeSchool",
+    "minutes": 6.1,
+    "watch_url": "https://www.youtube.com/watch?v=TCCP4MCy0Ck",
+    "embed_url": "https://www.youtube.com/embed/TCCP4MCy0Ck?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Impossible CD Trick - Can You Get It Through This Tiny Hole? (Tutorial Included!)",
+    "minutes": 1.6,
+    "watch_url": "https://www.youtube.com/watch?v=JLudCkg54b8",
+    "embed_url": "https://www.youtube.com/embed/JLudCkg54b8?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Water's Amazing Journey | SciShow Kids",
+    "minutes": 6.8,
+    "watch_url": "https://www.youtube.com/watch?v=vD-ZwMjRDPU",
+    "embed_url": "https://www.youtube.com/embed/vD-ZwMjRDPU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "What is an inference? (Charlotte’s Web): Crash Course Kids Literature #1",
+    "minutes": 5.2,
+    "watch_url": "https://www.youtube.com/watch?v=XjR2B3YJH9U",
+    "embed_url": "https://www.youtube.com/embed/XjR2B3YJH9U?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Pigs vs. Cows vs. Goats: Barnyard Showdown! | Whoa Factor | Nat Geo Kids",
+    "minutes": 5.0,
+    "watch_url": "https://www.youtube.com/watch?v=CGEtugYEJok",
+    "embed_url": "https://www.youtube.com/embed/CGEtugYEJok?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "All About Reindeer or Caribou for Kids: Reindeer Facts and Information for Children - FreeSchool",
+    "minutes": 5.5,
+    "watch_url": "https://www.youtube.com/watch?v=ul0O3qYXSRQ",
+    "embed_url": "https://www.youtube.com/embed/ul0O3qYXSRQ?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Bringing #TheDadLab science magic to @theritzcarltonmaldives was an absolute dream #steamworkshop",
+    "minutes": 1.2,
+    "watch_url": "https://www.youtube.com/watch?v=7ooRKXwLJq4",
+    "embed_url": "https://www.youtube.com/embed/7ooRKXwLJq4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Water Made the Grand Canyon! | SciShow Kids",
+    "minutes": 5.6,
+    "watch_url": "https://www.youtube.com/watch?v=f-FsMRCutlI",
+    "embed_url": "https://www.youtube.com/embed/f-FsMRCutlI?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Crash Course Kids Literature Preview",
+    "minutes": 1.8,
+    "watch_url": "https://www.youtube.com/watch?v=ui86G8Q5GhQ",
+    "embed_url": "https://www.youtube.com/embed/ui86G8Q5GhQ?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Kids React to Black Rain Frogs | Africa Earth's Wild Home | Nat Geo Kids",
+    "minutes": 1.5,
+    "watch_url": "https://www.youtube.com/watch?v=Uk7NdsKaREM",
+    "embed_url": "https://www.youtube.com/embed/Uk7NdsKaREM?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Exploring the Grand Canyon for Children: Learn How the Grand Canyon was Formed for Kids - FreeSchool",
+    "minutes": 5.9,
+    "watch_url": "https://www.youtube.com/watch?v=zta2y7cAMDk",
+    "embed_url": "https://www.youtube.com/embed/zta2y7cAMDk?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "5 Surprising Space Facts Answered by ELIO’s Stars",
+    "minutes": 5.8,
+    "watch_url": "https://www.youtube.com/watch?v=_gvcq_XW__0",
+    "embed_url": "https://www.youtube.com/embed/_gvcq_XW__0?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Where Can We Find Water?  | SciShow Kids",
+    "minutes": 5.5,
+    "watch_url": "https://www.youtube.com/watch?v=5Ssty1ejoek",
+    "embed_url": "https://www.youtube.com/embed/5Ssty1ejoek?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "The End Is Only The Beginning: Crash Course Kids #48.2",
+    "minutes": 4.4,
+    "watch_url": "https://www.youtube.com/watch?v=s__sgOHWNIA",
+    "embed_url": "https://www.youtube.com/embed/s__sgOHWNIA?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Hamsters are running fast to get to their next meal! | Super Animals | Nat Geo Kids",
+    "minutes": 1.1,
+    "watch_url": "https://www.youtube.com/watch?v=EflOBO4z--w",
+    "embed_url": "https://www.youtube.com/embed/EflOBO4z--w?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "10 Interesting Facts About Penguins for Children: Learn About Penguins for Kids - FreeSchool",
+    "minutes": 5.9,
+    "watch_url": "https://www.youtube.com/watch?v=K-34rankRkw",
+    "embed_url": "https://www.youtube.com/embed/K-34rankRkw?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "DIY Easter Bunny Craft with Free Printable | Print at Home with Epson EcoTank",
+    "minutes": 2.5,
+    "watch_url": "https://www.youtube.com/watch?v=3CRmaW-dMsE",
+    "embed_url": "https://www.youtube.com/embed/3CRmaW-dMsE?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Igneous Rocks Used to Be Liquid! | SciShow Kids",
+    "minutes": 7.0,
+    "watch_url": "https://www.youtube.com/watch?v=_ebd7k_lUAs",
+    "embed_url": "https://www.youtube.com/embed/_ebd7k_lUAs?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Let's Build a City: Crash Course Kids #48.1",
+    "minutes": 4.2,
+    "watch_url": "https://www.youtube.com/watch?v=gnnUid8Hof0",
+    "embed_url": "https://www.youtube.com/embed/gnnUid8Hof0?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Halloween Animals in REAL Life! 🎃 Learn some Fun Facts about Bats, Spiders, and Owls! | Nat Geo Kids",
+    "minutes": 4.5,
+    "watch_url": "https://www.youtube.com/watch?v=iAIpKDObuWg",
+    "embed_url": "https://www.youtube.com/embed/iAIpKDObuWg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Lions: Life in the Pride - the Social Structure of the Lion Family - FreeSchool",
+    "minutes": 6.7,
+    "watch_url": "https://www.youtube.com/watch?v=0tpY3sH4YTU",
+    "embed_url": "https://www.youtube.com/embed/0tpY3sH4YTU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "DIY Valentine’s Day Card with Secret Message",
+    "minutes": 2.5,
+    "watch_url": "https://www.youtube.com/watch?v=-8XPoqi5ZBI",
+    "embed_url": "https://www.youtube.com/embed/-8XPoqi5ZBI?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Think Like an Engineer: The BEST Solution! | SciShow Kids",
+    "minutes": 5.4,
+    "watch_url": "https://www.youtube.com/watch?v=taOokuzR2EI",
+    "embed_url": "https://www.youtube.com/embed/taOokuzR2EI?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Architecture Adventure: Crash Course Kids #47.2",
+    "minutes": 4.5,
+    "watch_url": "https://www.youtube.com/watch?v=DkJLbCCI6Zs",
+    "embed_url": "https://www.youtube.com/embed/DkJLbCCI6Zs?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Wildlife photographers use night vision to get the best shot! | Ready, Set, Zoom! | Nat Geo Kids",
+    "minutes": 1.6,
+    "watch_url": "https://www.youtube.com/watch?v=EX7jkZPgPAw",
+    "embed_url": "https://www.youtube.com/embed/EX7jkZPgPAw?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Egyptian Hieroglyphs and the Rosetta Stone: the Discovery of the Rosetta Stone for Kids - FreeSchool",
+    "minutes": 7.2,
+    "watch_url": "https://www.youtube.com/watch?v=qmd6Izx2ZkA",
+    "embed_url": "https://www.youtube.com/embed/qmd6Izx2ZkA?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Testing My Top 3 Science Experiments from the FunLab App",
+    "minutes": 5.1,
+    "watch_url": "https://www.youtube.com/watch?v=SxXVWB52i1A",
+    "embed_url": "https://www.youtube.com/embed/SxXVWB52i1A?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Think Like an Engineer: Let's Design a Solution! | SciShow Kids",
+    "minutes": 5.6,
+    "watch_url": "https://www.youtube.com/watch?v=M6t26J-Bbkg",
+    "embed_url": "https://www.youtube.com/embed/M6t26J-Bbkg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "The Robot Challenge: Crash Course Kids #47.1",
+    "minutes": 4.5,
+    "watch_url": "https://www.youtube.com/watch?v=0GMBJFqgHfc",
+    "embed_url": "https://www.youtube.com/embed/0GMBJFqgHfc?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Octopus Showdown 🐙 | Whoa Factor | Nat Geo Kids",
+    "minutes": 4.7,
+    "watch_url": "https://www.youtube.com/watch?v=YBGPMztHR4Y",
+    "embed_url": "https://www.youtube.com/embed/YBGPMztHR4Y?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "5 Characteristics of Living Organisms: Qualities of Living Things for Kids - FreeSchool",
+    "minutes": 4.8,
+    "watch_url": "https://www.youtube.com/watch?v=Fu_8KkQagAk",
+    "embed_url": "https://www.youtube.com/embed/Fu_8KkQagAk?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "How to Make a Lava Lamp at Home with Baking Soda | Easy DIY Science Experiment",
+    "minutes": 1.3,
+    "watch_url": "https://www.youtube.com/watch?v=c1hi1l4rsYM",
+    "embed_url": "https://www.youtube.com/embed/c1hi1l4rsYM?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Think Like an Engineer: Juniper's Problem | SciShow Kids",
+    "minutes": 5.8,
+    "watch_url": "https://www.youtube.com/watch?v=vzl9EUypy2Q",
+    "embed_url": "https://www.youtube.com/embed/vzl9EUypy2Q?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Normal Stuff in Not-So-Normal Places: Crash Course Kids 46.2",
+    "minutes": 4.8,
+    "watch_url": "https://www.youtube.com/watch?v=T7hK6OMpvbE",
+    "embed_url": "https://www.youtube.com/embed/T7hK6OMpvbE?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Can you find the pygmy seahorse? | You're Called What?! | Nat Geo Kids",
+    "minutes": 1.9,
+    "watch_url": "https://www.youtube.com/watch?v=FqAIuR7ZTHg",
+    "embed_url": "https://www.youtube.com/embed/FqAIuR7ZTHg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "The Ancient Greek Creation Myth: The Origin of the Greek Gods - FreeSchool",
+    "minutes": 3.2,
+    "watch_url": "https://www.youtube.com/watch?v=HuPGX8ycxlo",
+    "embed_url": "https://www.youtube.com/embed/HuPGX8ycxlo?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Testing the Power of Emotions: Anger, Envy, Ennui & Anxiety | Inside Out 2 Science Experiments",
+    "minutes": 3.1,
+    "watch_url": "https://www.youtube.com/watch?v=JoFa6qpuRRU",
+    "embed_url": "https://www.youtube.com/embed/JoFa6qpuRRU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "These Caterpillars Don't All Look Like Caterpillars | SciShow Kids",
+    "minutes": 7.0,
+    "watch_url": "https://www.youtube.com/watch?v=wW5oU5ALh3A",
+    "embed_url": "https://www.youtube.com/embed/wW5oU5ALh3A?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Oobleck and Non-Newtonian Fluids: Crash Course Kids #46.1",
+    "minutes": 4.3,
+    "watch_url": "https://www.youtube.com/watch?v=Fnd-2jetT1w",
+    "embed_url": "https://www.youtube.com/embed/Fnd-2jetT1w?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Teaching Baby Meerkats at Survival School! 🎒 Animal Card Quest | Nat Geo Kids",
+    "minutes": 2.5,
+    "watch_url": "https://www.youtube.com/watch?v=9hADH1YQn08",
+    "embed_url": "https://www.youtube.com/embed/9hADH1YQn08?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Biography of Henry VIII for Kids: Famous Kings from History for Children - FreeSchool",
+    "minutes": 7.0,
+    "watch_url": "https://www.youtube.com/watch?v=RqS87XpHCkk",
+    "embed_url": "https://www.youtube.com/embed/RqS87XpHCkk?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Inside Out 2: Find Your Emotions Activity",
+    "minutes": 2.4,
+    "watch_url": "https://www.youtube.com/watch?v=HHh6zpGDbMY",
+    "embed_url": "https://www.youtube.com/embed/HHh6zpGDbMY?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "The Wonderful World of Insect Mouths | SciShow Kids",
+    "minutes": 7.7,
+    "watch_url": "https://www.youtube.com/watch?v=4Tfwn3UpsRg",
+    "embed_url": "https://www.youtube.com/embed/4Tfwn3UpsRg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Planetary Plants: Crash Course Kids #45.2",
+    "minutes": 4.7,
+    "watch_url": "https://www.youtube.com/watch?v=DUrJvJc5XX0",
+    "embed_url": "https://www.youtube.com/embed/DUrJvJc5XX0?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "This ghost skier is saving he planet! | You Wanna Be a What?! | Nat Geo Kids",
+    "minutes": 2.0,
+    "watch_url": "https://www.youtube.com/watch?v=rNSCwYi59qs",
+    "embed_url": "https://www.youtube.com/embed/rNSCwYi59qs?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Hover Flies and Animal Mimicry: FreeSchool Presents a Closer Look at Hoverfly Mimicry",
+    "minutes": 3.4,
+    "watch_url": "https://www.youtube.com/watch?v=Eg34lMPpAfk",
+    "embed_url": "https://www.youtube.com/embed/Eg34lMPpAfk?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Play&Learn with Grimm’s Wooden Building Set Lara | Toy Review",
+    "minutes": 3.0,
+    "watch_url": "https://www.youtube.com/watch?v=RHbc0-NntcY",
+    "embed_url": "https://www.youtube.com/embed/RHbc0-NntcY?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "The Driest Places on Earth | SciShow Kids",
+    "minutes": 6.8,
+    "watch_url": "https://www.youtube.com/watch?v=fuN9N3Gv60E",
+    "embed_url": "https://www.youtube.com/embed/fuN9N3Gv60E?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Life on Other Planets: Crash Course Kids #45.1",
+    "minutes": 4.5,
+    "watch_url": "https://www.youtube.com/watch?v=8gHDCOSI5Es",
+    "embed_url": "https://www.youtube.com/embed/8gHDCOSI5Es?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Battle of the Birds: Eagles vs. Hawks vs. Owls | Whoa Factor | Nat Geo Kids",
+    "minutes": 5.2,
+    "watch_url": "https://www.youtube.com/watch?v=nXjhakGU9dM",
+    "embed_url": "https://www.youtube.com/embed/nXjhakGU9dM?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "What are Flowers For? How Flowers are Pollinated and Make Seeds #shorts #freeschool #flowers",
+    "minutes": 1.0,
+    "watch_url": "https://www.youtube.com/watch?v=8maMFZ1FOM4",
+    "embed_url": "https://www.youtube.com/embed/8maMFZ1FOM4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "DIY Paint Pendulum Experiment | Summer of Discovery with National Trust",
+    "minutes": 5.2,
+    "watch_url": "https://www.youtube.com/watch?v=gGLCwjaEqw4",
+    "embed_url": "https://www.youtube.com/embed/gGLCwjaEqw4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "The Rainiest Places on Earth | SciShow Kids",
+    "minutes": 7.1,
+    "watch_url": "https://www.youtube.com/watch?v=6k8M6FzMBz4",
+    "embed_url": "https://www.youtube.com/embed/6k8M6FzMBz4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Testing and Trials: Crash Course Kids #44.2",
+    "minutes": 4.7,
+    "watch_url": "https://www.youtube.com/watch?v=8Uznr8uiVh0",
+    "embed_url": "https://www.youtube.com/embed/8Uznr8uiVh0?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Wild World of Squirrels! 🐿️🌰 Animal Card Quest | Nat Geo Kids",
+    "minutes": 2.8,
+    "watch_url": "https://www.youtube.com/watch?v=z29spc041dM",
+    "embed_url": "https://www.youtube.com/embed/z29spc041dM?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "2 Minute Tour of Illinois: 50 States for Kids - FreeSchool",
+    "minutes": 2.2,
+    "watch_url": "https://www.youtube.com/watch?v=BcyRSz_ZFL4",
+    "embed_url": "https://www.youtube.com/embed/BcyRSz_ZFL4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "5 Cool Eco Activities for Kids | Fun and Easy Environmental Projects",
+    "minutes": 7.8,
+    "watch_url": "https://www.youtube.com/watch?v=oEH3UPJvKqU",
+    "embed_url": "https://www.youtube.com/embed/oEH3UPJvKqU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "The Ancient Animal Crossing | SciShow Kids",
+    "minutes": 7.7,
+    "watch_url": "https://www.youtube.com/watch?v=-k5R0haCa6o",
+    "embed_url": "https://www.youtube.com/embed/-k5R0haCa6o?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Designing a Trial: Crash Course Kids #44.1",
+    "minutes": 4.6,
+    "watch_url": "https://www.youtube.com/watch?v=eB7GTjAFaE4",
+    "embed_url": "https://www.youtube.com/embed/eB7GTjAFaE4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Grizzly vs. Panda vs. Polar Bear! | Whoa Factor | Nat Geo Kids",
+    "minutes": 5.2,
+    "watch_url": "https://www.youtube.com/watch?v=6Eyz9qUAYRg",
+    "embed_url": "https://www.youtube.com/embed/6Eyz9qUAYRg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "African Penguins: The Only Penguins Native to Africa #shorts #freeschool #penguins",
+    "minutes": 1.0,
+    "watch_url": "https://www.youtube.com/watch?v=beeji9C7TNg",
+    "embed_url": "https://www.youtube.com/embed/beeji9C7TNg?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Magnetic Slime Recipe: Step-by-Step Tutorial",
+    "minutes": 3.2,
+    "watch_url": "https://www.youtube.com/watch?v=74J1kLPM0LI",
+    "embed_url": "https://www.youtube.com/embed/74J1kLPM0LI?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Woolly Mammoths, Mastodons, and Amazing Teeth! | SciShow Kids",
+    "minutes": 7.2,
+    "watch_url": "https://www.youtube.com/watch?v=IHjeZYFG9io",
+    "embed_url": "https://www.youtube.com/embed/IHjeZYFG9io?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Gas Giants Weather: Crash Course Kids #43.2",
+    "minutes": 4.7,
+    "watch_url": "https://www.youtube.com/watch?v=WoPtsnIcSv8",
+    "embed_url": "https://www.youtube.com/embed/WoPtsnIcSv8?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "Kids React to Baby Animals 🐙 | Nat Geo Kids",
+    "minutes": 1.8,
+    "watch_url": "https://www.youtube.com/watch?v=Q7HcpBAsnow",
+    "embed_url": "https://www.youtube.com/embed/Q7HcpBAsnow?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "All About Hummingbirds for Kids - Hummingbird Facts for Children: FreeSchool",
+    "minutes": 3.7,
+    "watch_url": "https://www.youtube.com/watch?v=remX_MugsOM",
+    "embed_url": "https://www.youtube.com/embed/remX_MugsOM?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Mixing COKE and MILK | Coca Cola VS Milk Chemical Reaction Experiment",
+    "minutes": 3.8,
+    "watch_url": "https://www.youtube.com/watch?v=7KJN_luy2l0",
+    "embed_url": "https://www.youtube.com/embed/7KJN_luy2l0?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "Say Hello to Saber-toothed Smilodon! | SciShow Kids",
+    "minutes": 5.9,
+    "watch_url": "https://www.youtube.com/watch?v=zPefOpHEpT0",
+    "embed_url": "https://www.youtube.com/embed/zPefOpHEpT0?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Weather In Space (the Rocky Planets): Crash Course Kids #43.1",
+    "minutes": 5.9,
+    "watch_url": "https://www.youtube.com/watch?v=Dvhl891zGqU",
+    "embed_url": "https://www.youtube.com/embed/Dvhl891zGqU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "How Do Animals Talk Without Words? 🙊🐜 Animal Facts for Kids | Nat Geo Kids",
+    "minutes": 2.9,
+    "watch_url": "https://www.youtube.com/watch?v=cJghbzC4dAA",
+    "embed_url": "https://www.youtube.com/embed/cJghbzC4dAA?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Why is Friday the 13th Considered Unlucky? The History and Mythology of Friday the 13th - FreeSchool",
+    "minutes": 3.7,
+    "watch_url": "https://www.youtube.com/watch?v=PUY1pmNDtPI",
+    "embed_url": "https://www.youtube.com/embed/PUY1pmNDtPI?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Easy Easter Crafts for Kids: 3D Paper Craft Printables",
+    "minutes": 2.9,
+    "watch_url": "https://www.youtube.com/watch?v=xeAUlTY7UfU",
+    "embed_url": "https://www.youtube.com/embed/xeAUlTY7UfU?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "SciShow Kids",
+    "title": "The Coldest Seas on Earth! | SciShow Kids",
+    "minutes": 7.0,
+    "watch_url": "https://www.youtube.com/watch?v=EHaOM32qVnI",
+    "embed_url": "https://www.youtube.com/embed/EHaOM32qVnI?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Crash Course Kids",
+    "title": "Fixing Failure Points: Crash Course Kids #42.2",
+    "minutes": 4.0,
+    "watch_url": "https://www.youtube.com/watch?v=0OtbV8-Mdr4",
+    "embed_url": "https://www.youtube.com/embed/0OtbV8-Mdr4?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Nat Geo Kids",
+    "title": "These Baby Elephants are Just Trying Their Best! | Whoa Factor | Nat Geo Kids",
+    "minutes": 1.5,
+    "watch_url": "https://www.youtube.com/watch?v=JYi0ot3dzQY",
+    "embed_url": "https://www.youtube.com/embed/JYi0ot3dzQY?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "Free School",
+    "title": "Parthenogenesis, Venom Glands and More: FreeSchool Presents a Closer Look at Komodo Dragons",
+    "minutes": 8.0,
+    "watch_url": "https://www.youtube.com/watch?v=ORB1ZeZ1uH8",
+    "embed_url": "https://www.youtube.com/embed/ORB1ZeZ1uH8?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  },
+  {
+    "channel": "TheDadLab",
+    "title": "Cute Easter Bunny Craft with Photographs 🐰✂️📸",
+    "minutes": 2.8,
+    "watch_url": "https://www.youtube.com/watch?v=AqJHC4zrwOE",
+    "embed_url": "https://www.youtube.com/embed/AqJHC4zrwOE?fs=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+  }
+]

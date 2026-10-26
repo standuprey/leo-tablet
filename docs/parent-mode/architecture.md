@@ -490,6 +490,30 @@ If the prototype cannot provide reliable touch-only login without weakening WebK
 
 Release gates: platform audit passed; portal keyboard prototype passed; all transaction/gesture tests passed; hardware matrix recorded; permissions reviewed; installer and rollback rehearsed. No live root or network changes during architecture work.
 
+## 12b. Web-based parent UI (owner decision, 2026-10-24)
+
+The owner approved re-platforming the **parent UI** onto a local web stack. This
+section supersedes the historical no-web-frontend constraint in the backlog.
+
+- The **child home and Videos screens stay GTK**; only parent mode moves.
+- The launcher process hosts a loopback HTTP server thread (`adapters/parent_server.py`)
+  that renders parent pages from the existing services (catalog, reviews, home slots).
+- The server binds `127.0.0.1` only. Per the owner (2026-10-24): child safety
+  hardening is deferred; the Up/Down/Down gesture is the only gate for now, so no
+  token is required. The loopback bind remains so LAN devices cannot reach it.
+- Entry: the parent gesture spawns Firefox kiosk with an isolated parent profile
+  (reusing `adapters/browser_profiles.py`) pointed at the menu URL. Exit is
+  `window.close()` in kiosk mode; Down/Up (backwatch) also tears the browser down via
+  `.app-pid`. While a trial runs, the existing trial gesture handling applies.
+- The server thread owns its own SQLite connection (`open_database` is per-thread by
+  contract); the HTTP server is deliberately single-threaded so one connection serves
+  all requests. Writes that touch session/process state (trial launch) are marshalled
+  to the GTK main thread via `GLib.idle_add`.
+- GTK stack pages for parent/review/wifi are retired once the web flows reach parity;
+  the child window keeps only the child home and Videos screens.
+- Remaining parent-mode UI tasks (rename/rating/Keep-Select, Wi-Fi) are re-targeted as
+  web endpoints/pages.
+
 ## 13. Implementation sequencing and estimates
 
 See `backlog.md` and `tasks.json` for the original 68-task backlog with Fibonacci sizes. The authoritative implementation graph is now [specs.md](../../specs.md), refined into 90 atomic tasks with per-type model assignments; [implementation-status.md](implementation-status.md) records completion. The SQLite startup/migration/fault work was split into parent-8, parent-87 and parent-88; catalog schema/metadata/record persistence is split into parent-9, parent-89 and parent-90. The latest input-format decision permits rearranging or removing `web-games.json` after verified SQLite migration and fresh-install bootstrap coverage. Original Fibonacci sizes describe relative complexity, not days.

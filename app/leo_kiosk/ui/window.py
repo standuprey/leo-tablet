@@ -8,6 +8,7 @@ import json
 import os
 import signal
 import subprocess
+import sys
 import time
 
 import gi
@@ -16,12 +17,22 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")  # pin 3.x; gtk4's Gdk 4.0 must not load first
 from gi.repository import Gdk, GLib, Gtk  # noqa: E402
 
+from leo_kiosk.ui.battery import BatteryMonitor, paint_gauge  # noqa: E402
+from leo_kiosk.ui.rainbow import RainbowPainter, wire_rainbow  # noqa: E402
+
 TAP_SOUND = "/usr/share/sounds/freedesktop/stereo/message.oga"
 
+# Fixed tile geometry, shared by the home and Videos screens so both grids
+# render pixel-identical tiles regardless of surrounding labels.
+TILE_HEIGHT = 300
+GRID_HEIGHT = 3 * TILE_HEIGHT + 2 * 20  # three rows plus the grid's spacing
+
 CSS = b"""
-window { background: #1b1b2f; }
+window { background: transparent; }
 .title { color: white; font-size: 44px; font-weight: 800; }
 .status { color: #ffd43b; font-size: 28px; font-weight: 700; }
+.battery { color: white; font-size: 30px; font-weight: 700; }
+.battery-low { color: #ff6b6b; }
 .tile { border-radius: 36px; border: none; box-shadow: none; padding: 0; }
 .tile label.word { font-size: 44px; font-weight: 800; color: #1b1b2f; }
 """
@@ -82,16 +93,22 @@ class LauncherWindow:
         grid = Gtk.Grid(
             row_spacing=20, column_spacing=20, row_homogeneous=True, column_homogeneous=True
         )
+        grid.set_size_request(-1, GRID_HEIGHT)
+        grid.set_halign(Gtk.Align.FILL)
         cols = self.cfg.get("columns", 3)
         for i, tile in enumerate(self.cfg["tiles"]):
             grid.attach(self.make_tile(tile), i % cols, i // cols, 1, 1)
-        box.pack_start(grid, True, True, 0)
-
+        box.pack_start(title, False, False, 0)
         self.status = Gtk.Label(label="")
         self.status.get_style_context().add_class("status")
-        box.pack_start(self.status, False, False, 0)
+        box.pack_end(self.status, False, False, 0)
+        box.set_center_widget(grid)
 
-        # Invisible parent corner, on top of everything.
+        # Invisible parent corner, on top of everything. The rainbow is not a
+        # widget: it is painted from the toplevel draw handler (on_window_draw),
+        # because a child layer's draw never fired under the overlay.
+        self.rainbow = RainbowPainter(invalidate=self.win.queue_draw)
+        self.battery = BatteryMonitor(invalidate=self.win.queue_draw)
         overlay = Gtk.Overlay()
         overlay.add(box)
         corner = Gtk.Button()
@@ -103,11 +120,27 @@ class LauncherWindow:
         overlay.add_overlay(corner)
 
         self.win.add(overlay)
+        # Rainbow reacts to any touch, including on tiles; False keeps the
+        # event flowing so tile activation is never consumed. Each button is
+        # wired directly: bubbling from children to the toplevel proved
+        # unreliable on-device.
+        self.win.add_events(
+            Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK
+        )
+        self.win.connect("draw", self.on_window_draw)
+        wire_rainbow(self.rainbow, self.win, *grid.get_children(), corner)
         self.win.fullscreen()
         self.win.show_all()
         self.stack: Gtk.Stack | None = None
         self._content = overlay
         self._page_names: dict[object, str] = {}
+
+    def on_window_draw(self, _win, cr):
+        """Paint the rainbow, then the battery gauge, before children render."""
+        width = self.win.get_allocated_width()
+        self.rainbow.paint(cr, width, self.win.get_allocated_height())
+        paint_gauge(cr, width, self.battery.reading)
+        return False
 
     # --- route pages (parent mode); no-op unless pages were attached -----
     def attach_pages(self, pages: dict[str, Gtk.Widget]) -> None:
@@ -195,9 +228,11 @@ class LauncherWindow:
             except OSError:
                 continue
         if self.proc is None:
+            print(f"launch failed for {candidates}", file=sys.stderr, flush=True)
             self.say("Ask Papa to fix this one!")
             return
         self.deadline = self.clock() + tile.get("minutes", 20) * 60
+        self.rainbow.reset()  # window is about to hide; drop mid-gesture state
         if self._on_launch_started is not None:
             self._on_launch_started()
         try:

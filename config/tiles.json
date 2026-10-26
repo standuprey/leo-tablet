@@ -10,61 +10,60 @@
       "minutes": 25
     },
     {
-      "id": "science",
-      "label": "Science",
-      "color": "#4dabf7",
-      "cmd": ["firefox", "--kiosk", "file://~/Leo/science/index.html"],
-      "minutes": 20
-    },
-    {
-      "id": "carwash",
-      "label": "Car wash",
-      "color": "#20c997",
-      "cmd": ["vlc", "--fullscreen", "--play-and-exit", "--random", "--no-video-title-show", "~/Leo/carwash"],
-      "minutes": 20
-    },
-    {
-      "id": "gabby",
-      "label": "Gabby",
-      "color": "#f783ac",
-      "cmd": ["vlc", "--fullscreen", "--play-and-exit", "--random", "--no-video-title-show", "~/Leo/gabby"],
-      "minutes": 20
-    },
-    {
-      "id": "dressup",
-      "label": "Dress up",
-      "color": "#b197fc",
-      "cmd": ["cheese"],
+      "id": "maze",
+      "label": "Maze",
+      "color": "#74c0fc",
+      "cmd": ["neverball"],
       "minutes": 15
     },
     {
-      "id": "build",
-      "label": "Build",
-      "color": "#ffa94d",
-      "cmd": ["luanti"],
-      "alt": ["minetest"],
-      "minutes": 25
+      "id": "potato",
+      "label": "Potato",
+      "color": "#e599f7",
+      "cmd": ["ktuberling"],
+      "minutes": 15
     },
     {
-      "id": "draw",
-      "label": "Draw",
-      "color": "#ffd43b",
-      "cmd": ["tuxpaint", "--fullscreen=native", "--startblank", "--noprint"],
-      "minutes": 30
-    },
-    {
-      "id": "pets",
-      "label": "Cats & dogs",
-      "color": "#82c91e",
-      "cmd": ["feh", "-r", "--fullscreen", "--auto-zoom", "--randomize", "--hide-pointer", "--slideshow-delay", "6", "~/Leo/pets"],
+      "id": "memory",
+      "label": "Memory",
+      "color": "#ffdeeb",
+      "cmd": ["blinken"],
       "minutes": 10
     },
     {
-      "id": "family",
-      "label": "Family",
-      "color": "#ff8787",
-      "cmd": ["feh", "-r", "--fullscreen", "--auto-zoom", "--randomize", "--hide-pointer", "--slideshow-delay", "6", "~/Leo/family"],
+      "id": "gems",
+      "label": "Gems",
+      "color": "#66d9e8",
+      "cmd": ["kdiamond"],
       "minutes": 15
+    },
+    {
+      "id": "fourline",
+      "label": "4 in line",
+      "color": "#8ce99a",
+      "cmd": ["kfourinline"],
+      "minutes": 15
+    },
+    {
+      "id": "earth",
+      "label": "Earth",
+      "color": "#a9e34b",
+      "cmd": ["marble"],
+      "minutes": 15
+    },
+    {
+      "id": "lines",
+      "label": "Lines",
+      "color": "#f783ac",
+      "cmd": ["five-or-more"],
+      "minutes": 15
+    },
+    {
+      "id": "videos",
+      "label": "Videos",
+      "color": "#b197fc",
+      "cmd": ["~/kiosk/videos.py"],
+      "minutes": 20
     }
   ]
 }

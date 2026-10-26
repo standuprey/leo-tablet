@@ -1,0 +1,248 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Elmo and Abby's Dress Up Time</title>
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
+		<script>
+			var CMS = {};
+			CMS.invoke = function () 
+			{
+				//--------------------------------------------------------------------------------------------
+				//  Sesame Workshop Universial Media Player (START)
+				//--------------------------------------------------------------------------------------------
+				(function() {
+    function _constructor() {
+        _sesame.init();
+       
+        return _sesame
+    }
+	
+	/*
+	Sesame uses a URL variable scheme to set certain variables that are unique to the games instance (ex: mobile vs. desktop, ss.org vs. reuse on a co-productions site)
+	The URL for the game can include the following variables as part of a hash string, with an '/' in between values:
+	assetpath (used as a prefix for assets, if blank it assumes relative path loading of assets will work. forward slashes should be encoded) 
+	gaid (the google analytics tracking ID you wish to use)
+	donotdisplayclose (determines whether to show a close button. true = do not display close, false = display close)
+	
+	an example hash string:
+	[game url]#assetPath/%2Fcms_services%2Fservices%3Faction%3DassetPath/gaID/1234/doNotDisplayClose/false
+	
+	Any values left out of the string will revert to their defaults,
+	donotdisplayclose: false
+	Google Analytics ID: UA-4680963-1 (ss.org GA ID) 
+	assetPath: ""
+
+	*/
+	
+	function _decodeHash() {
+        var a = document.location.hash.replace(/#/, "").split("/");
+        var b = {};
+        for (var c = 1; c < a.length; c += 2) {
+            try {
+                var d = a[c - 1].toLowerCase();
+                var e = c;
+                b[d] = unescape(decodeURIComponent(a[e]))
+            } catch (f) {
+                _ump.trace("UMP API", "Error decoding URI component '" + a[c - 1], a[c], "Check that the parameter is correctly encoded in the URL hash.")
+            }
+        }
+        return b
+    }
+	var _sesame = {};
+	_sesame.params = null;
+	_sesame.init = function() {
+		var hashVars = _decodeHash();
+		/*
+		doNotDisplayClose: if set to true, no close should display. If anything but true, it will appear. This sets it to false if not found in the URL. ss.org may overwrite this with true.
+		gaID: Google Analytics ID. If not found in the URL, default to whatever is below 
+		assetPath: if found in the url, set it. If not, make it blank.
+		*/
+		
+		_sesame.params = {
+            doNotDisplayClose: hashVars.donotdisplayclose == "true" ? true : false,
+			gaID: hashVars.gaid ? hashVars.gaid : "UA-4680963-1" /*replace this with your default tracking ID */, 
+			assetPath: hashVars.assetpath ? hashVars.assetpath : ""
+        };
+	
+	}
+	window.sesame = _constructor();
+	/* Setting this as a global variable for older games that are looking for it */
+	window.doNotDisplayClose = sesame.params.doNotDisplayClose; 
+
+	
+}());
+
+/*
+	The game code should incorporate these variables so it will work properly regardless of where it is being deployed. 
+	The parameters are available using via the sesame.params object (ex: sesame.params.doNotDisplayClose)
+	
+	Here are a couple of implementation examples:
+	_gaq.push(['_setAccount', sesame.params.gaID ]);
+	GAME.root = sesame.params.assetPath;
+	
+*/
+				//--------------------------------------------------------------------------------------------
+				//  Sesame Workshop Universial Media Player (END)
+				//--------------------------------------------------------------------------------------------
+			};
+
+			CMS.invoke();
+			CMS.params = window.sesame.params;
+			if(CMS.params.assetPath == "")
+			{
+				CMS.params.assetPath = "./";
+			}
+		</script>
+		
+		<!-- <link rel="stylesheet" type="text/css" href="css\cmm_game.css">    -->
+		<script>
+			
+			var headID = document.getElementsByTagName("head")[0];         
+			var cssNode = document.createElement('link');
+			cssNode.type = 'text/css';
+			cssNode.rel = 'stylesheet';
+			cssNode.href = CMS.params.assetPath + 'css/cmm_game.css';
+			cssNode.media = 'screen';
+			headID.appendChild(cssNode);
+		</script>
+
+		<script>
+			function addScriptToPage(url, callback)
+			{
+				var script = document.createElement("script")
+				script.type = "text/javascript";
+
+				if (script.readyState)
+				{  //IE
+					script.onreadystatechange = function()
+					{
+						if (script.readyState == "loaded" || script.readyState == "complete")
+						{
+							script.onreadystatechange = null;
+							callback();
+						}
+					};
+				} else {  //Others
+					script.onload = function(){
+						callback();
+					};
+				}
+
+				script.src = url;
+				document.getElementsByTagName("head")[0].appendChild(script);
+			}
+		</script>
+		
+		<script>
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-4680963-1']);
+			_gaq.push(['_trackPageview']);
+			(function()
+			{
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})(); 
+		</script>
+			
+	</head>
+	
+	<body>
+		<!--#include virtual="/includes/globalinc.html" -->
+		<div class="cmmContentWrapper">
+			<div id="cmm_game_content" > <!-- oncontextmenu="return false;" -->
+				<script type="text/javascript">
+					function getAssetPath()
+					{
+						return CMS.params.assetPath;
+					}
+					
+					function callAnalytics(action, lbl, value) 
+					{ 
+						var id = "Elmo and Abby Dress Up Time";
+						if (window._gaq)
+						{
+							if (action)
+							{
+								
+								var trackArr = ["_trackEvent", id];
+								trackArr.push(action);
+								if (lbl)
+								{
+									trackArr.push(lbl);
+									if (value)
+									{
+										trackArr.push(value);
+									}
+								}
+								_gaq.push(trackArr);
+							}
+						}
+						else if (ga)
+						{
+							ga("send", "event", id, action, lbl, value);
+						}
+					};
+					
+					function closeWindow()
+					{
+						window.close();
+					}
+					
+					function getShowClose()
+					{
+						return (window.doNotDisplayClose == true ||  document.location.search.indexOf("doNotDisplayClose=1") > 0);
+					}
+					
+					function isPBS()
+					{
+						return false;
+					}
+					  
+                    
+					function IEPBScloseWindow()
+					{
+						window.close();
+					}
+					
+					function forceFlash()
+					{
+						return isIE() || isFirefox();
+					}
+					
+					function isIE() 
+					{ 
+						return ((navigator.appName == 'Microsoft Internet Explorer') || ((navigator.appName == 'Netscape') && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null))); 
+					}
+					
+					function isFirefox()
+					{
+						return navigator.userAgent.search("Firefox") >= 0;
+					}
+					
+					function addFlambe()
+					{
+						if(forceFlash() == true)
+						{
+							flambe.embed([CMS.params.assetPath + "targets/main-flash.swf", CMS.params.assetPath + "targets/main-html.js"], "cmm_game_content");
+						}
+						else
+						{
+							flambe.embed([CMS.params.assetPath + "targets/main-html.js"], "cmm_game_content");
+						}
+					}
+					
+					addScriptToPage(CMS.params.assetPath + 'flambe.js', function(){
+						addFlambe();
+					});
+				</script>
+			</div>
+		</div>
+	</body>
+</html>
+

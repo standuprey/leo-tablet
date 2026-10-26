@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Space Bots iframe wrapper</title></head>
+<!-- Proxy for what pbskids.org does: embed the game bundle in an iframe.
+     The game itself is loaded from its real origin over the network.
+     Purpose: check on a desktop browser that the game runs when embedded
+     (and when opened directly), before touching the tablet. -->
+<body style="margin:0;background:#000">
+<iframe id="game-player" scrolling="no" title="Space Bots" tabindex="-1"
+  src="https://springroll-tc.pbskids.org/e9da5d8b-846d-4ac1-baba-1d0f07272102/51c36d40471830fa7c7c931857c5992e21715862/release/index.html?playOptions=%7B%22language%22%3A%22en%22%7D"
+  style="background-color:black;border:0;width:100vw;height:100vh"></iframe>
+</body>
+</html>

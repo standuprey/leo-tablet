@@ -4,6 +4,14 @@ Status: historical 68-task sizing reference. The authoritative execution graph i
 
 The original fixed six-key JSON/immutable `web-games.json` requirements below are superseded: discovery input may be rearranged or removed after verified SQLite import, with a bootstrap asset retained for fresh installs. Follow the current execution plan and architecture, not those historical format restrictions.
 
+## Owner decision (2026-10-24): web-based parent UI
+
+The owner approved re-platforming the parent UI onto a local web stack; the
+historical "no web frontend" constraint below is superseded for parent mode
+only (child screens stay GTK). Design and security model: architecture.md
+section 12b. Remaining rename/rating/Keep-Select and Wi-Fi tasks are
+re-targeted as web endpoints/pages on the loopback token-gated server.
+
 ## How a junior developer should use this backlog
 
 1. Read the architecture sections referenced by the task and inspect the listed files. Paths for new modules are proposed target paths, not existing implementations.

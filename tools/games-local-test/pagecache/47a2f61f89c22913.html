@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="no-js">
+	<head>
+        <script>
+            dataLayer = [];
+        </script>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-K8SKK4C');</script>
+        <!-- End Google Tag Manager -->
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Super Salad Diner</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+		<style type="text/css">
+			html, body {
+				background: black;
+			}
+		</style>
+
+		 <script type="text/javascript">
+            (function() {
+                function _constructor() {
+                    _sesame.init();
+                   
+                    return _sesame
+                }
+                
+                /*
+                Sesame uses a URL variable scheme to set certain variables that are unique to the games instance (ex: mobile vs. desktop, ss.org vs. reuse on a co-productions site)
+                The URL for the game can include the following variables as part of a hash string, with an '/' in between values:
+                assetpath (used as a prefix for assets, if blank it assumes relative path loading of assets will work. forward slashes should be encoded) 
+                gaid (the google analytics tracking ID you wish to use)
+                donotdisplayclose (determines whether to show a close button. true = do not display close, false = display close)
+                
+                an example hash string:
+                [game url]#assetPath/%2Fcms_services%2Fservices%3Faction%3DassetPath/gaID/1234/doNotDisplayClose/false
+                
+                Any values left out of the string will revert to their defaults,
+                donotdisplayclose: false
+                Google Analytics ID: UA-4680963-1 (ss.org GA ID) 
+                assetPath: ""
+
+                */
+                
+                function _decodeHash() {
+                    var a = document.location.hash.replace(/#/, "").split("/");
+                    var b = {};
+                    for (var c = 1; c < a.length; c += 2) {
+                        try {
+                            var d = a[c - 1].toLowerCase();
+                            var e = c;
+                            b[d] = unescape(decodeURIComponent(a[e]))
+                        } catch (f) {
+                            _ump.trace("UMP API", "Error decoding URI component '" + a[c - 1], a[c], "Check that the parameter is correctly encoded in the URL hash.")
+                        }
+                    }
+                    return b
+                }
+                var _sesame = {};
+                _sesame.params = null;
+                _sesame.init = function() {
+                    var hashVars = _decodeHash();
+                    /*
+                    doNotDisplayClose: if set to true, no close should display. If anything but true, it will appear. This sets it to false if not found in the URL. ss.org may overwrite this with true.
+                    gaID: Google Analytics ID. If not found in the URL, default to whatever is below 
+                    assetPath: if found in the url, set it. If not, make it blank.
+                    */
+                    
+                    _sesame.params = {
+                        doNotDisplayClose: hashVars.donotdisplayclose == "true" ? true : false,
+                        gaID: hashVars.gaid ? hashVars.gaid : "UA-4680963-1" /*replace this with your default tracking ID */, 
+                        assetPath: hashVars.assetpath ? hashVars.assetpath : ""
+                    };
+                
+                }
+                window.sesame = _constructor();
+                /* Setting this as a global variable for older games that are looking for it */
+                window.doNotDisplayClose = sesame.params.doNotDisplayClose; 
+
+                
+            }());
+
+            /*
+                The game code should incorporate these variables so it will work properly regardless of where it is being deployed. 
+                The parameters are available using via the sesame.params object (ex: sesame.params.doNotDisplayClose)
+                
+                Here are a couple of implementation examples:
+                _gaq.push(['_setAccount', sesame.params.gaID ]);
+                GAME.root = sesame.params.assetPath;
+                
+            */
+        </script>
+
+        <script type="text/javascript">
+            window.sesame = window.sesame || {};
+            var asset_path;
+            var gaID;
+            var global_doNotDisplayClose;
+
+            // Setting the asset path when on local development vs sesame servers. Add each development machine's internal IP address / port (MAMP) here. 
+            if (typeof sesame !== 'undefined' && typeof sesame.params !== 'undefined' && typeof sesame.params.assetPath !== 'undefined' && sesame.params.assetPath !== '') {
+                // take asset path defined in sesame snippet.
+                //TODO: Does this provide a valid path on both sesame and pbs servers?
+                asset_path = sesame.params.assetPath;
+            } else if (location.protocol === "http:" || location.protocol === "https:") {
+                asset_path = location.protocol + "//" + location.host + location.pathname;
+            } else {
+                asset_path = "./";
+            }
+
+            // set analytics tracking accounts based on location
+            // not sure if this is necessary, this information may be passed in via sesame.params
+            if (typeof window.cordova !== "undefined") {
+                // This is running in a cordova application
+                gaID = "UA-3999779-2"; // use pbs tracking code
+                global_doNotDisplayClose = true; // never display our own close on pbs
+            } else if (location.host.indexOf("pbskids") !== -1) {
+
+                gaID = "UA-3999779-2"; // use pbs tracking code
+                global_doNotDisplayClose = true; // never display our own close on pbs
+            } else if (location.host.indexOf("sesame") !== -1) {
+                gaID = "UA-4680963-1"; // use sesame tracking code
+                global_doNotDisplayClose = sesame.params.doNotDisplayClose;
+            } else if (location.protocol !== "http:" && location.protocol !== "https:") {
+                // This could mean that we are in an app, or running locally
+                gaID = "UA-3999779-2"; // use pbs tracking code
+                global_doNotDisplayClose = true;
+            } else {
+                gaID = "UA-3999779-2"; // default value
+                global_doNotDisplayClose = true; // hide by default
+            }
+
+            // set base URL path to use
+            document.write('<base href="' + asset_path + '" />');
+        </script>
+        <script>
+            var GTM_obj;
+            function AnalyticsObject() {
+                this.verbose = false;
+                this.gameID = "Super Salad Diner";
+                this.currentScreen = "1 Title Screen";
+                this.currentRound = "Title Round";
+                this.questionNumber = 1;
+                this.playthroughs = 0;
+                this.startTime = Date.now();
+            };
+            AnalyticsObject.constructor = AnalyticsObject;
+            AnalyticsObject.prototype = Object.create(null);
+            AnalyticsObject.prototype.trackEvent = function(event, customParams) {
+                var data =
+                    {'event' : event,
+                        'gameName' : this.gameID,
+                        'roundName' : this.currentRound,
+                        'screenName' : this.currentScreen,
+                        'language' :'English',
+                        'timestamp' : getTimestamp()
+                    };
+                if (customParams) {
+                    var paramsArray = Object.entries(customParams);
+                    for (var i = 0; i < paramsArray.length; i++) {
+                        data[paramsArray[i][0]] = paramsArray[i][1];
+                    }
+                }
+                dataLayer.push(data);
+                console.log(dataLayer[dataLayer.length-1])
+            }
+
+            var getTimestamp = function() {
+                return Date.now();
+            };
+
+            GTM_obj = new AnalyticsObject();
+        </script>
+
+        </script>
+
+		<link rel="stylesheet" href="assets/css/libraries.css">
+        <link rel="stylesheet" href="assets/css/main.css">
+	</head>
+	<body>
+        <!-- Google Tag Manager (noscript) -->
+	    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K8SKK4C"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+		<div id="frame">
+			<div id="content">
+				<div id="container">
+					<div id="captions"></div>
+					<canvas id="stage" width="1024" height="660"></canvas>
+				</div>
+			</div>
+		</div>
+
+        <script type="text/javascript">
+            // solve for unguided audio in flas
+            var playSound = function(){};
+        </script>
+		<script src="assets/js/libraries.js"></script>
+		<script src="assets/js/assets.js"></script>
+		<script src="assets/js/main.js"></script>
+	</body>
+</html>
