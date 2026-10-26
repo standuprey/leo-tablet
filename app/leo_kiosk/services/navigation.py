@@ -14,6 +14,7 @@ class Route(Enum):
     REVIEW_LIST = auto()
     REVIEW_TRIAL = auto()
     REVIEW_EDITOR = auto()
+    VIDEOS = auto()
     WIFI = auto()
     PORTAL = auto()
 
@@ -62,6 +63,8 @@ def _apply(
         return Transition(Route.PARENT_HOME)
     if current is Route.PORTAL:
         return Transition(Route.PARENT_HOME if enter else Route.WIFI, close_portal=True)
+    if current is Route.VIDEOS:
+        return Transition(Route.PARENT_HOME if enter else Route.CHILD_HOME)
     if enter:
         return Transition(Route.PARENT_HOME)
     if current is Route.PARENT_HOME:

@@ -1,6 +1,6 @@
 """Battery gauge logic against a fake power_supply tree (no display)."""
 
-from leo_kiosk.ui.battery import GAUGE_HEIGHT, GAUGE_WIDTH, read_battery
+from leo_kiosk.adapters.battery import read_battery
 
 
 def make_supply(tmp_path, name="BAT1", type_="Battery", capacity="85", status="Discharging"):
@@ -35,8 +35,3 @@ def test_read_battery_skips_non_battery_and_malformed(tmp_path):
 
 def test_read_battery_without_directory_is_none(tmp_path):
     assert read_battery(str(tmp_path / "missing")) is None
-
-
-def test_gauge_geometry_constants():
-    assert GAUGE_WIDTH == 120
-    assert GAUGE_HEIGHT == 25

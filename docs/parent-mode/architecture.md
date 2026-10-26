@@ -490,29 +490,40 @@ If the prototype cannot provide reliable touch-only login without weakening WebK
 
 Release gates: platform audit passed; portal keyboard prototype passed; all transaction/gesture tests passed; hardware matrix recorded; permissions reviewed; installer and rollback rehearsed. No live root or network changes during architecture work.
 
-## 12b. Web-based parent UI (owner decision, 2026-10-24)
+## 12b. Web-based kiosk UI (owner decisions, 2026-10-24 and 2026-10-25)
 
-The owner approved re-platforming the **parent UI** onto a local web stack. This
-section supersedes the historical no-web-frontend constraint in the backlog.
+The owner approved re-platforming the **parent UI** onto a local web stack
+(2026-10-24), superseding the historical no-web-frontend constraint. On
+2026-10-25 the owner extended this to **all UI**: every screen — child home,
+Videos, parent mode — is an HTML page on the loopback server shown in one
+WebKitGTK view. The measured trigger: the Firefox parent browser cost
+~921 MB PSS across 12 processes for one server-rendered page; the WebKitGTK
+replacement measures ~225 MB across 3 (`tools/memprobe.py` on the tablet).
 
-- The **child home and Videos screens stay GTK**; only parent mode moves.
-- The launcher process hosts a loopback HTTP server thread (`adapters/parent_server.py`)
-  that renders parent pages from the existing services (catalog, reviews, home slots).
+- The launcher process hosts one fullscreen `WebKit2.WebView` (ephemeral
+  context, `ui/window.py`) and a loopback HTTP server thread
+  (`adapters/ui_server.py`) rendering every page from the existing services.
 - The server binds `127.0.0.1` only. Per the owner (2026-10-24): child safety
   hardening is deferred; the Up/Down/Down gesture is the only gate for now, so no
   token is required. The loopback bind remains so LAN devices cannot reach it.
-- Entry: the parent gesture spawns Firefox kiosk with an isolated parent profile
-  (reusing `adapters/browser_profiles.py`) pointed at the menu URL. Exit is
-  `window.close()` in kiosk mode; Down/Up (backwatch) also tears the browser down via
-  `.app-pid`. While a trial runs, the existing trial gesture handling applies.
+- Routes map to server pages (`URL_FOR` in `application.py`): `/` child home,
+  `/videos`, `/parent`, `/review`, `/wifi`. The parent gesture and return
+  gestures navigate the view; launched apps hide it, exactly like the GTK
+  window they replace.
+- Launch behavior (voices, `alt` fallbacks, `.app-pid`, deadline TERM→KILL,
+  status line, five-tap corner exit) moved unchanged into
+  `services/tile_launch.py`; the server thread marshals web actions to the GTK
+  main thread via `GLib.idle_add`. Video playback still spawns through the
+  allowlisted `videos.py` argv[0] (`videos.py <url>` runs mpv), so leopowerd
+  and backwatch contracts are unchanged.
+- The rainbow and battery gauge are re-implemented in the page's JS/HTML with
+  the same parameters (`RAINBOW_JS`, `CHILD_CSS`); battery state comes from
+  the polled `/child-state` endpoint.
 - The server thread owns its own SQLite connection (`open_database` is per-thread by
   contract); the HTTP server is deliberately single-threaded so one connection serves
-  all requests. Writes that touch session/process state (trial launch) are marshalled
-  to the GTK main thread via `GLib.idle_add`.
-- GTK stack pages for parent/review/wifi are retired once the web flows reach parity;
-  the child window keeps only the child home and Videos screens.
-- Remaining parent-mode UI tasks (rename/rating/Keep-Select, Wi-Fi) are re-targeted as
-  web endpoints/pages.
+  all requests.
+- Game trials and the captive portal keep using Firefox (compatibility and
+  sandbox); the review/rename/rating/Wi-Fi parent tasks remain web endpoints.
 
 ## 13. Implementation sequencing and estimates
 

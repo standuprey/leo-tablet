@@ -1,6 +1,47 @@
 # Parent-mode implementation status
 
-The feature is **functional for game trials; not yet deployed to the tablet**. The Review tile now lists real catalog games (imported at startup from the bootstrap), a row tap launches the actual game in an isolated Firefox kiosk profile, Down/Up returns to an interim editor showing the recorded outcome. Renaming/rating/Keep-Select CTAs are the next UI slice. Parent mode is now reachable in the running launcher: Up/Down/Down opens the grey parent menu, Exit returns to the child home, and Review/Wifi open honest placeholder screens. The old launcher behavior (tiles, fallbacks, voices, time limits) is preserved behind the same window. Not deployed yet — run `leo_deploy` to test on the tablet. The legacy Down/Up watcher still runs alongside until the cutover task.
+## Full web UI port (2026-10-25, owner decision; on-device verification pending)
+
+Following the parent-browser PoC below, the owner approved porting **all**
+UI to the web stack (architecture.md §12b). Every screen is now an HTML page
+on the loopback server (`adapters/ui_server.py`, renamed from
+`parent_server.py`) shown in one WebKitGTK view (`ui/window.py`):
+
+- Child home `/`: tiles.json grid, touch-reactive rainbow (JS canvas, same
+  parameters as the removed `ui/rainbow.py`), battery gauge (polled via
+  `/child-state`, reading moved to `adapters/battery.py`), invisible
+  five-tap parent corner (`POST /corner`, same 4 s window), status line.
+- Videos `/videos`: nine random tiles from kiosk_videos.json; a tap POSTs
+  `/videos/play`, and the launch engine spawns `videos.py <url>` (mpv) so
+  the `.app-pid`/allowlist contract with leopowerd and backwatch is
+  unchanged.
+- Launch engine extracted headless into `services/tile_launch.py` (voices,
+  `alt` fallbacks, deadline TERM→KILL, status messages, corner counter);
+  assertions ported from the removed `tests/ui/test_shell.py`.
+- Parent mode `/parent`, `/review`, `/wifi` unchanged, now shown in the same
+  view instead of a spawned browser; `parentweb.py` and the GTK parity pages
+  (`ui/parent_home.py`, `ui/review_list.py`, `ui/tile_grid.py`) are removed.
+- Game trials and the captive portal still use Firefox.
+
+Checks: 378 tests, ruff, strict mypy green; the launcher boots against the
+server on the dev machine. **Not yet verified on the tablet** — deploy via
+`install-kiosk.sh` (now also installs `webkit2gtk-4.1`) and re-run the
+acceptance checks: touch/scroll/rainbow feel, corner taps, tile launches,
+video playback + exit gestures, trial launch/return, memory re-measure.
+
+## WebKitGTK parent browser PoC (2026-10-25, verified on the tablet)
+
+Measured on the Surface Go (PSS via `tools/memprobe.py`, run as root):
+
+| State | Userspace PSS | Parent browser PSS |
+|---|---|---|
+| Idle, child home | ~340 MB | — |
+| Firefox parent browser | 1.22 GiB | ~921 MB across 12 processes |
+| WebKitGTK parent browser | ~432 MB | ~225 MB across 3 processes (host 93 + WebProcess 98 + NetworkProcess 34) |
+
+Firefox's 596 MB main process for one server-rendered page also suggests
+something inside the Firefox path accumulates; not investigated because the
+path was replaced. The Review tile now lists real catalog games (imported at startup from the bootstrap), a row tap launches the actual game in an isolated Firefox kiosk profile, Down/Up returns to an interim editor showing the recorded outcome. Renaming/rating/Keep-Select CTAs are the next UI slice. Parent mode is now reachable in the running launcher: Up/Down/Down opens the grey parent menu, Exit returns to the child home, and Review/Wifi open honest placeholder screens. The old launcher behavior (tiles, fallbacks, voices, time limits) is preserved behind the same window. Not deployed yet — run `leo_deploy` to test on the tablet. The legacy Down/Up watcher still runs alongside until the cutover task.
 
 ## Completed execution-plan tasks
 

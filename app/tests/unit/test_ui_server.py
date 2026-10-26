@@ -1,27 +1,38 @@
-"""Parent server: routing, renderers, loopback lifecycle (no token: gesture)."""
+"""Kiosk UI server: routing, renderers, loopback lifecycle (no token: gesture)."""
 
 import http.client
+import json
 import urllib.parse
 
 import pytest
 
-from leo_kiosk.adapters.parent_server import (
-    ParentPages,
-    ParentServer,
+from leo_kiosk.adapters.ui_server import (
+    UiPages,
+    UiServer,
     WifiView,
+    render_blank,
+    render_child_state,
     render_exit,
+    render_home,
     render_menu,
     render_portal_opened,
     render_poweroff,
     render_review,
     render_state,
+    render_videos,
     render_wifi,
 )
 from leo_kiosk.domain.reviews import ReviewStatus
 
 
 def default_pages_stub():
-    return ParentPages(
+    return UiPages(
+        home=lambda: "home",
+        videos=lambda: "videos",
+        child_state=lambda: json.dumps({"status": "", "battery": None}),
+        launch_tile=lambda tile_id: f"launch {tile_id}",
+        video_play=lambda url: f"play {url}",
+        corner=lambda: "corner",
         menu=render_menu,
         review=render_review,
         wifi=render_wifi,
@@ -38,7 +49,7 @@ def default_pages_stub():
 
 @pytest.mark.local_network
 def make_server(pages=None, port=0):
-    server = ParentServer(pages=pages or default_pages_stub(), port=port)
+    server = UiServer(pages=pages or default_pages_stub(), port=port)
     server.start()
     return server
 
@@ -113,6 +124,45 @@ def test_wifi_page_renders_status_form_and_portal_banner():
     assert "Volume Down" in render_portal_opened()
 
 
+def test_home_page_renders_tiles_as_launch_forms():
+    tiles = [
+        {"id": "read", "label": "ABC", "color": "#ff6b6b", "cmd": ["gcompris-qt"]},
+        {"id": "videos", "label": "Videos", "color": "#b197fc", "cmd": ["videos.py"]},
+    ]
+    html = render_home("LÉO", tiles)
+    assert "LÉO" in html
+    assert "action='/launch/read'" in html
+    assert "href='/videos'" in html  # videos is a routed page, not a launch
+    assert "id='corner'" in html
+    assert "id='rainbow'" in html
+    assert "submit" in html  # ACTION_JS: POST responses never replace the page
+    for _ in range(6):
+        html = render_home("LÉO", [])  # fewer than nine tiles: blanks fill
+    assert html.count("class='blank'") == 9
+
+
+def test_videos_page_renders_nine_tiles_with_play_forms():
+    videos = [
+        {"title": "Fun|episode", "embed_url": "https://e/1",
+         "watch_url": "https://w/1"},
+    ]
+    html = render_videos(videos)
+    assert "action='/videos/play'" in html
+    assert "https://w/1" in html
+    assert "Fun" in html
+
+
+def test_child_state_is_json_with_battery():
+    payload = json.loads(render_child_state("Ask Papa", (85, True)))
+    assert payload["status"] == "Ask Papa"
+    assert payload["battery"] == {"percent": 85, "charging": True}
+    assert json.loads(render_child_state("", None))["battery"] is None
+
+
+def test_blank_page_escapes():
+    assert "&lt;b&gt;" in render_blank("<b>")
+
+
 @pytest.mark.local_network
 def test_server_serves_menu():
     server = make_server()
@@ -120,6 +170,45 @@ def test_server_serves_menu():
         status, body = get(f"{server.url}")
         assert status == 200
         assert "Parent mode" in body
+    finally:
+        server.stop()
+
+
+@pytest.mark.local_network
+def test_server_serves_child_routes():
+    server = make_server()
+    try:
+        status, body = get(f"{server.base}/")
+        assert status == 200 and body == "home"
+        status, body = get(f"{server.base}/videos")
+        assert status == 200 and body == "videos"
+        status, body = get(f"{server.base}/child-state")
+        assert status == 200 and json.loads(body)["status"] == ""
+    finally:
+        server.stop()
+
+
+@pytest.mark.local_network
+def test_server_routes_launch_corner_and_video_play():
+    server = make_server()
+    try:
+        conn = http.client.HTTPConnection("127.0.0.1", server.port)
+        conn.request("POST", "/launch/read")
+        response = conn.getresponse()
+        assert response.status == 200 and response.read() == b"launch read"
+        conn.close()
+        conn = http.client.HTTPConnection("127.0.0.1", server.port)
+        body = urllib.parse.urlencode({"url": "https://w/1"}).encode()
+        conn.request("POST", "/videos/play", body=body,
+                     headers={"Content-Type": "application/x-www-form-urlencoded"})
+        response = conn.getresponse()
+        assert response.status == 200 and response.read() == b"play https://w/1"
+        conn.close()
+        conn = http.client.HTTPConnection("127.0.0.1", server.port)
+        conn.request("POST", "/corner")
+        response = conn.getresponse()
+        assert response.status == 200 and response.read() == b"corner"
+        conn.close()
     finally:
         server.stop()
 
@@ -156,3 +245,7 @@ def test_server_binds_loopback_only():
         assert server._httpd.server_address[0] == "127.0.0.1"
     finally:
         server.stop()
+
+def test_child_and_parent_pages_hide_the_pointer():
+    assert "cursor: none" in render_home("LÉO", [])
+    assert "cursor: none" in render_menu()

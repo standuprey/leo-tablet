@@ -24,11 +24,14 @@ pacman -S --needed --noconfirm \
   marble five-or-more \
   mpv yt-dlp \
   firefox \
+  webkit2gtk-4.1 \
   pipewire pipewire-pulse wireplumber libpulse \
   rsync
 # Tile commands come from config/tiles.json; every binary above matches a tile.
 # neverball is AUR-only: build it first, or the Maze tile shows "Ask Papa".
-# firefox stays: the parent-mode Review tile launches web games through it.
+# firefox stays: game trials and the captive portal still launch through it.
+# Every screen (child home, Videos, parent mode) is WebKitGTK showing pages
+# from the loopback server (leo_kiosk/adapters/ui_server.py).
 # The Videos tile is a deliberate placeholder and shows "Ask Papa".
 
 echo "==> Copying launcher to $DEST (source: $HERE)"

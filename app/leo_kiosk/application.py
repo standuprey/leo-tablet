@@ -1,9 +1,17 @@
-"""Application wiring: catalog, sessions, parent mode, GTK main loop."""
+"""Application wiring: catalog, sessions, tile launches, the kiosk web UI.
+
+Every screen is an HTML page on the loopback server (adapters/ui_server.py)
+shown in one WebKitGTK view (ui/window.py). The server thread renders; web
+actions are marshalled to the GTK main thread with GLib.idle_add; the launch
+engine (services/tile_launch.py) owns process lifetime exactly as the legacy
+GTK launcher did.
+"""
 
 import os
-import signal
 import subprocess
 import sys
+import time
+import urllib.parse
 from pathlib import Path
 from uuid import UUID
 
@@ -15,75 +23,93 @@ gi.require_version("GLib", "2.0")
 from gi.repository import GLib, Gtk  # noqa: E402
 
 from leo_kiosk.adapters import wifi as wifi_adapter  # noqa: E402
+from leo_kiosk.adapters.battery import read_battery  # noqa: E402
 from leo_kiosk.adapters.browser_profiles import BrowserProfiles  # noqa: E402
 from leo_kiosk.adapters.catalog_source import BootstrapCatalogSource  # noqa: E402
 from leo_kiosk.adapters.firefox import build_firefox_command  # noqa: E402
-from leo_kiosk.adapters.parent_server import (  # noqa: E402
-    ParentServer,
+from leo_kiosk.adapters.ui_server import (  # noqa: E402
     ReviewRow,
+    UiServer,
     WifiView,
+    load_videos,
+    render_blank,
+    render_child_state,
     render_exit,
+    render_home,
     render_menu,
     render_portal_opened,
     render_poweroff,
     render_review,
     render_state,
+    render_videos,
     render_wifi,
 )
+from leo_kiosk.adapters.video_player import build_video_command  # noqa: E402
+from leo_kiosk.domain.errors import ValidationError  # noqa: E402
 from leo_kiosk.domain.gestures import (  # noqa: E402
     DEFAULT_PATTERNS,
+    PARENT_SURFACE_PATTERNS,
     REVIEW_TRIAL_PATTERNS,
     GestureAction,
 )
 from leo_kiosk.domain.sessions import LaunchOutcome  # noqa: E402
 from leo_kiosk.services.catalog import CatalogService  # noqa: E402
-from leo_kiosk.services.navigation import Route, return_gesture  # noqa: E402
+from leo_kiosk.services.navigation import Route  # noqa: E402
 from leo_kiosk.services.sessions import TrialSessionService  # noqa: E402
+from leo_kiosk.services.tile_launch import TileLauncher, play  # noqa: E402
 from leo_kiosk.storage.catalog import CatalogRepository  # noqa: E402
 from leo_kiosk.storage.catalog_import import import_catalog  # noqa: E402
 from leo_kiosk.storage.database import default_database_path, open_database  # noqa: E402
 from leo_kiosk.storage.home import HomeRepository  # noqa: E402
 from leo_kiosk.storage.schema import MIGRATIONS  # noqa: E402
 from leo_kiosk.storage.sessions import SessionRepository  # noqa: E402
-from leo_kiosk.ui.parent_home import build_parent_screen  # noqa: E402
-from leo_kiosk.ui.review_list import build_editor_placeholder, build_review_list  # noqa: E402
 from leo_kiosk.ui.window import LauncherWindow  # noqa: E402
 
-# HERE is the app/ directory (parent of the leo_kiosk package). tiles.json is
-# installed flat next to the legacy scripts on the tablet; in this repo the
-# canonical copy lives in config/ (see install-kiosk.sh).
+# HERE is the app/ directory (parent of the leo_kiosk package). Runtime data
+# files are installed flat next to the legacy scripts on the tablet; in this
+# repo the canonical copies live in config/ (see install-kiosk.sh).
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG = os.path.join(HERE, "tiles.json")
 VOICES = os.path.join(HERE, "voices")
 STATE = os.path.join(HERE, ".app-pid")
+KIOSK_VIDEOS = os.path.join(HERE, "kiosk_videos.json")
+VIDEOS_SCRIPT = os.path.join(HERE, "videos.py")
 BOOTSTRAP = os.path.join(HERE, "catalog", "bootstrap.json")
+STATUS_SECONDS = 3.0
 
-PAGE_FOR = {
-    Route.CHILD_HOME: "child",
-    Route.PARENT_HOME: "parent",
-    Route.REVIEW_LIST: "review",
-    Route.REVIEW_EDITOR: "editor",
-    Route.WIFI: "wifi",
-    Route.PORTAL: "wifi",
+URL_FOR = {
+    Route.CHILD_HOME: "/",
+    Route.PARENT_HOME: "/parent",
+    Route.REVIEW_LIST: "/review",
+    Route.VIDEOS: "/videos",
+    Route.WIFI: "/wifi",
+}
+
+# The view can navigate itself (page links); route state follows the page.
+# This table plus web_navigated() is the routing contract: every screen is a
+# server page, every navigation is a GET load the controller observes.
+ROUTE_FOR_PATH = {
+    "/": Route.CHILD_HOME,
+    "/parent": Route.PARENT_HOME,
+    "/review": Route.REVIEW_LIST,
+    "/videos": Route.VIDEOS,
+    "/wifi": Route.WIFI,
+    "/exit": Route.PARENT_HOME,
+    "/poweroff": Route.PARENT_HOME,
 }
 
 
-def _placeholder_page(title: str) -> Gtk.Box:
-    box = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL,
-        spacing=24,
-        valign=Gtk.Align.CENTER,
-        halign=Gtk.Align.CENTER,
-    )
-    label = Gtk.Label(label=title)
-    label.get_style_context().add_class("parent-title")
-    hint = Gtk.Label(
-        label="This screen ships in a later deploy.\nReturn with: Volume Down, Down, Up"
-    )
-    hint.get_style_context().add_class("status")
-    box.pack_start(label, False, False, 0)
-    box.pack_start(hint, False, False, 0)
-    return box
+def _load_config(path: str) -> dict[str, object]:
+    """tiles.json contents; an unreadable config degrades to an empty home."""
+    import json
+
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"config unavailable ({exc})", file=sys.stderr, flush=True)
+        return {}
 
 
 def _popen(*args, **kwargs):
@@ -105,37 +131,52 @@ def _child_watch(process, callback):
 
 
 class AppController:
-    """Routes gestures and tiles through navigation to visible pages.
+    """Routes gestures and web actions through navigation and the engine.
 
-    Limitation until session ownership lands fully: entering parent mode from
-    inside a running legacy app is not wired (gestures are ignored while the
-    launcher is hidden), but a review trial can always be left with Down/Up.
+    Limitation unchanged from the GTK parity build: gestures are ignored
+    while a launched app is foregrounded — backwatch and leopowerd own those
+    exits, through the same .app-pid / process-group contract as before.
     """
 
     def __init__(
         self,
         window: LauncherWindow,
+        config: dict[str, object],
+        server: UiServer | None = None,
         catalog: CatalogService | None = None,
         sessions: TrialSessionService | None = None,
         monitor=None,
-        profiles=None,
-        parent_server=None,
+        profiles: BrowserProfiles | None = None,
     ) -> None:
         self.window = window
+        self.config = config
+        self.server = server
         self.catalog = catalog
         self.sessions = sessions
         self.monitor = monitor
         self.profiles = profiles
-        self.parent_server = parent_server
         self.route = Route.CHILD_HOME
         self.trial_token: UUID | None = None
         self.trial_web = False
-        self.parent_profile = None
-        self.parent_proc = None
         self.web_outcomes: dict[UUID, str] = {}
         self.portal_proc = None
         self.portal_profile = None
+        self._status: tuple[str, float] = ("", 0.0)
+        self._return_path = "/"  # page shown again when a video ends
+        self.launcher = TileLauncher(
+            state_path=STATE,
+            voices_dir=VOICES,
+            popen=_popen,
+            clock=time.monotonic,
+            player=play,
+            call_later=lambda seconds, fn: GLib.timeout_add(int(seconds * 1000), fn),
+            on_status=self.say,
+            on_enter=self._on_app_launch,
+            on_return=self._on_app_exit,
+            on_corner_exit=Gtk.main_quit,
+        )
 
+    # --- gestures ---------------------------------------------------------
     def on_gesture(self, action: GestureAction) -> None:
         in_trial = self.trial_token is not None
         if not self.window.is_showing() and not in_trial:
@@ -143,8 +184,7 @@ class AppController:
         if in_trial:
             # Any recognized gesture ends the trial: Down/Up returns to this
             # game's editor, Up/Down/Down goes to the parent home. Stopping
-            # the session drives the visible change via the exit callback;
-            # show_page() on a hidden window would do nothing.
+            # the session drives the visible change via the finish callback.
             outcome = (
                 LaunchOutcome.PARENT_REQUEST
                 if action is GestureAction.ENTER_PARENT
@@ -155,71 +195,116 @@ class AppController:
             self.sessions.stop(token, outcome)
             return
         if action is GestureAction.ENTER_PARENT:
-            self.open_parent_browser()
+            self._show(Route.PARENT_HOME)
             return
-        transition = return_gesture(self.route)
-        self.route = transition.route
-        self.window.show_page(PAGE_FOR.get(transition.route, "child"))
+        if self.route is Route.CHILD_HOME:
+            return  # Down/Down/Up on the child home: no-op, as before
+        # Old-world Down/Up semantics: leave the current surface for the
+        # child home (the pre-port UX; backwatch killed the foregrounded
+        # browser, which landed here too).
+        self._show(Route.CHILD_HOME)
 
-    def exit_parent(self) -> None:
-        transition = return_gesture(Route.PARENT_HOME)
-        self.route = transition.route
-        self.window.show_page("child")
-
-    def power_off(self) -> None:
-        """Parent-mode action: power the tablet off via logind.
-
-        The active session may power off without polkit interaction; the
-        request goes through systemd so the shutdown is clean.
-        """
-        subprocess.run(["systemctl", "poweroff"], check=False)
-
-    def _go(self, route: Route) -> None:
+    def web_navigated(self, uri: str) -> None:
+        """The view committed a load (page link or controller navigation)."""
+        if self.trial_token is not None or not self.window.is_showing():
+            return
+        path = urllib.parse.urlparse(uri).path
+        route = ROUTE_FOR_PATH.get(path)
+        if route is None and path.startswith("/review/"):
+            route = Route.PARENT_HOME  # interim trial state page
+        if route is None or route is self.route:
+            return
         self.route = route
-        self.window.show_page(PAGE_FOR.get(route, "child"))
+        self._use_patterns(route)
 
+    # --- route display ----------------------------------------------------
+    def _show(self, route: Route) -> None:
+        self.route = route
+        self._use_patterns(route)
+        self._navigate(route)
+
+    def _use_patterns(self, route: Route) -> None:
+        """Switch recognizer patterns per surface.
+
+        The launcher only owns return gestures on launcher-shown surfaces;
+        foregrounded apps are exited by backwatch/powerd instead, so the
+        child home keeps the default set while parent/video surfaces get the
+        short Down/Up return.
+        """
+        if self.monitor is None:
+            return
+        patterns = (
+            DEFAULT_PATTERNS if route is Route.CHILD_HOME else PARENT_SURFACE_PATTERNS
+        )
+        self.monitor.recognizer.use_patterns(patterns)
+
+    def _navigate(self, route: Route) -> None:
+        url = URL_FOR.get(route)
+        if url is not None and self.server is not None:
+            self.window.navigate(self.server.base + url)
+
+    # --- web actions ------------------------------------------------------
+    def launch_tile(self, tile_id: str) -> None:
+        """Web action: a home tile was tapped; native tiles run via the engine."""
+        if self.route is not Route.CHILD_HOME or not self.window.is_showing():
+            return
+        if tile_id == "videos":
+            self._show(Route.VIDEOS)
+            return
+        tile = self._tiles_by_id().get(tile_id)
+        if tile is None:
+            return
+        self.launcher.launch(tile)
+
+    def play_video(self, url: str) -> None:
+        """Web action: a Videos tile was tapped; mpv runs via videos.py."""
+        if self.route is not Route.VIDEOS or not self.window.is_showing():
+            return
+        if self.launcher.proc is not None and self.launcher.proc.poll() is None:
+            return
+        try:
+            build_video_command(VIDEOS_SCRIPT, url)
+        except ValidationError:
+            self.say("Cannot play this one!")
+            return
+        videos_tile = self._tiles_by_id().get("videos", {})
+        tile = {
+            "id": "videos",
+            "cmd": [[VIDEOS_SCRIPT, url]],
+            "minutes": videos_tile.get("minutes", 20),
+        }
+        self._return_path = "/videos"
+        self.launcher.launch(tile, play_sound=False)
+
+    def corner_tap(self) -> None:
+        """Web action: a tap in the invisible parent corner."""
+        self.launcher.corner_tap()
+
+    def webview_closed(self) -> None:
+        """The view closed itself (/exit page): return to the child home."""
+        self.route = Route.CHILD_HOME
+        self._navigate(Route.CHILD_HOME)
+
+    # --- status -----------------------------------------------------------
+    def say(self, text: str, seconds: float = STATUS_SECONDS) -> None:
+        self._status = (text, time.monotonic() + seconds)
+
+    def status_text(self) -> str:
+        text, deadline = self._status
+        return text if time.monotonic() < deadline else ""
+
+    # --- launch engine callbacks -----------------------------------------
     def _on_app_launch(self) -> None:
         self.route = Route.CHILD_ACTIVITY
+        self.window.hide()
 
     def _on_app_exit(self) -> None:
-        self.route = Route.CHILD_HOME
-        self.window.show_page("child")
+        route = Route.VIDEOS if self._return_path == "/videos" else Route.CHILD_HOME
+        self._return_path = "/"
+        self._show(route)
+        self.window.show()
 
-    # --- web parent mode --------------------------------------------------
-    def open_parent_browser(self) -> None:
-        """Swap the child home for the parent browser (gesture = the gate)."""
-        if self.parent_proc is not None or self.parent_server is None:
-            return
-        profile = self.profiles.new_trial_profile()
-        self.parent_profile = profile
-        cmd = build_firefox_command("firefox", profile, self.parent_server.url)
-        self.parent_proc = _popen(cmd, start_new_session=True)
-        try:
-            fd = os.open(self.window.state_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-            with os.fdopen(fd, "w") as f:
-                f.write(str(self.parent_proc.pid))
-        except OSError:
-            pass
-        self.window.win.hide()
-        self.route = Route.PARENT_HOME
-        GLib.timeout_add(500, self._watch_parent_browser)
-
-    def _watch_parent_browser(self) -> bool:
-        if self.parent_proc.poll() is None:
-            return True
-        if self.parent_profile is not None:
-            self.profiles.cleanup_profile(self.parent_profile)
-            self.parent_profile = None
-        try:
-            os.unlink(self.window.state_path)
-        except OSError:
-            pass
-        self.parent_proc = None
-        self.route = Route.CHILD_HOME
-        self.window.win.show_all()
-        self.window.win.fullscreen()
-        return False
-
+    # --- review trials (launched from the web UI) -------------------------
     def request_web_trial(self, game_id: UUID) -> None:
         """Main-thread bridge: start a trial launched from the web UI."""
         if self.trial_token is not None or self.catalog is None:
@@ -230,25 +315,31 @@ class AppController:
             return
         token = self.sessions.start_trial(url, game_id)
         self.trial_token = token
-        self.trial_web = True
         self.route = Route.REVIEW_TRIAL
         if self.monitor is not None:
             self.monitor.recognizer.use_patterns(REVIEW_TRIAL_PATTERNS)
-        self.window.win.hide()
+        self.window.hide()
 
     def web_trial_state(self, game_id: UUID) -> tuple[bool, str | None]:
         running = self.trial_token is not None
         outcome = self.web_outcomes.get(game_id)
         return running, outcome
 
-    def exit_parent_browser(self) -> None:
-        """Server-driven exit: the /exit page closed the kiosk window."""
-        if self.parent_proc is not None:
-            os.killpg(self.parent_proc.pid, signal.SIGTERM)
+    def trial_finished(self, game_id: UUID, outcome_value: str) -> None:
+        self.trial_token = None
+        self.web_outcomes[game_id] = outcome_value
+        if self.monitor is not None:
+            self.monitor.recognizer.use_patterns(DEFAULT_PATTERNS)
+        self.route = Route.PARENT_HOME
+        self._use_patterns(Route.PARENT_HOME)
+        if self.server is not None:
+            self.window.navigate(self.server.base + f"/review/{game_id}")
+        self.window.show()
 
+    # --- portal (captive-portal sign-in; Firefox, above the web UI) -------
     def open_portal_browser(self) -> None:
         """Sign-in window for a captive portal; Down/Up closes it again."""
-        if self.parent_proc is None or self.portal_proc is not None:
+        if self.portal_proc is not None:
             return
         profile = self.profiles.new_trial_profile()
         self.portal_profile = profile
@@ -257,9 +348,7 @@ class AppController:
         )
         self.portal_proc = _popen(cmd, start_new_session=True)
         try:
-            fd = os.open(
-                self.window.state_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600
-            )
+            fd = os.open(STATE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
             with os.fdopen(fd, "w") as f:
                 f.write(str(self.portal_proc.pid))
         except OSError:
@@ -272,88 +361,29 @@ class AppController:
         if self.portal_profile is not None:
             self.profiles.cleanup_profile(self.portal_profile)
             self.portal_profile = None
-        # Hand .app-pid back to the parent browser so Down/Up exits it again.
-        if self.parent_proc is not None:
-            try:
-                fd = os.open(
-                    self.window.state_path,
-                    os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
-                    0o600,
-                )
-                with os.fdopen(fd, "w") as f:
-                    f.write(str(self.parent_proc.pid))
-            except OSError:
-                pass
+        try:
+            os.unlink(STATE)
+        except OSError:
+            pass
         self.portal_proc = None
         return False
 
-    # --- review flow (GTK parity path; the web UI replaces it) ------------
-    def open_review(self) -> None:
-        page = self.window.stack.get_child_by_name("review")
-        for child in list(page.get_children()):
-            page.remove(child)
-        page.set_halign(Gtk.Align.FILL)  # placeholder was centered; the list must expand
-        page.set_valign(Gtk.Align.FILL)
-        entries = self.catalog.list_review_entries() if self.catalog else ()
-        page.pack_start(build_review_list(entries, self._start_trial), True, True, 0)
-        page.show_all()
-        self._go(Route.REVIEW_LIST)
-
-    def _start_trial(self, game_id: UUID, url: str) -> None:
-        token = self.sessions.start_trial(url, game_id)
-        self.trial_token = token
-        self.route = Route.REVIEW_TRIAL
-        if self.monitor is not None:
-            self.monitor.recognizer.use_patterns(REVIEW_TRIAL_PATTERNS)
-        self.window.win.hide()
-
-    def trial_finished(self, game_id: UUID, outcome_value: str) -> None:
-        self.trial_token = None
-        if self.trial_web:
-            # Web-launched trial: the parent browser page polls the state
-            # endpoint and renders the interim editor; no GTK pages here.
-            self.trial_web = False
-            self.web_outcomes[game_id] = outcome_value
-            if self.monitor is not None:
-                self.monitor.recognizer.use_patterns(DEFAULT_PATTERNS)
-            self.route = Route.PARENT_HOME
-            return
-        if outcome_value == LaunchOutcome.PARENT_REQUEST.value:
-            self.route = Route.PARENT_HOME
-        else:
-            self.route = Route.REVIEW_EDITOR
-        if self.monitor is not None:
-            self.monitor.recognizer.use_patterns(DEFAULT_PATTERNS)
-        name = "Game"
-        if self.catalog is not None:
-            try:
-                name = self.catalog.get_entry(game_id).display_name
-            except (LookupError, ValueError):
-                pass
-        target_page = PAGE_FOR.get(self.route, "child")
-        self.window.show_page(target_page)  # route decides, not the pre-trial page
-        if self.route is Route.REVIEW_EDITOR:
-            editor = self.window.stack.get_child_by_name(target_page)
-            for child in list(editor.get_children()):
-                editor.remove(child)
-            editor.pack_start(
-                build_editor_placeholder(name, f"Trial outcome: {outcome_value}"), True, True, 0
-            )
-            editor.show_all()
-        self.window.win.show_all()
-        self.window.win.fullscreen()
+    def _tiles_by_id(self) -> dict[str, dict[str, object]]:
+        tiles = self.config.get("tiles", [])
+        return {str(t["id"]): t for t in tiles if isinstance(t, dict) and "id" in t}
 
 
-class WebParentPages:
-    """Parent pages rendered from the real services in the server thread.
+class WebUIPages:
+    """All kiosk pages rendered from the real services in the server thread.
 
-    The server thread owns its own read-only catalog connection; trial
-    launches are marshalled to the GTK main thread because the session
-    service drives GLib schedulers and process watches there.
+    The server thread owns its own read-only catalog connection; actions are
+    marshalled to the GTK main thread because the session and launch engines
+    drive GLib schedulers and process watches there.
     """
 
-    def __init__(self, db_path, controller: "AppController | None" = None):
+    def __init__(self, db_path, config: dict[str, object], controller=None):
         self._db_path = db_path
+        self._config = config
         self._controller = controller
         self._conn = None
         self._catalog: CatalogService | None = None
@@ -371,14 +401,58 @@ class WebParentPages:
         except (LookupError, ValueError):
             return "Game"
 
+    # --- child pages ------------------------------------------------------
+    def home(self) -> str:
+        tiles = self._config.get("tiles", [])
+        return render_home(str(self._config.get("title", "")), list(tiles))
+
+    def videos(self) -> str:
+        try:
+            return render_videos(load_videos(KIOSK_VIDEOS))
+        except (OSError, ValueError) as exc:
+            # Missing/broken catalog must degrade to a page, not a dropped
+            # connection (the handler thread would otherwise die mid-request).
+            print(f"videos: catalog unavailable ({exc})", file=sys.stderr, flush=True)
+            return render_blank("No videos right now. Ask Papa to fix this one!")
+
+    def child_state(self) -> str:
+        status = ""
+        if self._controller is not None:
+            status = self._controller.status_text()
+        return_status = status  # read once; battery read may take a moment
+        return render_child_state(return_status, read_battery())
+
+    def launch_tile(self, tile_id: str) -> str:
+        if self._controller is not None:
+            GLib.idle_add(self._controller.launch_tile, tile_id)
+        return render_blank("")
+
+    def video_play(self, url: str) -> str:
+        try:
+            build_video_command(VIDEOS_SCRIPT, url)
+        except ValidationError:
+            return render_blank("This video cannot be played.")
+        if self._controller is not None:
+            GLib.idle_add(self._controller.play_video, url)
+        return render_blank("")
+
+    def corner(self) -> str:
+        if self._controller is not None:
+            GLib.idle_add(self._controller.corner_tap)
+        return render_blank("")
+
+    # --- parent pages -----------------------------------------------------
     def menu(self) -> str:
         return render_menu()
 
     def review(self) -> str:
-        rows = [
-            ReviewRow(str(e.game_id), e.display_name, e.status.value, e.rating)
-            for e in self._service().list_review_entries()
-        ]
+        try:
+            rows = [
+                ReviewRow(str(e.game_id), e.display_name, e.status.value, e.rating)
+                for e in self._service().list_review_entries()
+            ]
+        except Exception:  # noqa: BLE001 - catalog failure must not kill the page
+            return render_review([])
         return render_review(rows)
 
     def exit(self) -> str:
@@ -411,9 +485,6 @@ class WebParentPages:
     def wifi(self) -> str:
         return render_wifi(self._wifi_view())
 
-    def wifi_rescan(self) -> str:
-        return render_wifi(self._wifi_view())
-
     def wifi_connect(self, ssid: str, password: str | None) -> str:
         ok, message = wifi_adapter.connect(ssid, password)
         return render_wifi(self._wifi_view(message))
@@ -421,6 +492,9 @@ class WebParentPages:
     def wifi_forget(self, name: str) -> str:
         ok, message = wifi_adapter.forget(name)
         return render_wifi(self._wifi_view(message))
+
+    def wifi_rescan(self) -> str:
+        return render_wifi(self._wifi_view())
 
     def poweroff(self) -> str:
         subprocess.run(["systemctl", "poweroff"], check=False)
@@ -437,28 +511,20 @@ def compose_launcher(
     sessions: TrialSessionService | None,
     monitor_factory=None,
     profiles: BrowserProfiles | None = None,
-    parent_server: ParentServer | None = None,
+    server: UiServer | None = None,
+    config: dict[str, object] | None = None,
 ) -> tuple[LauncherWindow, AppController]:
-    window = LauncherWindow(CONFIG, STATE, VOICES)
+    window = LauncherWindow()
     controller = AppController(
-        window, catalog=catalog, sessions=sessions, profiles=profiles,
-        parent_server=parent_server,
+        window,
+        config or {},
+        server=server,
+        catalog=catalog,
+        sessions=sessions,
+        profiles=profiles,
     )
-    editor_page = build_editor_placeholder("", None)
-    window.attach_pages(
-        {
-            "parent": build_parent_screen(
-                on_review=controller.open_review,
-                on_wifi=lambda: controller._go(Route.WIFI),
-                on_exit=controller.exit_parent,
-                on_power=controller.power_off,
-            ),
-            "review": _placeholder_page("REVIEW"),
-            "wifi": _placeholder_page("WIFI"),
-            "editor": editor_page,
-        }
-    )
-    window.set_launch_state_callback(controller._on_app_launch, controller._on_app_exit)
+    window.on_webview_close = controller.webview_closed
+    window.on_navigated = controller.web_navigated
     if monitor_factory is not None:
         try:
             controller.monitor = monitor_factory(controller.on_gesture)
@@ -493,16 +559,17 @@ def _build_catalog_and_sessions():
 def main() -> None:
     # Startup banner: makes stale-deploy diagnosis trivial (the legacy launcher
     # printed nothing on success, so an empty log looked identical to a hang).
-    print("leo-kiosk: starting (parent-mode build)", file=sys.stderr, flush=True)
+    print("leo-kiosk: starting (web UI build)", file=sys.stderr, flush=True)
     try:
         catalog, sessions, profiles, _db = _build_catalog_and_sessions()
     except Exception as exc:  # noqa: BLE001 - storage must never kill the tiles
         print(
-            f"catalog unavailable ({exc}); running with legacy tiles only",
+            f"catalog unavailable ({exc}); running with tiles only",
             file=sys.stderr,
             flush=True,
         )
         catalog, sessions, profiles = None, None, None
+    config = _load_config(CONFIG)
 
     def monitor_factory(on_action):
         from leo_kiosk.adapters.input import VolumeInputMonitor, discover_volume_sources
@@ -520,30 +587,29 @@ def main() -> None:
         print(f"input: watching {len(sources)} volume device(s)", file=sys.stderr, flush=True)
         return monitor
 
-    parent_server = None
-    if catalog is not None:
-        try:
-            parent_server = ParentServer(WebParentPages(default_database_path()))
-        except Exception as exc:  # noqa: BLE001 - web UI must never kill the tiles
-            print(f"parent server: unavailable ({exc})", file=sys.stderr, flush=True)
+    server: UiServer | None = None
+    try:
+        server = UiServer(WebUIPages(default_database_path(), config))
+    except Exception as exc:  # noqa: BLE001 - web UI must never kill the tiles
+        print(f"ui server: unavailable ({exc})", file=sys.stderr, flush=True)
 
     window, controller = compose_launcher(
         catalog, sessions, monitor_factory, profiles=profiles,
-        parent_server=parent_server,
+        server=server, config=config,
     )
-    if parent_server is not None:
-        parent_server.pages._controller = controller  # bridge after compose
-        parent_server.start()
+    if server is not None:
+        server.pages._controller = controller  # bridge after compose
+        server.start()
         print(
-            f"parent server: http://127.0.0.1:{parent_server.port}/parent",
+            f"ui server: {server.base}/parent",
             file=sys.stderr,
             flush=True,
         )
+        controller._navigate(Route.CHILD_HOME)  # initial page
     if sessions is not None:
         sessions.on_finished = lambda token, game_id, outcome: controller.trial_finished(
             game_id, outcome.value
         )
-
     try:
         Gtk.main()
     except KeyboardInterrupt:

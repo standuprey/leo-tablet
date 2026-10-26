@@ -12,6 +12,12 @@ only (child screens stay GTK). Design and security model: architecture.md
 section 12b. Remaining rename/rating/Keep-Select and Wi-Fi tasks are
 re-targeted as web endpoints/pages on the loopback token-gated server.
 
+Update (2026-10-25): the owner extended the decision to **all UI** — every
+screen (child home, Videos, parent mode) is a page on the loopback server
+shown in one WebKitGTK view; the Firefox parent browser measured ~921 MB PSS
+vs ~225 MB for WebKitGTK on the tablet. See architecture.md §12b and
+implementation-status.md; on-device verification of the full port is pending.
+
 ## How a junior developer should use this backlog
 
 1. Read the architecture sections referenced by the task and inspect the listed files. Paths for new modules are proposed target paths, not existing implementations.

@@ -48,6 +48,13 @@ DEFAULT_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
     (UDD, GestureAction.ENTER_PARENT),
     (DDU, GestureAction.RETURN),
 )
+# Parent/video surfaces: the short Down/Up return replaces DDU there (the
+# web port made these launcher-owned pages; backwatch no longer exits them).
+# DU must not be enabled alongside DDU, which it would match first.
+PARENT_SURFACE_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
+    (DU, GestureAction.RETURN),
+    (UDD, GestureAction.ENTER_PARENT),
+)
 REVIEW_TRIAL_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
     # Exiting a game under review uses the short Down/Up return.
     (DU, GestureAction.RETURN),
