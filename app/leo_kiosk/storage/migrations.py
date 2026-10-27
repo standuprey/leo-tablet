@@ -74,13 +74,20 @@ def _backup(connection: sqlite3.Connection, path: Path, version: int, timeout_ms
         raise
 
 
+_MIGRATION_PRAGMAS = ("quick_check", "table_info", "table_xinfo")
+
+
 def _authorize_migration(
     action: int, arg1: str | None, arg2: str | None, database: str | None, source: str | None
 ) -> int:
+    if action == sqlite3.SQLITE_PRAGMA:
+        # ALTER TABLE ADD COLUMN consults read-only metadata pragmas
+        # internally; arbitrary pragmas stay denied.
+        allowed = arg1 in _MIGRATION_PRAGMAS
+        return sqlite3.SQLITE_OK if allowed else sqlite3.SQLITE_DENY
     forbidden = (
         sqlite3.SQLITE_TRANSACTION,
         sqlite3.SQLITE_SAVEPOINT,
-        sqlite3.SQLITE_PRAGMA,
         sqlite3.SQLITE_ATTACH,
         sqlite3.SQLITE_DETACH,
     )

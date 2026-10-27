@@ -75,6 +75,19 @@ def make_reviewed(env, suffix="a"):
     return game_id
 
 
+def make_tested(env, suffix="a"):
+    """Mark an existing catalog game as tested (no review saved); return id."""
+    catalog, db = env["catalog"], env["db"]
+    items = {r.display_name: r.game_id for r in catalog.list_records()}
+    game_id = items[f"Item {suffix}"]
+    with transaction(db):
+        db.execute(
+            "UPDATE games SET tested_at = ? WHERE id = ?",
+            (datetime.now(UTC).isoformat(), str(game_id)),
+        )
+    return game_id
+
+
 # --- parent-15: seeding -------------------------------------------------------
 
 
@@ -143,10 +156,24 @@ def test_malformed_seed_config_fails_without_partial_fill(env):
 # --- parent-16: slot primitives ----------------------------------------------
 
 
-def test_place_requires_reviewed_nondeleted_game(env):
+def test_place_requires_tested_nondeleted_game(env):
     game_id = [r.game_id for r in env["catalog"].list_records() if r.display_name == "Item a"][0]
-    with pytest.raises(ValidationError, match="reviewed"):
+    # a never-tested game cannot occupy a slot
+    with pytest.raises(ValidationError, match="tested"):
         env["home"].place(game_id, 1)
+    # a merely tested game can (owner decision 2026-10-26)
+    tested = make_tested(env, "c")
+    env["home"].place(tested, 1, replacement_confirmation=env["home"].slot(1))
+    assert env["home"].slot(1).game_id == tested
+    # a deleted game still cannot
+    deleted = make_tested(env, "b")
+    with transaction(env["db"]):
+        env["db"].execute(
+            "UPDATE games SET deleted_at = ? WHERE id = ?",
+            (datetime.now(UTC).isoformat(), str(deleted)),
+        )
+    with pytest.raises(ValidationError, match="deleted"):
+        env["home"].place(deleted, 2, replacement_confirmation=env["home"].slot(2))
 
 
 def test_place_replacement_requires_the_seen_occupant(env):

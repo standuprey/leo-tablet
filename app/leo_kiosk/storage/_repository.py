@@ -26,10 +26,10 @@ class Repository:
         except (sqlite3.Error, UnicodeError, OverflowError) as exc:
             raise StorageError("Cannot read catalog data") from exc
 
-    def _write(self, sql: str, values: tuple[object, ...]) -> None:
+    def _write(self, sql: str, values: tuple[object, ...]) -> sqlite3.Cursor:
         try:
             if not self.connection.in_transaction:
                 raise StorageError("Repository writes require a caller-owned transaction")
-            self.connection.execute(sql, values)
+            return self.connection.execute(sql, values)
         except (sqlite3.Error, UnicodeError, OverflowError) as exc:
             raise StorageError("Cannot write catalog data") from exc

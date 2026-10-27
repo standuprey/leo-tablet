@@ -16,11 +16,11 @@ def probe(pid: int) -> tuple[int, int, int] | None:
     """Return (uid, pss_kB, rss_kB) or None if unreadable."""
     try:
         uid = int(
-            open(f"/proc/{pid}/status").read().split("Uid:")[1].split()[0]
+            open(f"/proc/{pid}/status").read().split("Uid:")[1].split()[0]  # noqa: SIM115
         )
         rss = 0
         pss = None
-        for line in open(f"/proc/{pid}/smaps_rollup"):
+        for line in open(f"/proc/{pid}/smaps_rollup"):  # noqa: SIM115
             if line.startswith("Pss:"):
                 pss = int(line.split()[1])
             elif line.startswith("Rss:"):
@@ -73,8 +73,8 @@ if have_pss:
         print(f"SUM_PSS_uid{uid}({UID_NAMES.get(uid, uid)}):", by_uid[uid])
 
 mi = {}
-for l in open("/proc/meminfo"):
-    parts = l.split()
+for line in open("/proc/meminfo"):  # noqa: SIM115
+    parts = line.split()
     if len(parts) > 1:
         mi[parts[0][:-1]] = int(parts[1])
 for k in ("MemTotal", "MemAvailable", "MemFree", "Slab", "Shmem", "SReclaimable"):

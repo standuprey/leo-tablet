@@ -1,216 +1,216 @@
-"""Profiles, Firefox argv, and the token-owned trial session lifecycle."""
+"""In-view trial sessions: history, gesture outcomes, safety deadline."""
 
-from pathlib import Path
+import json
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
 
-from leo_kiosk.adapters.browser_profiles import BrowserProfiles
-from leo_kiosk.adapters.firefox import build_firefox_command
-from leo_kiosk.domain.catalog import CatalogItem, MediaType
-from leo_kiosk.domain.catalog_metadata import Provider
-from leo_kiosk.domain.catalog_records import StoredGame
 from leo_kiosk.domain.errors import ValidationError
+from leo_kiosk.domain.sessions import LaunchOutcome
 from leo_kiosk.services.sessions import TrialSessionService
-from leo_kiosk.storage.catalog import CatalogRepository
-from leo_kiosk.storage.catalog_metadata import CatalogMetadataRepository
-from leo_kiosk.storage.database import open_database, transaction
+from leo_kiosk.storage.database import open_database
 from leo_kiosk.storage.schema import MIGRATIONS
 from leo_kiosk.storage.sessions import SessionRepository
 
 
-@pytest.fixture
-def profiles(tmp_path):
-    return BrowserProfiles(tmp_path / "data")
+class Scheduler:
+    """Records scheduled calls; fires them on demand."""
 
-
-def test_trial_profiles_are_private_and_cleaned(profiles):
-    profile = profiles.new_trial_profile()
-    assert profile.is_relative_to(profiles._data) and (profile / "user.js").exists()
-    assert (profile / "user.js").stat().st_mode & 0o077 == 0
-    profiles.cleanup_profile(profile)
-    assert not profile.exists()
-
-
-def test_child_profile_persists_and_cleans_are_refused(profiles):
-    child = profiles.child_profile
-    profiles.cleanup_profile(child)  # must not delete the persistent profile
-    assert child.exists()
-
-
-def test_profile_escape_is_rejected(tmp_path):
-    BrowserProfiles.validate_profile_path(
-        tmp_path / "data" / "firefox-profiles" / "t", tmp_path / "data"
-    )
-    with pytest.raises(ValidationError):
-        BrowserProfiles.validate_profile_path(Path("/etc"), tmp_path / "data")
-
-
-def test_firefox_command_shape_and_url_gate(tmp_path):
-    argv = build_firefox_command("firefox", tmp_path, "https://example.com/game")
-    assert argv[:6] == (
-        "firefox",
-        "--no-remote",
-        "--new-instance",
-        "--profile",
-        str(tmp_path),
-        "--kiosk",
-    )
-    assert argv[6] == "https://example.com/game"
-    for url in ("file:///etc/passwd", "javascript:alert(1)", "", "https://exa mple.com"):
-        with pytest.raises(ValidationError):
-            build_firefox_command("firefox", tmp_path, url)
-
-
-class FakeProcess:
-    def __init__(self, pid=4242):
-        self.pid = pid
-        self.returncode = None
-
-    def poll(self):
-        return self.returncode
-
-
-class FakeProfiles:
     def __init__(self):
-        self.created = []
-        self.cleaned = []
+        self.scheduled = []  # (seconds, fn)
+        self.cancelled = []
 
-    def new_trial_profile(self):
-        profile = Path(f"/tmp/fake-profile-{len(self.created)}")
-        self.created.append(profile)
-        return profile
+    def call_later(self, seconds, fn):
+        self.scheduled.append((seconds, fn))
+        return len(self.scheduled)
 
-    def cleanup_profile(self, profile):
-        self.cleaned.append(profile)
+    def cancel(self, handle):
+        self.cancelled.append(handle)
 
-
-class RecordingPopen:
-    def __init__(self, fail=False):
-        self.calls = []
-        self.processes = []
-        self.fail = fail
-
-    def __call__(self, argv, start_new_session=False, stdout=None, stderr=None):
-        self.calls.append((tuple(argv), start_new_session))
-        if self.fail:
-            raise OSError("no firefox")
-        process = FakeProcess()
-        self.processes.append(process)
-        return process
-
-
-counter = iter(range(1000))
-
-
-def make_game(db, url="https://example.com/game"):
-    item = CatalogItem("test", url, f"Game {next(counter)}", MediaType.GAME)
-    with transaction(db):
-        CatalogMetadataRepository(db).upsert_provider(
-            Provider("test", "Test", "https://test.example")
-        )
-        CatalogRepository(db).insert_record(StoredGame(item))
-    return item.game_id
+    def fire(self, index):
+        self.scheduled[index][1]()
 
 
 @pytest.fixture
-def session_env(tmp_path):
-    db = open_database(tmp_path / "catalog.sqlite3", MIGRATIONS)
+def db(tmp_path):
+    with open_database(tmp_path / "s.sqlite3", migrations=MIGRATIONS) as connection:
+        yield connection
+
+
+def make_game(db, name: str) -> str:
+    """A real games row: launch_sessions.game_id is a RESTRICT foreign key."""
+    db.execute(
+        "INSERT OR IGNORE INTO providers (id, name, website_url) "
+        "VALUES ('test-provider', 'Test', 'https://example.org')"
+    )
+    game_id = str(uuid4())
+    db.execute(
+        "INSERT INTO games (id, provider_id, canonical_source_url, source_name, media_type) "
+        "VALUES (?, 'test-provider', ?, ?, 2)",
+        (game_id, f"https://example.org/{name.replace(' ', '-')}", name),
+    )
+    db.commit()
+    return game_id
+
+
+@pytest.fixture
+def service(db):
+    scheduler = Scheduler()
+    finished = []
+    svc = TrialSessionService(
+        SessionRepository(db),
+        call_later=scheduler.call_later,
+        cancel_later=scheduler.cancel,
+        on_finished=lambda token, game_id, outcome: finished.append((token, game_id, outcome)),
+        clock=lambda: datetime.now(UTC),
+        timeout_seconds=60,
+    )
+    svc._scheduler = scheduler
+    svc._finished = finished
+    return svc
+
+
+def test_start_trial_records_history_and_schedules_the_deadline(service, db):
+    game = make_game(db, "Game A")
+    token = service.start_trial("https://games.example/x", game)
+    assert service.active_tokens == (token,)
+    assert service._scheduler.scheduled[0][0] == 60
+    row = db.execute("SELECT game_id, role, ended_at FROM launch_sessions WHERE id = ?", (str(token),)).fetchone()
+    assert row["game_id"] == str(game) and row["role"] == "review_trial"
+    assert row["ended_at"] is None
+
+
+def test_second_trial_while_one_runs_is_refused(service, db):
+    service.start_trial("https://games.example/x", make_game(db, "Game A"))
+    with pytest.raises(ValidationError):
+        service.start_trial("https://games.example/y", make_game(db, "Game B"))
+
+
+def test_stop_records_outcome_and_cancels_the_deadline(service, db):
+    game = make_game(db, "Game A")
+    token = service.start_trial("https://games.example/x", game)
+    service.stop(token, LaunchOutcome.RETURN_GESTURE)
+    assert service.active_tokens == ()
+    assert service._scheduler.cancelled == [1]
+    assert service._finished == [(token, game, LaunchOutcome.RETURN_GESTURE)]
+    row = db.execute("SELECT outcome FROM launch_sessions WHERE id = ?", (str(token),)).fetchone()
+    assert row["outcome"] == "return_gesture"
+
+
+def test_deadline_ends_the_trial_as_timed_out(service, db):
+    game = make_game(db, "Game A")
+    token = service.start_trial("https://games.example/x", game)
+    service._scheduler.fire(0)  # the deadline fires
+    assert service.active_tokens == ()
+    assert service._finished == [(token, game, LaunchOutcome.TIMED_OUT)]
+    row = db.execute("SELECT outcome FROM launch_sessions WHERE id = ?", (str(token),)).fetchone()
+    assert row["outcome"] == "timed_out"
+
+
+def test_deadline_after_stop_is_a_noop(service, db):
+    token = service.start_trial("https://games.example/x", make_game(db, "Game A"))
+    service.stop(token, LaunchOutcome.PARENT_REQUEST)
+    service._scheduler.fire(0)  # late deadline: token already gone
+    assert service._finished and len(service._finished) == 1
+
+
+def test_stop_with_unknown_token_is_ignored(service):
+    service.stop(uuid4(), LaunchOutcome.RETURN_GESTURE)
+    assert service._finished == []
+
+
+def test_clock_drives_the_recorded_timestamps(service, db):
+    start = datetime(2026, 10, 25, 12, 0, tzinfo=UTC)
+    state = {"now": start}
+    service._clock = lambda: state["now"]
+    game = make_game(db, "Game A")
+    token = service.start_trial("https://games.example/x", game)
+    state["now"] = start + timedelta(minutes=5)
+    service.stop(token, LaunchOutcome.RETURN_GESTURE)
+    row = db.execute("SELECT started_at, ended_at FROM launch_sessions WHERE id = ?", (str(token),)).fetchone()
+    assert row["started_at"] == start.isoformat()
+    assert row["ended_at"] == (start + timedelta(minutes=5)).isoformat()
+
+
+# --- child game sessions ----------------------------------------------------
+def test_start_child_game_records_role_slot_and_own_deadline():
+
+    import tempfile
+    from pathlib import Path
+
+    from leo_kiosk.domain.sessions import LaunchOutcome, LaunchRole
+    from leo_kiosk.services.sessions import TrialSessionService
+    from leo_kiosk.storage.database import open_database
+    from leo_kiosk.storage.schema import MIGRATIONS
+    from leo_kiosk.storage.sessions import SessionRepository
+
+    tmp = Path(tempfile.mkdtemp())
+    db = open_database(tmp / "c.sqlite3", MIGRATIONS)
+    game_id = uuid4()
+    from leo_kiosk.services.home_seed import seed_home
+
+    tiles = {"title": "L", "columns": 3, "tiles": [
+        {"id": f"tbd{p}", "label": "TBD", "color": "#454551",
+         "cmd": ["~/kiosk/tbd"], "minutes": 20} for p in range(1, 10)]}
+    tiles_path = tmp / "tiles.json"
+    tiles_path.write_text(json.dumps(tiles))
+    assert seed_home(db, tiles_path)
+    db.execute(
+        "INSERT INTO providers (id, name, website_url) VALUES ('p', 'P', 'https://p.example')"
+    )
+    db.execute(
+        "INSERT INTO games (id, provider_id, canonical_source_url, source_name, media_type) "
+        "VALUES (?, 'p', 'https://p.example/g', 'G', 2)",
+        (str(game_id),),
+    )
     repo = SessionRepository(db)
-    popen = RecordingPopen()
-    profiles = FakeProfiles()
-    scheduled: list = []
-    watches: dict = {}
+    timeouts = []
+    finished = []
     service = TrialSessionService(
         repo,
-        popen=popen,
-        profiles=profiles,
-        call_later=lambda seconds, fn: (scheduled.append(fn), len(scheduled))[1],
-        cancel_later=lambda handle: scheduled.clear(),
-        watch_process=lambda process, callback: watches.__setitem__(process.pid, callback),
-        clock=lambda: datetime_now(),
+        call_later=lambda s, fn: timeouts.append(s) or f"h{s}",
+        cancel_later=lambda h: None,
+        on_finished=lambda t, g, o: finished.append(o),
     )
-    return service, repo, popen, profiles, scheduled, db, watches
-
-
-from datetime import UTC, datetime  # noqa: E402
-
-
-def datetime_now():
-    return datetime.now(UTC)
-
-
-def test_start_trial_spawns_kiosk_and_records_history(session_env):
-    service, repo, popen, profiles, _scheduled, db, watches = session_env
-    token = service.start_trial("https://example.com/game", make_game(db))
-    argv, own_session = popen.calls[0]
-    assert own_session is True and "--kiosk" in argv
-    assert token in service.active_tokens
+    token = service.start_child_game("https://g.example", game_id, 3, 20)
+    assert timeouts == [20 * 60]  # the tile's minutes, not the 30-min default
     row = repo.get_session(token)
-    assert row["role"] == "review_trial" and row["ended_at"] is None
+    assert row["role"] == LaunchRole.CHILD_GAME.value and row["slot"] == 3
+    assert row["game_id"] == str(game_id)
 
+    # one session at a time
+    import pytest
 
-def test_spawn_failure_records_spawn_failed_and_no_active_session(session_env):
-    service, repo, popen, profiles, _scheduled, db, watches = session_env
-    popen.fail = True
-    game_id = make_game(db, "https://example.com/fail")
+    from leo_kiosk.domain.errors import ValidationError
+
     with pytest.raises(ValidationError):
-        service.start_trial("https://example.com/game", game_id)
-    assert service.active_tokens == ()
-    assert profiles.cleaned, "failed spawn cleans the profile"
-    rows = [dict(r) for r in repo.connection.execute("SELECT * FROM launch_sessions")]
-    assert rows[0]["outcome"] == "spawn_failed"
+        service.start_child_game("https://g.example", game_id, 4, 20)
 
-
-def test_natural_exit_finishes_with_exited_and_cleans_profile(session_env):
-    service, repo, popen, profiles, _scheduled, db, watches = session_env
-    finished = []
-    service.on_finished = lambda token, game_id, outcome: finished.append(outcome)
-    token = service.start_trial("https://example.com/game", make_game(db))
-    popen.processes[0].returncode = 0
-    service._on_exit(token)
-    assert [o.value for o in finished] == ["exited"]
-    assert service.active_tokens == () and profiles.cleaned
-
-
-def test_crash_exit_is_recorded_as_crashed(session_env):
-    service, repo, popen, profiles, _scheduled, db, watches = session_env
-    service.start_trial("https://example.com/game", make_game(db))
-    popen.processes[0].returncode = 1
-    token = next(iter(service.active_tokens))
-    service._on_exit(token)
+    service.stop(token, LaunchOutcome.RETURN_GESTURE)
+    assert finished == [LaunchOutcome.RETURN_GESTURE]
     row = repo.get_session(token)
-    assert row["outcome"] == "crashed"
+    assert row["ended_at"] is not None
+    db.close()
 
 
-def test_stop_sends_term_and_schedules_kill(session_env):
-    service, repo, popen, profiles, scheduled, db, watches = session_env
-    service.start_trial("https://example.com/game", make_game(db))
-    process = popen.processes[0]
-    token = next(iter(service.active_tokens))
-    service.stop(
-        token,
-        __import__(
-            "leo_kiosk.domain.sessions", fromlist=["LaunchOutcome"]
-        ).LaunchOutcome.PARENT_REQUEST,
-    )
-    # TERM is delivered via killpg; the kill escalation is scheduled for 3 s.
-    assert len(scheduled) == 1
-    process.returncode = -15
-    watches[process.pid](process.pid, -15)  # exit watch fires after TERM
-    assert service.active_tokens == ()
-    assert profiles.cleaned
-    row = repo.get_session(token)
-    assert row["outcome"] == "parent_request"
+def test_start_child_game_rejects_bad_minutes():
+    import tempfile
+    from pathlib import Path
 
+    import pytest
 
-def test_only_one_trial_at_a_time(session_env):
-    service, repo, popen, profiles, _scheduled, db, watches = session_env
-    service.start_trial("https://example.com/game", make_game(db))
+    from leo_kiosk.domain.errors import ValidationError
+    from leo_kiosk.services.sessions import TrialSessionService
+    from leo_kiosk.storage.database import open_database
+    from leo_kiosk.storage.schema import MIGRATIONS
+    from leo_kiosk.storage.sessions import SessionRepository
+
+    tmp = Path(tempfile.mkdtemp())
+    db = open_database(tmp / "c.sqlite3", MIGRATIONS)
+    service = TrialSessionService(SessionRepository(db))
     with pytest.raises(ValidationError):
-        service.start_trial("https://example.com/other", make_game(db, "https://example.com/other"))
-
-
-def test_exit_callback_for_unknown_token_is_ignored(session_env):
-    service, repo, popen, profiles, _scheduled, db, watches = session_env
-    service._on_exit(uuid4())  # must not raise
+        service.start_child_game("https://g.example", uuid4(), 1, 0)
+    with pytest.raises(ValidationError):
+        service.start_child_game("https://g.example", uuid4(), 1, 999)
+    db.close()

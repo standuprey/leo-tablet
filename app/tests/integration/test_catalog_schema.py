@@ -51,9 +51,12 @@ def test_schema_is_repeatable_and_initializes_catalog_tables(tmp_path):
                 "home_slots",
                 "launch_sessions",
                 "review_events",
+                "game_thumbnails",
+                "child_profile",
+                "game_playtime",
             } <= tables
             assert (
-                connection.execute("SELECT max(version) FROM schema_migrations").fetchone()[0] == 3
+                connection.execute("SELECT max(version) FROM schema_migrations").fetchone()[0] == 9
             )
     assert not list(tmp_path.glob("*.bak"))
 

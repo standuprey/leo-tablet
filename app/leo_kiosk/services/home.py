@@ -1,7 +1,8 @@
 """Transactional slot placement: explicit moves, confirmed replacements.
 
-Eligibility (reviewed, nondeleted, game media type) is enforced here so every
-caller — the review save transaction included — inherits the same invariants.
+Eligibility (tested-or-reviewed, nondeleted, game media type) is enforced
+here so every caller — the review save transaction included — inherits the
+same invariants.
 """
 
 from uuid import UUID
@@ -34,8 +35,10 @@ class HomeService:
         record = self._catalog.get_record(game_id)
         if record.deleted_at is not None:
             raise ValidationError("A deleted game cannot occupy a home position")
-        if record.reviewed_at is None:
-            raise ValidationError("Only a reviewed game can be selected")
+        if record.tested_at is None and record.reviewed_at is None:
+            # A game the parent has at least tried may occupy a slot; fully
+            # untested (never launched) games cannot. Owner decision 2026-10-26.
+            raise ValidationError("Only a tested game can be selected")
         if record.item.media_type.value != 2:
             raise ValidationError("Only game records can occupy a game position")
 

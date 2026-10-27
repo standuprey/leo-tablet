@@ -4,3 +4,15 @@
 # source; the power button (ACPI PWRB) still wakes the tablet.
 # Installed to /etc/udev/rules.d/ by install-kiosk.sh.
 ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="045e", ATTR{idProduct}=="096f", ATTR{power/wakeup}="disabled"
+# The kiosk is touch-only. The Type Cover's trackpad is a pointer device,
+# which gives the Wayland seat a roaming mouse cursor — including over third-
+# party game pages where our own CSS cannot suppress it. Make libinput ignore
+# both pointer-capable interfaces; touch input is unaffected, and the
+# keyboard interfaces stay active. Remove these rules to get the trackpad
+# back (e.g. for desktop debugging).
+ACTION=="add", KERNEL=="event*", SUBSYSTEM=="input", \
+  ATTRS{idVendor}=="045e", ATTRS{idProduct}=="096f", \
+  ENV{ID_INPUT_TOUCHPAD}=="1", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+ACTION=="add", KERNEL=="event*", SUBSYSTEM=="input", \
+  ATTRS{idVendor}=="045e", ATTRS{idProduct}=="096f", \
+  ENV{ID_INPUT_MOUSE}=="1", ENV{LIBINPUT_IGNORE_DEVICE}="1"

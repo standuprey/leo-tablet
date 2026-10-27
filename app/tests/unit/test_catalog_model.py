@@ -129,3 +129,40 @@ def test_catalog_contracts(kwargs):
     fields.update(kwargs)
     with pytest.raises(ValidationError):
         CatalogItem(**fields)
+
+
+# --- fit_scale: verified design size -> whole-page zoom ---------------------
+def test_fit_scale_needs_verified_design_evidence():
+    from leo_kiosk.domain.catalog import DimensionEvidence, Dimensions
+
+    unknown = Dimensions()
+    assert unknown.fit_scale(1280, 1920) is None  # no size at all
+    # non-design evidence (measured differently) is not trusted for scaling
+    guessed = Dimensions(1024, 768, DimensionEvidence.POPUP)
+    assert guessed.fit_scale(1280, 1920) is None
+
+
+def test_fit_scale_fills_the_larger_axis():
+    from leo_kiosk.domain.catalog import DimensionEvidence, Dimensions
+
+    beetle = Dimensions(1024, 768, DimensionEvidence.DESIGN)
+    assert beetle.fit_scale(1280, 1920) == 1.25  # width-limited
+    assert beetle.fit_scale(1024, 768) == 1.0  # exact fit
+    portrait = Dimensions(768, 1024, DimensionEvidence.DESIGN)
+    assert portrait.fit_scale(1280, 1920) == 1280 / 768  # width-limited again
+
+
+def test_fit_scale_clamps_extreme_scales():
+    from leo_kiosk.domain.catalog import DimensionEvidence, Dimensions
+
+    huge = Dimensions(3000, 2000, DimensionEvidence.DESIGN)
+    assert huge.fit_scale(1280, 1920) == 0.5  # never smaller than half
+    tiny = Dimensions(100, 100, DimensionEvidence.DESIGN)
+    assert tiny.fit_scale(1280, 1920) == 3.0  # never more than 3x
+
+
+def test_fit_scale_needs_a_known_viewport():
+    from leo_kiosk.domain.catalog import DimensionEvidence, Dimensions
+
+    beetle = Dimensions(1024, 768, DimensionEvidence.DESIGN)
+    assert beetle.fit_scale(0, 0) is None

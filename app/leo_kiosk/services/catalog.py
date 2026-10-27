@@ -4,9 +4,9 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from uuid import UUID
 
-from leo_kiosk.domain.catalog import MediaType
+from leo_kiosk.domain.catalog import Dimensions, MediaType
 from leo_kiosk.domain.catalog_records import StoredGame
-from leo_kiosk.domain.reviews import ReviewStatus
+from leo_kiosk.domain.reviews import ReviewStatus, StarRating
 from leo_kiosk.storage.catalog import CatalogRepository
 
 
@@ -15,11 +15,14 @@ class ReviewEntry:
     game_id: UUID
     display_name: str
     status: ReviewStatus
-    rating: int | None
+    stars: "StarRating | None"
+    age_min: int | None
+    age_max: int | None
     provider_id: str
     orientation: str
     dimensions_text: str
     playable_url: str
+    dimensions: "Dimensions | None" = None
 
 
 class CatalogService:
@@ -68,11 +71,20 @@ class CatalogService:
                     game_id=item.game_id,
                     display_name=record.display_name,
                     status=self.status(record),
-                    rating=record.rating,
+                    stars=(
+                        StarRating(record.prod_stars, record.edu_stars, record.fun_stars)
+                        if record.prod_stars is not None
+                        and record.edu_stars is not None
+                        and record.fun_stars is not None
+                        else None
+                    ),
+                    age_min=record.age_min,
+                    age_max=record.age_max,
                     provider_id=item.provider_id,
                     orientation=item.orientation.value,
                     dimensions_text=dimensions_text,
                     playable_url=item.playable_url,
+                    dimensions=item.dimensions,
                 )
             )
         return tuple(entries)
@@ -89,12 +101,15 @@ class CatalogService:
                 return entry
         item = record.item
         return ReviewEntry(
-            item.game_id,
-            record.display_name,
-            self.status(record),
-            record.rating,
-            item.provider_id,
-            item.orientation.value,
-            "size unknown",
-            item.playable_url,
+            game_id=item.game_id,
+            display_name=record.display_name,
+            status=self.status(record),
+            stars=None,
+            age_min=record.age_min,
+            age_max=record.age_max,
+            provider_id=item.provider_id,
+            orientation=item.orientation.value,
+            dimensions_text="size unknown",
+            playable_url=item.playable_url,
+            dimensions=item.dimensions,
         )

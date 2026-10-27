@@ -37,6 +37,7 @@ class ImportReport:
     unchanged: int
     preserved_local: int
     purged: int = 0
+    resurrected: int = 0
 
     def as_json(self) -> str:
         return json.dumps(
@@ -46,6 +47,7 @@ class ImportReport:
                 "unchanged": self.unchanged,
                 "preserved_local": self.preserved_local,
                 "purged": self.purged,
+                "resurrected": self.resurrected,
             },
             sort_keys=True,
         )
@@ -81,7 +83,7 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
         )
     }
     known_providers = {row[0] for row in connection.execute("SELECT id FROM providers")}
-    added = updated = unchanged = preserved_local = purged = 0
+    added = updated = unchanged = preserved_local = purged = resurrected = 0
     with transaction(connection):
         for raw in provider_rows:
             metadata.upsert_provider(CatalogMetadataRepository.provider_from_source(raw))
@@ -103,11 +105,35 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
                     updated += 1
                 else:
                     unchanged += 1
+                if current["deleted_at"] is not None and _auto_tombstone(
+                    connection, record.game_id
+                ):
+                    # The source dropped this game before, without a parent
+                    # decision; the source re-adding it now lifts the auto
+                    # tombstone. Parent deletions (no auto marker) stay dead:
+                    # reimports cannot resurrect them.
+                    connection.execute(
+                        "UPDATE games SET deleted_at = NULL WHERE id = ?",
+                        (str(record.game_id),),
+                    )
+                    connection.execute(
+                        "INSERT INTO review_events (id, game_id, event_kind, timestamp, change_json) "
+                        "VALUES (?, ?, 'restored', ?, ?)",
+                        (
+                            str(uuid4()),
+                            str(record.game_id),
+                            datetime.now(UTC).isoformat(),
+                            '{"auto": "re-added-to-source"}',
+                        ),
+                    )
+                    resurrected += 1
         # Records removed from the source stay until the parent decides:
         # trialed/reviewed games are always preserved; never-touched games are
         # soft-deleted (tombstoned) so they leave the review queue, and
-        # reimports cannot resurrect them. Games occupying a home slot are
-        # left visible; unselecting them is the parent's call.
+        # reimports cannot resurrect them (auto tombstones are the exception,
+        # handled above). Games occupying a home slot are left visible;
+        # unselecting them is the parent's call. Already-tombstoned rows are
+        # neither re-tombstoned nor given duplicate events.
         for game_id, row in existing.items():
             if row["tested_at"] is not None or row["reviewed_at"] is not None:
                 preserved_local += 1
@@ -118,10 +144,12 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
             if assigned:
                 preserved_local += 1
                 continue
-            connection.execute(
+            cursor = connection.execute(
                 "UPDATE games SET deleted_at = ? WHERE id = ? AND deleted_at IS NULL",
                 (datetime.now(UTC).isoformat(), str(game_id)),
             )
+            if cursor.rowcount == 0:
+                continue  # already tombstoned by an earlier import
             connection.execute(
                 "INSERT INTO review_events (id, game_id, event_kind, timestamp, change_json) "
                 "VALUES (?, ?, 'deleted', ?, ?)",
@@ -141,6 +169,7 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
             unchanged,
             preserved_local,
             purged,
+            resurrected,
         )
         metadata.record_import(
             ImportRecord(
@@ -150,6 +179,16 @@ def import_catalog(connection: sqlite3.Connection, source: BootstrapSource) -> I
             )
         )
     return report
+
+
+def _auto_tombstone(connection: sqlite3.Connection, game_id: UUID) -> bool:
+    """True when the game's latest deletion was an automatic source removal."""
+    row = connection.execute(
+        "SELECT change_json FROM review_events WHERE game_id = ? AND event_kind = 'deleted' "
+        "ORDER BY timestamp DESC, id DESC LIMIT 1",
+        (str(game_id),),
+    ).fetchone()
+    return row is not None and '"auto"' in row[0]
 
 
 def _source_changes(record: StoredGame, current: sqlite3.Row) -> dict[str, object]:

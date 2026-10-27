@@ -34,14 +34,57 @@ def validate_rating(value: int | None) -> int | None:
 
 
 @dataclass(frozen=True)
+class AgeRange:
+    """Parent-decided recommended age range, in years; both ends required."""
+
+    min_years: int
+    max_years: int
+
+    def __post_init__(self) -> None:
+        for value in (self.min_years, self.max_years):
+            if type(value) is not int or not 1 <= value <= 17:
+                raise ValidationError("Age bounds must be integers from 1 to 17")
+        if self.min_years > self.max_years:
+            raise ValidationError("Age range minimum must not exceed maximum")
+
+    def __str__(self) -> str:
+        if self.min_years == self.max_years:
+            return f"ages {self.min_years}"
+        return f"ages {self.min_years}-{self.max_years}"
+
+
+@dataclass(frozen=True)
+class StarRating:
+    """Parent-decided five-star rating on three dimensions (each 0-5)."""
+
+    production: int
+    education: int
+    fun: int
+
+    def __post_init__(self) -> None:
+        for value in (self.production, self.education, self.fun):
+            if type(value) is not int or not 0 <= value <= 5:
+                raise ValidationError("Star ratings must be integers from 0 to 5")
+
+    def __str__(self) -> str:
+        return f"★{self.fun}/{self.education}/{self.production}"
+
+
+@dataclass(frozen=True)
 class ReviewDraft:
     name: str
-    rating: int | None = None
+    rating: int | None = None  # legacy 0-100; superseded by stars
     selection: SelectionIntent = SelectionIntent.KEEP
+    age: "AgeRange | None" = None
+    stars: "StarRating | None" = None
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "name", validate_name(self.name))
         validate_rating(self.rating)
+        if self.age is not None and not isinstance(self.age, AgeRange):
+            raise ValidationError("Age range must be an AgeRange or unset")
+        if self.stars is not None and not isinstance(self.stars, StarRating):
+            raise ValidationError("Star rating must be a StarRating or unset")
         if not isinstance(self.selection, SelectionIntent):
             raise ValidationError("Selection must be Keep or Select")
 

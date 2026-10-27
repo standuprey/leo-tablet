@@ -19,6 +19,7 @@ class VolumeKey(IntEnum):
 class GestureAction(StrEnum):
     ENTER_PARENT = "enter_parent"
     RETURN = "return"
+    SCREENSHOT = "screenshot"
 
 
 @dataclass(frozen=True)
@@ -43,6 +44,7 @@ class GestureConfig:
 UDD = (VolumeKey.UP, VolumeKey.DOWN, VolumeKey.DOWN)
 DDU = (VolumeKey.DOWN, VolumeKey.DOWN, VolumeKey.UP)
 DU = (VolumeKey.DOWN, VolumeKey.UP)
+DD = (VolumeKey.DOWN, VolumeKey.DOWN)
 
 DEFAULT_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
     (UDD, GestureAction.ENTER_PARENT),
@@ -58,6 +60,9 @@ PARENT_SURFACE_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...]
 REVIEW_TRIAL_PATTERNS: tuple[tuple[tuple[VolumeKey, ...], GestureAction], ...] = (
     # Exiting a game under review uses the short Down/Up return.
     (DU, GestureAction.RETURN),
+    # Down/Down captures a thumbnail; it diverges from DU at the second key,
+    # so both coexist here (the ambiguity gate only rejects prefixes).
+    (DD, GestureAction.SCREENSHOT),
 )
 
 

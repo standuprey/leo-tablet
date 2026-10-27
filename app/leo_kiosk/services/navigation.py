@@ -14,6 +14,8 @@ class Route(Enum):
     REVIEW_LIST = auto()
     REVIEW_TRIAL = auto()
     REVIEW_EDITOR = auto()
+    HOME_PICKER = auto()
+    MY_CHILD = auto()
     VIDEOS = auto()
     WIFI = auto()
     PORTAL = auto()

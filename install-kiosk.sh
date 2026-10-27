@@ -20,19 +20,13 @@ fi
 echo "==> Installing packages"
 pacman -S --needed --noconfirm \
   cage greetd greetd-agreety gtk3 python-gobject python-cairo python-evdev \
-  gcompris-qt ktuberling blinken kdiamond kfourinline \
-  marble five-or-more \
   mpv yt-dlp \
-  firefox \
   webkit2gtk-4.1 \
+  gst-libav gst-plugins-good gst-plugins-bad gst-plugins-ugly \
   pipewire pipewire-pulse wireplumber libpulse \
   rsync
-# Tile commands come from config/tiles.json; every binary above matches a tile.
-# neverball is AUR-only: build it first, or the Maze tile shows "Ask Papa".
-# firefox stays: game trials and the captive portal still launch through it.
-# Every screen (child home, Videos, parent mode) is WebKitGTK showing pages
-# from the loopback server (leo_kiosk/adapters/ui_server.py).
-# The Videos tile is a deliberate placeholder and shows "Ask Papa".
+# mpv/yt-dlp back the (currently disabled) Videos screen; no game binaries
+# are installed while the home screen is TBD placeholders.
 
 echo "==> Copying launcher to $DEST (source: $HERE)"
 install -d -o "$KIOSK_USER" -g "$KIOSK_USER" "$DEST" "$DEST/voices"
@@ -41,6 +35,8 @@ install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/videos.py" "$DEST/vi
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/backwatch.py" "$DEST/backwatch.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/run.sh" "$DEST/run.sh"
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/config/tiles.json" "$DEST/tiles.json"
+# One-time maintenance tools the kiosk user must be able to run as leo.
+install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/tools/catalog_trim.py" "$DEST/catalog_trim.py"
 install -m 755 -o "$KIOSK_USER" -g "$KIOSK_USER" "$HERE/app/powerd.py" "$DEST/powerd.py"
 # Trusted video catalog for the Videos screen (9 random YouTube embeds).
 install -m 644 -o "$KIOSK_USER" -g "$KIOSK_USER" \

@@ -24,7 +24,7 @@ Deliverables:
 | Catalog content | Import all existing entries for preservation. Review defaults to **games only**; videos have a separate optional filter and are not eligible for game slots in this release. |
 | Existing home activities | Preserve all nine existing tiles initially. Selecting a game replaces one chosen slot, including a legacy activity. Never silently remove an activity. |
 | “Selected” | Occupies exactly one of the nine home positions, rather than merely being a favorite. |
-| Return gesture | **Down, Up** is retained for exiting a game under review (back to its editor). **Down, Down, Up** handles all other returns (child playback to child home, parent surfaces to child home). The two sets must never be enabled simultaneously; the recognizer swaps context-owned pattern sets on route change. |
+| Return gesture | **Down, Up** is retained for exiting a game under review (back to its editor). Owner update (2026-10-25, web UI port): Down/Up is now also the return on **launcher-shown parent/video surfaces** (→ child home), matching the pre-port UX where backwatch killed the foregrounded browser. **Down, Down, Up** stays in the default set (it is a no-op on the child home). DU and DDU must never be enabled simultaneously; the recognizer swaps context-owned pattern sets on route change (`DEFAULT_PATTERNS` child home, `PARENT_SURFACE_PATTERNS` parent/video pages, `REVIEW_TRIAL_PATTERNS` trials). |
 | “Keep/delete/select” versus the three bottom CTAs | Keep/Select is a draft choice in the editor; **Delete**, **Ok**, **Ok and see next** are the three bottom buttons. Delete is the discard choice. |
 | Rating | Optional until supplied; otherwise an integer **0–100**, inclusive. Null means unrated; zero is a real rating. |
 | Delete | Soft-delete from the review queue, removing its home assignment in the same transaction. Keep a tombstone so reimport does not resurrect it. |
@@ -161,14 +161,14 @@ Dependency direction: `ui -> services -> domain + repositories/adapters`. Domain
 | Wi-Fi | **libnm 1.0** through PyGObject (`gi.require_version('NM', '1.0')`) | NetworkManager's supported API, async events, secret-agent integration and connectivity states. Do not parse localized `nmcli` output or build raw iwd D-Bus handling. |
 | Wi-Fi supplicant | **iwd** as NetworkManager backend | Meets the iwd requirement while retaining NetworkManager's IP/probe management. Python stdlib has no Wi-Fi/captive-portal management API. |
 | Wi-Fi authorization | Existing system **polkit** | Narrow, active-local-session permissions; no root-running helper or general shell bridge. |
-| Game browser | Existing **Firefox**, native Wayland, dedicated profile | Preserve web-game compatibility and browser sandbox. Do not replace it with WebKit for games without a new compatibility study. |
-| Portal browser only | **WebKitGTK 4.1**, `WebKit2` GIR, sandboxed ephemeral context | Embed inside parent UI, keep visible Back/Reload/Done controls, cookies separate from child Firefox. Avoid a general desktop browser escaping kiosk navigation. |
+| Game browser | **WebKitGTK 4.1 in the launcher's own view** (owner decision 2026-10-25: Firefox removed) | Trials navigate the single ephemeral-context view to the game's `iframe_url` — no second browser process; the ~5 s Firefox cold start (black/white screen) disappears. Compat is owner-accepted risk, verified per game on the tablet. Untrusted game pages can reach the loopback server, so state-changing endpoints (wifi connect/forget, portal, poweroff) are route-gated to parent surfaces (`WebUIPages._parent_surface`). |
+| Portal browser | **The same view** (owner decision 2026-10-25) | Navigate to the connectivity probe; the portal redirects into its login page. Ephemeral context: cookies die with the view. Text entry awaits the T004 editing-command keyboard spike; the interim Firefox portal had no soft keyboard either. |
 | Touch text entry | Reusable **GTK keyboard** with Gtk.Editable and WebKit editing adapters | Cage support for virtual keyboards alone is insufficient for standard layer-shell keyboards. Do not assume Onboard/wvkbd/squeekboard works in this session. Prove portal editing on hardware before completing the feature. |
 | Tests | **pytest**, **Hypothesis**, `unittest.mock`; **python-dbusmock** for NM integration | Pure state-machine/property tests plus real NM D-Bus shape simulation. |
 | UI smoke tests | pytest + GI under nested/headless **Cage/Weston** as available | Xvfb can test GTK widget logic but does not prove Wayland focus, raw buttons, browser presentation, or portal usability. |
 | Code checks | **Ruff**; type-check pure domain/services with **mypy** | GI-generated types are incomplete; isolate adapters rather than inventing a type system for every GI object. |
 
-Candidate Arch runtime packages, to validate against the target package repositories: `gtk3`, `python-gobject`, `python-evdev`, `python-pyudev`, `python-jsonschema`, `networkmanager`, `libnm`, `iwd`, `polkit`, `webkit2gtk-4.1`, `firefox`; SQLite is accessed through the system Python build. Keep Cage/greetd/audio dependencies already in the installer. Test dependencies are not installed onto the child's production session by default.
+Candidate Arch runtime packages, to validate against the target package repositories: `gtk3`, `python-gobject`, `python-evdev`, `python-pyudev`, `python-jsonschema`, `networkmanager`, `libnm`, `iwd`, `polkit`, `webkit2gtk-4.1`; SQLite is accessed through the system Python build. Keep Cage/greetd/audio dependencies already in the installer. Test dependencies are not installed onto the child's production session by default.
 
 ### Upstream facts checked while making this design
 
@@ -238,7 +238,7 @@ Database constraints:
 - `rating IS NULL OR rating BETWEEN 0 AND 100`, and enforce integer type in validation/constraint.
 - Unique `(provider_id, canonical_source_url)`.
 - `home_slots` allows either a game, a trusted legacy tile, or an empty slot, never both game and legacy content. Exactly nine slot rows are seeded and are updated, never deleted by application code (enforced by a `BEFORE DELETE` trigger, since foreign keys alone cannot prevent row deletion). A set outcome requires `ended_at`; recovery may finish a session without an outcome.
-- Only a nondeleted reviewed **game** may occupy a game slot. Enforce cross-table invariants in one domain transaction and, where practical, constraints/triggers; test invalid repository writes.
+- Only a nondeleted **game** that the parent has at least tested (tested_at or reviewed_at set) may occupy a game slot; never-tested games cannot (owner decision 2026-10-26, relaxing the earlier reviewed-only rule so Home Child can place tested games). Enforce cross-table invariants in one domain transaction and, where practical, constraints/triggers; test invalid repository writes.
 - Selected games occupy one slot each; at most nine can be selected. There can be fewer than nine selected games because other slots can still hold native activities or be empty.
 - Do not store `selected` as a second independent boolean: derive it from `home_slots` to prevent drift.
 
@@ -258,7 +258,7 @@ else -> new
 - A successfully spawned browser trial sets `tested_at` for a previously new game. It means “a trial was attempted,” **not** “game loaded successfully.” Store browser startup/exit outcomes separately.
 - Failed process spawn does not mark the item tested; show retry/return actions.
 - Re-testing a reviewed or selected game does not downgrade its displayed status.
-- Any Ok save sets `reviewed_at`. Selected implies reviewed. A saved review is allowed after a failed/blocked trial if the parent explicitly saves it; the failure remains visible.
+- Any Ok save sets `reviewed_at`. Selected implies at least tested (reviewed when a review was saved; owner decision 2026-10-26 allows placing merely tested games from Home Child). A saved review is allowed after a failed/blocked trial if the parent explicitly saves it; the failure remains visible.
 - Delete soft-deletes any state and removes its slot in the same transaction. Deleted is an exclusion/archive state, not a fifth primary status badge.
 
 ### Atomic review save
@@ -279,7 +279,7 @@ else -> new
 
 ### Routes and session context
 
-Top-level routes: `CHILD_HOME`, `PARENT_HOME`, `REVIEW_LIST`, `REVIEW_TRIAL`, `REVIEW_EDITOR`, `WIFI`, `PORTAL`, `CHILD_ACTIVITY`.
+Top-level routes: `CHILD_HOME`, `PARENT_HOME`, `REVIEW_LIST`, `REVIEW_TRIAL`, `REVIEW_EDITOR`, `HOME_PICKER`, `WIFI`, `PORTAL`, `CHILD_ACTIVITY`.
 
 A parent session stays active across Review, Wifi, trial playback, and portal navigation until Exit is chosen. A launch session records its role and return context; closing a process is not enough to decide where to go.
 
@@ -287,16 +287,17 @@ A parent session stays active across Review, Wifi, trial playback, and portal na
 |---|---|---|---|
 | Child home | Parent home | No-op | No-op |
 | Child game/native activity | Stop owned activity, then parent home | Stop activity, then child home | No-op |
-| Parent home | No-op | Child home | No-op |
-| Review list | Parent home | Parent home | No-op |
+| Parent home (web page) | Parent home (reload) | No-op in default set; not enabled here | Child home (owner update 2026-10-25) |
+| Review list (web page) | Parent home (reload) | not enabled here | Child home (owner update 2026-10-25) |
 | Review trial | Stop trial, then parent home | No-op (geometrically the trailing D,U completes the short match; see below) | Stop trial, then review editor for that exact game |
 | Review editor | Parent home, with unsaved-change confirmation | Review list, with unsaved-change confirmation | No-op |
-| Wifi | Parent home; cancel pending UI work safely | Parent home; cancel pending UI work safely | No-op |
-| Portal | Close portal, then parent home | Close portal, then Wifi | No-op |
+| Home Child list / game page (web page) | Parent home (reload) | not enabled here | Child home (owner update 2026-10-25) |
+| Wifi (web page) | Parent home (reload); cancel pending UI work safely | not enabled here | Child home (owner update 2026-10-25) |
+| Portal (Firefox overlay) | Close portal, then parent home | Close portal, then Wifi | Close portal, then Wifi |
 
-Only one pattern set is enabled at a time. The default set (Up/Down/Down and Down/Down/Up) is active on child, parent, list, editor, Wifi, and portal surfaces. The review-trial set (Down/Up) is active only while a game is running for review, because the short return would otherwise swallow ordinary volume adjustments on every other surface.
+Only one pattern set is enabled at a time, swapped on route change (`AppController._use_patterns`): the default set (Up/Down/Down and Down/Down/Up) on the child home; the parent-surface set (Down/Up and Up/Down/Down) on the launcher-shown parent/video pages — owner decision 2026-10-25, restoring the pre-port UX in which backwatch exited the foregrounded browser with Down/Up; the review-trial set (Down/Up alone) while a game runs for review. DU and DDU are never enabled together: after D,D the short D,U suffix would complete first and swallow the longer pattern. The cost, accepted by the owner: on launcher-shown surfaces the short return takes the volume-adjustment tap sequence; volume changes there need the press-and-hold path or the on-screen controls.
 
-Natural browser exit, child timeout, review timeout, and browser crash follow the recorded origin: child activity -> home; review trial -> editor with an outcome banner. Never lose which game was under review. Parent trials use a configurable safety timeout (default 30 minutes), not the child's per-slot time limit.
+Natural browser exit, child timeout, review timeout, and browser crash follow the recorded origin: child activity -> home; review trial -> editor with an outcome banner (or, for a trial launched from the Home Child page, that game's Home-Child page). Never lose which game was under review. Parent trials use a configurable safety timeout (default 30 minutes), not the child's per-slot time limit.
 
 ### Recognizer contract
 
@@ -350,6 +351,27 @@ Bottom action bar, always reachable even with keyboard open:
 | **Ok and see next** | Save the same way, then launch the next eligible item from the frozen queue. |
 
 Next rules: skip deleted/ineligible IDs, do not loop, do not reorder after ratings/names change, and show “Review queue complete” when no next item exists. Disable/rename the next CTA appropriately at queue end. If the next launch fails, show that item's retry/error state, not the previous editor. Explicitly backing away with unsaved fields asks Save / Discard / Cancel; Discard affects only draft edits, not the recorded trial.
+
+### Home Child (picker surface, owner request 2026-10-26; reworked same day)
+
+A parent-menu tile for placing tried games on the child home. The flow is
+tile-first — **Home Child → child home preview → tap a tile → pick a game**
+— and never asks which slot a game should go to:
+
+1. Preview: the child home grid as the child sees it (legacy labels/colors,
+   game names and thumbnails); every tile links to its pick list; **Back**
+   to the parent menu (also present when the grid is all legacy tiles).
+2. Pick list for one tile: the review list filtered to **tested, reviewed
+   and selected** games (never-tested games are not placeable, so they are
+   not shown); shows the tile's current occupant; empty lists still offer a
+   **Back** link. Tapping a game places it into that tile, replacing the
+   occupant — the explicit tap is the replacement confirmation — and
+   returns to the preview with a confirmation note. Each row also offers a
+   plain **Try** link.
+3. A trial launched from a pick list is a plain try-out: Down/Up returns to
+   that tile's pick list and **Down/Down performs no thumbnail capture**
+   (capture stays exclusive to review-flow trials). The full editor
+   (rename, stars, age range, delete) remains on /review.
 
 ### Child home
 
@@ -516,14 +538,45 @@ replacement measures ~225 MB across 3 (`tools/memprobe.py` on the tablet).
   main thread via `GLib.idle_add`. Video playback still spawns through the
   allowlisted `videos.py` argv[0] (`videos.py <url>` runs mpv), so leopowerd
   and backwatch contracts are unchanged.
+- **Routing**: every screen is a server page; every navigation is a real GET
+  load, and the view reports each committed load back to the controller
+  (`load-changed` → `web_navigated`, path→route table `ROUTE_FOR_PATH` in
+  `application.py`). Route state and the gesture pattern set always follow
+  the page actually shown, whichever way navigation was triggered. Form
+  POSTs (tile launch, video play) are `fetch` calls and never navigate the
+  view; `/exit` and `/poweroff` keep their `window.close()` flow, observed
+  through the WebKit close signal.
 - The rainbow and battery gauge are re-implemented in the page's JS/HTML with
   the same parameters (`RAINBOW_JS`, `CHILD_CSS`); battery state comes from
   the polled `/child-state` endpoint.
+- **Touch input**: the WebKit context menu is suppressed (touchpad
+  right-click, touch long-press) and page CSS sets `cursor: none` on every
+  element (child and parent CSS) — the device is touch-only; a Type Cover
+  touchpad must not summon a pointer or menus.
+- **The invisible five-tap exit corner is not ported** — recorded owner
+  decision: removed from the child interface; administrator recovery stays
+  with SSH/the text console.
+- Video playback: the Videos page's play action spawns the thin
+  `videos.py <url>` mpv wrapper through the launch engine (own process
+  group, allowlisted argv[0], `.app-pid`), so leopowerd's power-button exit
+  and backwatch's Down/Up-hold keep working during playback; when mpv ends
+  the Videos page is shown again. The screen itself stays a launcher page
+  (owner rejected a second WebKit process for it). Tradeoff accepted:
+  power press on the Videos *page* (no playback) is screen-off only.
 - The server thread owns its own SQLite connection (`open_database` is per-thread by
   contract); the HTTP server is deliberately single-threaded so one connection serves
   all requests.
-- Game trials and the captive portal keep using Firefox (compatibility and
-  sandbox); the review/rename/rating/Wi-Fi parent tasks remain web endpoints.
+- Game trials are **pages in the same view**: the trial navigates to the
+  game's `iframe_url`; the session service keeps tokens/history/outcomes and
+  enforces a 30-minute safety deadline (`timed_out`) — gestures still end
+  trials (Down/Up → editor, Up/Down/Down → parent). The captive portal is a
+  view navigation to the connectivity probe; `portal_active` routes the exit
+  gestures back to Wi-Fi. Firefox is removed from the image entirely
+  (owner decision 2026-10-25).
+- Server-thread endpoints that change state (Wi-Fi connect/forget, portal
+  open, poweroff) are route-gated to parent surfaces: in-view game pages can
+  reach the loopback server, and the pre-port Firefox exposure was identical,
+  but the gate makes it a structural refusal rather than a hope.
 
 ## 13. Implementation sequencing and estimates
 

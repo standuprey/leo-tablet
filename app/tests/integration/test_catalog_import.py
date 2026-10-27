@@ -54,6 +54,7 @@ def test_fresh_import_populates_catalog_and_records_the_report(db):
         "added": 2,
         "preserved_local": 0,
         "purged": 0,
+        "resurrected": 0,
         "unchanged": 0,
         "updated": 0,
     }
@@ -65,6 +66,7 @@ def test_fresh_import_populates_catalog_and_records_the_report(db):
         "added": 2,
         "preserved_local": 0,
         "purged": 0,
+        "resurrected": 0,
         "unchanged": 0,
         "updated": 0,
     }
@@ -155,8 +157,10 @@ def test_untested_record_removed_from_source_survives_for_parent_decision(db):
     import_catalog(db, source)
     pruned = Source("d" * 64, source.providers, (game(),))
     report = import_catalog(db, pruned)
-    # Parent decision (2026-10-23): removed-from-source, never-tried games
-    # leave the queue via tombstone; reimports cannot resurrect them.
+    # Owner decision (2026-10-23): removed-from-source, never-tried games
+    # leave the queue via tombstone. Refined 2026-10-25: AUTO tombstones
+    # (source removals, never a parent decision) lift when the source
+    # re-adds the game; parent deletions still cannot be resurrected.
     assert report.purged == 1 and report.added == 0 and report.unchanged == 1
     kept = CatalogRepository(db).list_records()
     assert [r.display_name for r in kept] == ["Game"]
@@ -164,6 +168,50 @@ def test_untested_record_removed_from_source_survives_for_parent_decision(db):
     assert removed_row["deleted_at"] is not None
     events = db.execute("SELECT event_kind, change_json FROM review_events").fetchall()
     assert any(row["event_kind"] == "deleted" for row in events)
+
+
+def test_auto_tombstoned_game_resurrects_when_the_source_re_adds_it(db):
+    source = Source(
+        "a" * 64,
+        ({"provider_id": "pbs", "name": "PBS", "website_url": "https://pbskids.org"},),
+        (game(), game(url="https://pbskids.org/other", name="Other")),
+    )
+    import_catalog(db, source)
+    pruned = Source("d" * 64, source.providers, (game(),))
+    assert import_catalog(db, pruned).purged == 1
+    restored = Source("e" * 64, source.providers, source.games)
+    report = import_catalog(db, restored)
+    assert report.resurrected == 1
+    row = repo_get(db, "Other")
+    assert row["deleted_at"] is None
+    kinds = [r[0] for r in db.execute(
+        "SELECT event_kind FROM review_events ORDER BY timestamp"
+    ).fetchall()]
+    assert kinds.count("deleted") == 1 and kinds.count("restored") == 1
+
+
+def test_parent_tombstone_stays_dead_even_when_the_source_re_adds(db):
+    source = Source(
+        "a" * 64,
+        ({"provider_id": "pbs", "name": "PBS", "website_url": "https://pbskids.org"},),
+        (game(), game(url="https://pbskids.org/other", name="Other")),
+    )
+    import_catalog(db, source)
+    # A parent decision, not an auto removal: no auto marker in the event.
+    db.execute(
+        "UPDATE games SET deleted_at = ? WHERE source_name = 'Other'",
+        ("2026-10-25T00:00:00Z",),
+    )
+    db.execute(
+        "INSERT INTO review_events (id, game_id, event_kind, timestamp, change_json) "
+        "VALUES ('00000000-0000-0000-0000-000000000000', "
+        "(SELECT id FROM games WHERE source_name = 'Other'), 'deleted', "
+        "'2026-10-25T00:00:00Z', '{\"parent\": true}')"
+    )
+    db.commit()
+    report = import_catalog(db, Source("f" * 64, source.providers, source.games))
+    assert report.resurrected == 0
+    assert repo_get(db, "Other")["deleted_at"] is not None
 
 
 def repo_get(db, name):

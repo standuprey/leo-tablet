@@ -3,66 +3,66 @@
   "columns": 3,
   "tiles": [
     {
-      "id": "read",
-      "label": "ABC",
+      "id": "tbd1",
+      "label": "TBD",
       "color": "#ff6b6b",
-      "cmd": ["gcompris-qt"],
-      "minutes": 25
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "maze",
-      "label": "Maze",
+      "id": "tbd2",
+      "label": "TBD",
       "color": "#74c0fc",
-      "cmd": ["neverball"],
-      "minutes": 15
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "potato",
-      "label": "Potato",
+      "id": "tbd3",
+      "label": "TBD",
       "color": "#e599f7",
-      "cmd": ["ktuberling"],
-      "minutes": 15
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "memory",
-      "label": "Memory",
+      "id": "tbd4",
+      "label": "TBD",
       "color": "#ffdeeb",
-      "cmd": ["blinken"],
-      "minutes": 10
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "gems",
-      "label": "Gems",
+      "id": "tbd5",
+      "label": "TBD",
       "color": "#66d9e8",
-      "cmd": ["kdiamond"],
-      "minutes": 15
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "fourline",
-      "label": "4 in line",
+      "id": "tbd6",
+      "label": "TBD",
       "color": "#8ce99a",
-      "cmd": ["kfourinline"],
-      "minutes": 15
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "earth",
-      "label": "Earth",
+      "id": "tbd7",
+      "label": "TBD",
       "color": "#a9e34b",
-      "cmd": ["marble"],
-      "minutes": 15
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "lines",
-      "label": "Lines",
+      "id": "tbd8",
+      "label": "TBD",
       "color": "#f783ac",
-      "cmd": ["five-or-more"],
-      "minutes": 15
+      "cmd": ["~/kiosk/tbd"],
+      "minutes": 20
     },
     {
-      "id": "videos",
-      "label": "Videos",
+      "id": "tbd9",
+      "label": "TBD",
       "color": "#b197fc",
-      "cmd": ["~/kiosk/videos.py"],
+      "cmd": ["~/kiosk/tbd"],
       "minutes": 20
     }
   ]

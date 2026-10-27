@@ -19,8 +19,6 @@ TAP_SOUND = "/usr/share/sounds/freedesktop/stereo/message.oga"
 POLL_SECONDS = 0.5
 KILL_GRACE_SECONDS = 3
 VOICE_EXTENSIONS = (".wav", ".ogg", ".oga", ".mp3")
-CORNER_WINDOW_SECONDS = 4
-CORNER_TAPS_TO_EXIT = 5
 
 
 class Popen(Protocol):
@@ -65,7 +63,6 @@ class TileLauncher:
         on_status: Callable[[str], None],
         on_enter: Callable[[], None],
         on_return: Callable[[], None],
-        on_corner_exit: Callable[[], None],
     ) -> None:
         self.state_path = state_path
         self.voices_dir = voices_dir
@@ -76,10 +73,12 @@ class TileLauncher:
         self.on_status = on_status
         self.on_enter = on_enter
         self.on_return = on_return
-        self.on_corner_exit = on_corner_exit
         self.proc: ProcessHandle | None = None
         self.deadline = 0.0
-        self.corner_taps: list[float] = []
+
+    # The invisible five-tap exit corner is intentionally not ported: owner
+    # decision — remove it from the child interface; administrator recovery
+    # stays with SSH/the text console. See architecture.md owner decisions.
 
     # --- launching -------------------------------------------------------
     def launch(self, tile: dict[str, object], play_sound: bool = True) -> None:
@@ -176,14 +175,3 @@ class TileLauncher:
             pass
         self.proc = None
         self.player(TAP_SOUND)
-
-    # --- parent corner ---------------------------------------------------
-    def corner_tap(self) -> None:
-        """Five taps within the window invoke the exit hook (kiosk escape)."""
-        now = self.clock()
-        self.corner_taps = [
-            t for t in self.corner_taps if now - t < CORNER_WINDOW_SECONDS
-        ] + [now]
-        if len(self.corner_taps) >= CORNER_TAPS_TO_EXIT:
-            self.corner_taps = []
-            self.on_corner_exit()

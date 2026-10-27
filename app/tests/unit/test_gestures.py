@@ -46,9 +46,14 @@ def test_review_trial_returns_on_down_up_and_three_tap_ends_in_short_match(fake_
     assert taps(recognizer, fake_clock, [DOWN, UP]) == [GestureAction.RETURN]
     recognizer.reset("route_changed")
     fake_clock.advance(0.5)
-    # In trial mode DDU is not a pattern, but its trailing D,U completes a DU
-    # match — geometrically correct and benign: the parent is leaving anyway.
-    assert taps(recognizer, fake_clock, [DOWN, DOWN, UP]) == [GestureAction.RETURN]
+    # In trial mode DD (thumbnail capture) now matches at the second Down;
+    # the trailing Up lands inside the match cooldown and is swallowed, so a
+    # stray DDU screenshots instead of returning — the parent presses the
+    # short Down/Up again to leave. Accepted cost of the capture gesture.
+    assert taps(recognizer, fake_clock, [DOWN, DOWN, UP]) == [GestureAction.SCREENSHOT]
+    recognizer.reset("route_changed")
+    fake_clock.advance(0.5)
+    assert taps(recognizer, fake_clock, [DOWN, UP]) == [GestureAction.RETURN]
     recognizer.reset("route_changed")
     fake_clock.advance(0.5)
     assert recognizer.feed(UP) is None  # No leftover partial state after cooldown.

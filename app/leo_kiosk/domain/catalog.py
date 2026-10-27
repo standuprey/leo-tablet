@@ -117,6 +117,20 @@ class Dimensions:
     def describes_game_size(self) -> bool:
         return self.evidence in (DimensionEvidence.DESIGN, DimensionEvidence.IFRAME)
 
+    def fit_scale(self, viewport_width: int, viewport_height: int) -> float | None:
+        """Whole-page zoom that makes the designed game fill the screen.
+
+        None when the size is not verified design evidence or the viewport
+        is unknown — such games run at zoom 1 (their own layout decides).
+        Letterboxing is expected: the shorter axis centers in the page.
+        """
+        if not self.describes_game_size or self.width is None or self.height is None:
+            return None
+        if viewport_width <= 0 or viewport_height <= 0:
+            return None
+        scale = min(viewport_width / self.width, viewport_height / self.height)
+        return max(0.5, min(scale, 3.0))
+
 
 @dataclass(frozen=True)
 class CatalogItem:

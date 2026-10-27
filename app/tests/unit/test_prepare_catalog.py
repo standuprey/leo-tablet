@@ -88,7 +88,7 @@ def test_output_is_deterministic_across_runs(source, tmp_path):
 def test_check_passes_on_committed_bootstrap():
     result = run("--check")
     assert result.returncode == 0, result.stderr
-    assert "97 games" in result.stdout and "13 providers" in result.stdout
+    assert "38 games" in result.stdout and "5 providers" in result.stdout
 
 
 def copy_committed(tmp_path, name="bootstrap.json"):

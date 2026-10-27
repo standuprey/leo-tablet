@@ -7,7 +7,7 @@ from uuid import UUID
 from .catalog import CatalogItem
 from .catalog_metadata import canonical_json_object, validate_utc
 from .errors import ValidationError
-from .reviews import validate_name, validate_rating
+from .reviews import AgeRange, validate_name, validate_rating
 
 
 @dataclass(frozen=True)
@@ -15,6 +15,11 @@ class StoredGame:
     item: CatalogItem
     parent_name: str | None = None
     rating: int | None = None
+    prod_stars: int | None = None
+    edu_stars: int | None = None
+    fun_stars: int | None = None
+    age_min: int | None = None
+    age_max: int | None = None
     tested_at: datetime | None = None
     reviewed_at: datetime | None = None
     deleted_at: datetime | None = None
@@ -27,6 +32,13 @@ class StoredGame:
         if self.parent_name is not None:
             object.__setattr__(self, "parent_name", validate_name(self.parent_name))
         validate_rating(self.rating)
+        for value in (self.prod_stars, self.edu_stars, self.fun_stars):
+            if value is not None and (type(value) is not int or not 0 <= value <= 5):
+                raise ValidationError("Star ratings must be integers from 0 to 5")
+        if (self.age_min is None) != (self.age_max is None):
+            raise ValidationError("An age range requires both bounds")
+        if self.age_min is not None and self.age_max is not None:
+            AgeRange(self.age_min, self.age_max)  # bounds + order validation
         for timestamp in (self.tested_at, self.reviewed_at, self.deleted_at):
             if timestamp is not None:
                 validate_utc(timestamp)

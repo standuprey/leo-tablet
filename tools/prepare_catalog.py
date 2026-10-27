@@ -111,12 +111,21 @@ def adapt_game(raw, provider_id, provider_evidence):
     if not isinstance(name, str) or not name.strip():
         raise ValueError("Game name cannot be empty")
     width, height = raw.get("width"), raw.get("height")
+    # Per-entry evidence wins over the provider-level default: a measured
+    # canvas size (e.g. the Nat Geo fixed-size games) must survive a
+    # provider that otherwise reports 'unknown'.
+    entry_evidence = raw.get("dimension_evidence")
+    evidence = entry_evidence if entry_evidence else provider_evidence
     dims = dimensions(
         width,
         height,
-        provider_evidence if width is not None else raw.get("dimension_evidence"),
+        evidence,
     )
     launch_url = raw.get("launch_url")
+    if launch_url is None:
+        # Trimmed discovery input: iframe_url is the playable surface the
+        # review trial must test, so it becomes the launch override.
+        launch_url = raw.get("iframe_url")
     if launch_url is not None and not (
         isinstance(launch_url, str) and launch_url.startswith(("http://", "https://"))
     ):

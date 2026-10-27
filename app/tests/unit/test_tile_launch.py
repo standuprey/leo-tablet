@@ -68,7 +68,6 @@ def engine(tmp_path):
         on_status=statuses.append,
         on_enter=lambda: events.append("enter"),
         on_return=lambda: events.append("return"),
-        on_corner_exit=lambda: events.append("corner-exit"),
     )
     engine._statuses = statuses
     engine._events = events
@@ -157,19 +156,3 @@ def test_watch_after_deadline_sends_term_then_kill(engine, monkeypatch):
     assert signals == [15, 9]
 
 
-def test_five_corner_taps_invoke_exit_hook(engine):
-    engine, *_rest = engine
-    for _ in range(5):
-        engine.corner_tap()
-    assert engine._events == ["corner-exit"]
-
-
-def test_corner_taps_expire_after_four_seconds(engine):
-    engine, *_rest = engine
-    value = {"now": 1000.0}
-    engine.clock = lambda: value["now"]
-    for _ in range(4):
-        engine.corner_tap()
-    value["now"] += 5  # all four taps are now outside the 4 s window
-    engine.corner_tap()
-    assert engine._events == []
